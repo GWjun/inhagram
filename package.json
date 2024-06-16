@@ -5,7 +5,7 @@
   "scripts": {
     "install:all": "pnpm install --recursive",
     "start:frontend": "pnpm --filter frontend dev",
-    "start:backend": "pnpm --filter backend start:dev",
+    "start:backend": "concurrently \"pnpm --filter backend docker\" \"pnpm --filter backend start:dev\"",
     "start": "concurrently \"pnpm start:frontend\" \"pnpm start:backend\""
   },
   "keywords": [],
