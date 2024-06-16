@@ -1,5 +1,11 @@
 # Instagram Clone Project
 
+<p align="center">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" width="80" height="80" style="margin-right: 20px;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Next.js Logo" width="120" height="80" style="margin-right: 20px;">
+  <img src="https://nestjs.com/img/logo_text.svg" alt="NestJS Logo" width="120" height="80">
+</p>
+
 ## Project Description
 
 This project is an Instagram clone that implements the main features of Instagram. The frontend is built using Next.js and the backend is built using NestJS.
@@ -20,7 +26,7 @@ This project is an Instagram clone that implements the main features of Instagra
    cd insta-clone
    ```
 
-2. (opontial)Install frontend dependencies.
+2. Install dependencies.
 
    ```bash
    pnpm install:all
