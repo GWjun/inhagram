@@ -1,11 +1,5 @@
 module.exports = {
-  extends: [
-    'next/core-web-vitals',
-    '@titicaca/eslint-config-triple',
-    '@titicaca/eslint-config-triple/requiring-type-checking',
-    '@titicaca/eslint-config-triple/frontend',
-    '@titicaca/eslint-config-triple/prettier',
-  ],
+  extends: ['next/core-web-vitals', '@titicaca/eslint-config-triple', '@titicaca/eslint-config-triple/requiring-type-checking', '@titicaca/eslint-config-triple/frontend', '@titicaca/eslint-config-triple/prettier', 'plugin:storybook/recommended'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     'no-restricted-imports': [
