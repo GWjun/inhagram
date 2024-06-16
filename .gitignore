@@ -1,0 +1,81 @@
+# --- General ---
+
+# Node modules
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+
+# Temp directories
+.temp
+.tmp
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# dotenv environment variable files
+.env
+.env*.local
+backend/.env
+backend/.env*.local
+frontend/.env
+frontend/.env*.local
+
+# --- Backend specific ---
+
+# compiled output
+backend/dist
+backend/build
+
+# Tests
+backend/coverage
+backend/.nyc_output
+
+# IDEs and editors
+backend/.idea
+backend/.project
+backend/.classpath
+backend/.c9/
+backend/*.launch
+backend/.settings/
+backend/*.sublime-workspace
+
+# IDE - VSCode
+backend/.vscode/*
+!backend/.vscode/settings.json
+!backend/.vscode/tasks.json
+!backend/.vscode/launch.json
+!backend/.vscode/extensions.json
+
+# --- Frontend specific ---
+
+# Next.js build output
+frontend/.next
+frontend/out
+
+# Production build output
+frontend/build
+
+# Vercel
+frontend/.vercel
+
+# TypeScript
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts

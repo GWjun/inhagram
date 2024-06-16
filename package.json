@@ -1,0 +1,17 @@
+{
+  "name": "insta-clone",
+  "version": "1.0.0",
+  "description": "insta clone code",
+  "scripts": {
+    "install:all": "pnpm install --recursive",
+    "start:frontend": "pnpm --filter frontend dev",
+    "start:backend": "pnpm --filter backend start:dev",
+    "start": "concurrently \"pnpm start:frontend\" \"pnpm start:backend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
