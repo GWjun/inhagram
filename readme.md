@@ -1,8 +1,8 @@
 # Instagram Clone Project
 
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" width="80" height="80" style="margin-right: 20px;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Next.js Logo" width="120" height="80" style="margin-right: 20px;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" width="80" height="80" style="margin-right: 60px;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Next.js Logo" width="120" height="80" style="margin-right: 60px;">
   <img src="https://nestjs.com/img/logo_text.svg" alt="NestJS Logo" width="120" height="80">
 </p>
 
@@ -16,6 +16,7 @@ This project is an Instagram clone that implements the main features of Instagra
 
 - Node.js (v14 or higher)
 - pnpm
+- docker
 
 ### Clone and Install
 
@@ -33,10 +34,12 @@ This project is an Instagram clone that implements the main features of Instagra
    ```
 
 3. (opontial) You can install frontend and backend dependencies separately.
+
    ```bash
    cd frontend
    pnpm install
    ```
+
    ```bash
    cd backend
    pnpm install
@@ -44,15 +47,21 @@ This project is an Instagram clone that implements the main features of Instagra
 
 ### Environment Variables
 
-Create `.env` files in both the frontend and backend directories and configure them as needed.
+1. Create `.env.local` files in the frontend directory and configure them as needed.
+
+   ```bash
+   NEXT_PUBLIC_SERVER_URL=http://localhost:8000
+   ```
 
 ### Running the Project
 
-1. To run both the frontend and backend servers simultaneously, go to the root directory and run:
+1. Turn on the Docker app before starting your project to access the database.
+
+2. To run both the frontend and backend servers simultaneously, go to the root directory and run:
    ```bash
    pnpm start
    ```
-2. Accessing the Application
+3. Accessing the Application
 
 - You can access the frontend application at http://localhost:3000.
 - You can access the backend application at http://localhost:8000.
