@@ -34,10 +34,12 @@ This project is an Instagram clone that implements the main features of Instagra
    ```
 
 3. (opontial) You can install frontend and backend dependencies separately.
+
    ```bash
    cd frontend
    pnpm install
    ```
+
    ```bash
    cd backend
    pnpm install
@@ -45,7 +47,11 @@ This project is an Instagram clone that implements the main features of Instagra
 
 ### Environment Variables
 
-Create `.env` files in both the frontend and backend directories and configure them as needed.
+1. Create `.env.local` files in the frontend directory and configure them as needed.
+
+   ```bash
+   NEXT_PUBLIC_SERVER_URL=http://localhost:8000
+   ```
 
 ### Running the Project
 

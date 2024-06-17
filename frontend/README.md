@@ -19,8 +19,15 @@ This project is a frontend clone of Instagram, built with modern web development
    ```
 
 2. Install the dependencies:
+
    ```bash
    pnpm install
+   ```
+
+3. Create `.env.local` files in the frontend directory and configure them as needed.
+
+   ```bash
+   NEXT_PUBLIC_SERVER_URL=http://localhost:8000
    ```
 
 ## Usage
