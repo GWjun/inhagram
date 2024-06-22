@@ -42,7 +42,7 @@ export class AuthService {
       throw new UnauthorizedException('User does not exist.');
     }
 
-    const passOk = bcrypt.compare(user.password, existingUser.password);
+    const passOk = await bcrypt.compare(user.password, existingUser.password);
 
     if (!passOk) {
       throw new UnauthorizedException('Invalid password.');
@@ -65,7 +65,7 @@ export class AuthService {
       password: hashValue,
     });
 
-    return this.login(newUser);
+    return this.getToken(newUser);
   }
 
   extractToken(header: string, isBearer: boolean) {

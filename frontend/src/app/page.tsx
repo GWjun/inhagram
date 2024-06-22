@@ -1,9 +1,16 @@
 'use client'
 
-import withAuth from '#hooks/withAuth'
+import { signOut } from 'next-auth/react'
 
 function Page() {
-  return <div>Main Page</div>
+  return (
+    <div>
+      <div>Main Page</div>
+      <button onClick={() => signOut({ callbackUrl: '/login' })}>
+        로그아웃
+      </button>
+    </div>
+  )
 }
 
-export default withAuth(Page)
+export default Page

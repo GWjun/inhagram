@@ -1,9 +1,3 @@
-'use client'
-
-import withAuth from '#hooks/withAuth'
-
-function Test() {
+export default function Test() {
   return <div>test</div>
 }
-
-export default withAuth(Test)

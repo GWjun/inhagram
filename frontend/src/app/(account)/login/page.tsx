@@ -2,36 +2,22 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 import { useState } from 'react'
+
+import { signIn } from 'next-auth/react'
 
 import { Button } from '#components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '#components/ui/card'
 import { Input } from '#components/ui/input'
-import { useAuthStore } from '#store/client/auth.store'
-import { useLoginQuery } from '#store/server/auth.queries'
 
 export default function LogIn() {
-  const router = useRouter()
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const { setTrueAuthenticated } = useAuthStore()
-  const { mutate, isLoading, error } = useLoginQuery()
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    mutate(
-      { email, password },
-      {
-        onSuccess: () => {
-          setTrueAuthenticated()
-          router.push('/')
-        },
-      },
-    )
+    await signIn('credentials', { email, password })
   }
 
   return (
@@ -49,7 +35,7 @@ export default function LogIn() {
           <CardContent className="space-y-1.5">
             <Input
               className="bg-primary-foreground"
-              placeholder="아이디"
+              placeholder="이메일"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />

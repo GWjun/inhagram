@@ -2,9 +2,10 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 import { useState } from 'react'
+
+import { signIn } from 'next-auth/react'
 
 import { Button } from '#components/ui/button'
 import {
@@ -15,30 +16,15 @@ import {
   CardHeader,
 } from '#components/ui/card'
 import { Input } from '#components/ui/input'
-import { useAuthStore } from '#store/client/auth.store'
-import { useRegisterQuery } from '#store/server/auth.queries'
 
 export default function SignUp() {
-  const router = useRouter()
-
   const [nickname, setNickname] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const { setTrueAuthenticated } = useAuthStore()
-  const { mutate, isLoading, error } = useRegisterQuery()
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    mutate(
-      { nickname, email, password },
-      {
-        onSuccess: () => {
-          setTrueAuthenticated()
-          router.push('/')
-        },
-      },
-    )
+    await signIn('credentials', { nickname, email, password })
   }
 
   return (
