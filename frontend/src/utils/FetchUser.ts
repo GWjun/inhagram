@@ -3,6 +3,12 @@ interface AuthResponse {
   refreshToken: string
 }
 
+interface ErrorResponse {
+  message: string
+  error: string
+  statusCode: number
+}
+
 const toBase64 = (str: string): string => {
   return Buffer.from(str).toString('base64')
 }
@@ -40,9 +46,9 @@ export async function registerUser(
       body: JSON.stringify({ nickname, email, password }),
     },
   )
+  const data = (await response.json()) as AuthResponse | ErrorResponse
 
-  if (!response.ok) throw new Error('Register failed')
+  if (!response.ok) throw new Error(`${(data as ErrorResponse).message}`)
 
-  const data = (await response.json()) as AuthResponse
-  return data
+  return data as AuthResponse
 }

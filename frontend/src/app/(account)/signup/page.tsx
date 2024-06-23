@@ -3,9 +3,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { signIn } from 'next-auth/react'
+import { Loader2 } from 'lucide-react'
 
 import { Button } from '#components/ui/button'
 import {
@@ -16,15 +16,29 @@ import {
   CardHeader,
 } from '#components/ui/card'
 import { Input } from '#components/ui/input'
+import { useGetTokenQuery } from '#store/server/auth.queries'
 
 export default function SignUp() {
   const [nickname, setNickname] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isFormValid, setIsFormValid] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const { mutate, isSuccess, isPending, error } = useGetTokenQuery()
+
+  useEffect(() => {
+    setIsFormValid(
+      nickname.length > 0 && email.length > 0 && password.length >= 4,
+    )
+  }, [nickname, email, password])
+
+  useEffect(() => {
+    if (isSuccess) window.location.reload()
+  }, [isSuccess])
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    await signIn('credentials', { nickname, email, password })
+    mutate({ nickname, email, password, type: 'register' })
   }
 
   return (
@@ -64,11 +78,12 @@ export default function SignUp() {
             />
           </CardContent>
           <CardContent>
-            <Button
-              type="submit"
-              className="w-full bg-button-light hover:bg-tranparent"
-            >
-              가입
+            <Button type="submit" className="w-full" disabled={!isFormValid}>
+              {isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                '가입'
+              )}
             </Button>
           </CardContent>
         </form>
@@ -77,10 +92,16 @@ export default function SignUp() {
           <span className="px-2 text-gray-500 text-sm">또는</span>
           <div className="flex-grow border-t border-gray-300" />
         </CardContent>
-        <CardFooter className="justify-center">
+        <CardFooter className="justify-center flex-col">
           <button className="text-button bg-transparent">
             <p className="text-sm font-semibold">Google로 로그인</p>
           </button>
+          {error && (
+            <p className="text-sm text-destructive mt-3">
+              {error.message === 'Already exist nickname' &&
+                '이미 존재하는 닉네임 입니다.'}
+            </p>
+          )}
         </CardFooter>
       </Card>
 

@@ -7,6 +7,7 @@ interface AuthCredentials {
   nickname?: string
   email: string
   password: string
+  type?: string
 }
 
 export default NextAuth({
@@ -25,7 +26,7 @@ export default NextAuth({
         )
           return { accessToken: 'admin', refreshToken: 'admin' }
 
-        if (credentials.nickname)
+        if (credentials.type === 'register' && credentials.nickname)
           return registerUser(
             credentials.nickname,
             credentials.email,
