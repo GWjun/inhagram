@@ -1,4 +1,8 @@
 import type { Metadata } from 'next'
+
+import AuthSessionProvider from '#utils/providers/AuthSessionProvider'
+import ReactQueryProvider from '#utils/providers/ReactQueryProvider'
+
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -15,8 +19,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="ko">
+      <AuthSessionProvider>
+        <ReactQueryProvider>
+          <body>{children}</body>
+        </ReactQueryProvider>
+      </AuthSessionProvider>
     </html>
   )
 }

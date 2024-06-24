@@ -1,9 +1,9 @@
 # Instagram Clone Project
 
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" width="80" height="80" style="margin-right: 60px;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Next.js Logo" width="120" height="80" style="margin-right: 60px;">
-  <img src="https://nestjs.com/img/logo_text.svg" alt="NestJS Logo" width="120" height="80">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" width="80" height="80" style="margin: 10px;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Next.js Logo" width="120" height="80" style="margin: 10px;">
+  <img src="https://nestjs.com/img/logo_text.svg" alt="NestJS Logo" width="120" height="80" style="margin: 10px;">
 </p>
 
 ## Project Description

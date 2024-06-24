@@ -26,7 +26,8 @@
       "#store/*": ["store/*"],
       "#types/*": ["types/*"],
       "#components/*": ["components/*"],
-      "#utils/*": ["utils/*"]
+      "#utils/*": ["utils/*"],
+      "#hooks/*": ["hooks/*"]
     },
     "plugins": [
       {

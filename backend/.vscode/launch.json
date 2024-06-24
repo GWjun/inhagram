@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Debug NestJS",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["start:debug"],
+      "runtimeArgs": ["debug"],
       "console": "integratedTerminal",
       "restart": true,
       "autoAttachChildProcesses": true
