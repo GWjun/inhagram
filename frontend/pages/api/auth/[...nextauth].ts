@@ -1,13 +1,31 @@
-import NextAuth from 'next-auth'
+/* eslint-disable @typescript-eslint/require-await */
+
+import NextAuth, { DefaultSession } from 'next-auth'
+import { DefaultJWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-import { loginUser, registerUser } from '#utils/FetchUser'
+import { loginUser, refreshAccessToken, registerUser } from '#utils/FetchUser'
+
+interface CustomSession extends DefaultSession {
+  accessToken?: string
+  refreshToken?: string
+}
+
+interface CustomJWT extends DefaultJWT {
+  accessToken?: string
+  refreshToken?: string
+}
 
 interface AuthCredentials {
   nickname?: string
   email: string
   password: string
   type?: string
+}
+
+interface User {
+  accessToken: string
+  refreshToken: string
 }
 
 export default NextAuth({
@@ -19,7 +37,7 @@ export default NextAuth({
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: AuthCredentials) {
+      async authorize(credentials: AuthCredentials): Promise<User | null> {
         if (
           process.env.NODE_ENV === 'development' &&
           credentials.email === 'admin'
@@ -36,4 +54,49 @@ export default NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({
+      token,
+      user,
+    }: {
+      token: CustomJWT
+      user: User | undefined
+    }): Promise<CustomJWT> {
+      const expiresDuration =
+        process.env.NODE_ENV === 'development'
+          ? 24 * 3600 * 1000
+          : parseInt(process.env.NEXT_PUBLIC_TOKEN_EXPIRE)
+
+      if (user) {
+        token.accessToken = user.accessToken
+        token.refreshToken = user.refreshToken
+        token.expiresAt = Date.now() + expiresDuration
+      }
+
+      if (Date.now() < token.expiresAt) return token
+
+      // refresh accessToken
+      const newAccessToken = await refreshAccessToken(
+        token.refreshToken as string,
+      )
+
+      if (newAccessToken) {
+        token.accessToken = newAccessToken
+        token.expiresAt = Date.now() + expiresDuration
+      }
+
+      return token
+    },
+    async session({
+      session,
+      token,
+    }: {
+      session: CustomSession
+      token: CustomJWT
+    }): Promise<CustomSession> {
+      session.accessToken = token.accessToken
+      session.refreshToken = token.refreshToken
+      return session
+    },
+  },
 })

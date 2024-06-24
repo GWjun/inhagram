@@ -52,3 +52,21 @@ export async function registerUser(
 
   return data as AuthResponse
 }
+
+export async function refreshAccessToken(token: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/token/access`,
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  )
+
+  const data = (await response.json()) as
+    | Pick<AuthResponse, 'accessToken'>
+    | ErrorResponse
+
+  if (!response.ok) throw new Error(`${(data as ErrorResponse).message}`)
+
+  return (data as Pick<AuthResponse, 'accessToken'>).accessToken
+}

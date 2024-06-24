@@ -24,14 +24,14 @@ export class AuthService {
 
     return this.jwtService.sign(payload, {
       secret: JWT_SECRET,
-      expiresIn: isRefreshToken ? 3600 : 300,
+      expiresIn: isRefreshToken ? 3600 : 300, // 초 단위
     });
   }
 
   getToken(user: Pick<UsersModel, 'email' | 'id'>) {
     return {
       accessToken: this.signToken(user, false),
-      freshToken: this.signToken(user, true),
+      refreshToken: this.signToken(user, true),
     };
   }
 
