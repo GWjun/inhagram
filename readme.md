@@ -51,6 +51,9 @@ This project is an Instagram clone that implements the main features of Instagra
 
    ```bash
    NEXT_PUBLIC_SERVER_URL=http://localhost:8000
+   NEXT_PUBLIC_TOKEN_EXPIRE=300000
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=gwjun-mooyaho
    ```
 
 ### Running the Project
