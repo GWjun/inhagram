@@ -42,8 +42,8 @@ export default function LogIn() {
   }
 
   return (
-    <main className="flex justify-center items-center min-h-screen -translate-x-8">
-      <div className="flex relative">
+    <main className="flex justify-center items-center min-h-screen lg:-translate-x-8">
+      <div className="hidden lg:flex relative">
         <Image
           src="/images/login/home-phones.png"
           width={460}
