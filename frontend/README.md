@@ -30,7 +30,7 @@ This project is a frontend clone of Instagram, built with modern web development
    NEXT_PUBLIC_SERVER_URL=http://localhost:8000
    NEXT_PUBLIC_TOKEN_EXPIRE=300000
    NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=gwjun-mooyaho
+   NEXTAUTH_SECRET=your-nextauth-secret
    ```
 
 ## Usage

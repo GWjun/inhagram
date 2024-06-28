@@ -7,12 +7,11 @@ import { useEffect, useState } from 'react'
 
 import { Loader2 } from 'lucide-react'
 
+import Slideshow from '#components/feature/slidshow'
 import { Button } from '#components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '#components/ui/card'
 import { Input } from '#components/ui/input'
 import { useGetTokenQuery } from '#store/server/auth.queries'
-
-import Slideshow from '#components/slidshow'
 
 const slideshowImages = [
   '/images/login/screenshot1.png',
@@ -42,7 +41,7 @@ export default function LogIn() {
   }
 
   return (
-    <main className="flex justify-center items-center min-h-screen lg:-translate-x-8">
+    <div className="flex justify-center items-center min-h-screen lg:-translate-x-8">
       <div className="hidden lg:flex relative">
         <Image
           src="/images/login/home-phones.png"
@@ -120,6 +119,6 @@ export default function LogIn() {
           </CardContent>
         </Card>
       </div>
-    </main>
+    </div>
   )
 }

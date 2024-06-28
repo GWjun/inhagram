@@ -27,7 +27,8 @@
       "#types/*": ["types/*"],
       "#components/*": ["components/*"],
       "#utils/*": ["utils/*"],
-      "#hooks/*": ["hooks/*"]
+      "#hooks/*": ["hooks/*"],
+      "#pages/*": ["../pages/*"],
     },
     "plugins": [
       {
