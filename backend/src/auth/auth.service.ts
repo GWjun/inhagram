@@ -7,6 +7,7 @@ import { HASH_ROUNDS, JWT_SECRET } from './const/auth.const';
 import { UsersService } from 'src/users/users.service';
 
 import * as bcrypt from 'bcrypt';
+import { RegisterUserDto } from './dto/register-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +16,12 @@ export class AuthService {
     private readonly userService: UsersService,
   ) {}
 
-  signToken(user: Pick<UsersModel, 'email' | 'id'>, isRefreshToken: boolean) {
+  signToken(
+    user: Pick<UsersModel, 'nickname' | 'email' | 'id'>,
+    isRefreshToken: boolean,
+  ) {
     const payload = {
+      name: user.nickname,
       email: user.email,
       sub: user.id,
       type: isRefreshToken ? 'refresh' : 'access',
@@ -28,7 +33,7 @@ export class AuthService {
     });
   }
 
-  getToken(user: Pick<UsersModel, 'email' | 'id'>) {
+  getToken(user: Pick<UsersModel, 'nickname' | 'email' | 'id'>) {
     return {
       accessToken: this.signToken(user, false),
       refreshToken: this.signToken(user, true),
@@ -57,7 +62,7 @@ export class AuthService {
     return this.getToken(existingUser);
   }
 
-  async register(user: Pick<UsersModel, 'email' | 'nickname' | 'password'>) {
+  async register(user: RegisterUserDto) {
     const hashValue = await bcrypt.hash(user.password, HASH_ROUNDS);
 
     const newUser = await this.userService.createUser({
@@ -95,9 +100,13 @@ export class AuthService {
   }
 
   verifyToken(token: string) {
-    return this.jwtService.verify(token, {
-      secret: JWT_SECRET,
-    });
+    try {
+      return this.jwtService.verify(token, {
+        secret: JWT_SECRET,
+      });
+    } catch (e) {
+      throw new UnauthorizedException('Token is expired or invalid');
+    }
   }
 
   rotateToken(token: string, isRefreshToken: boolean) {

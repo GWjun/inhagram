@@ -64,6 +64,9 @@ backend/.vscode/*
 !backend/.vscode/launch.json
 !backend/.vscode/extensions.json
 
+# IDE - Jetbrains
+.idea
+
 # Docker Volumes
 backend/postgres-data/
 
