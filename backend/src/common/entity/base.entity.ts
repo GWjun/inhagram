@@ -12,5 +12,5 @@ export abstract class BaseModel {
   updateAt: Date;
 
   @CreateDateColumn()
-  createAt: Date;
+  createdAt: Date;
 }

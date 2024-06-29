@@ -5,18 +5,25 @@ import { Repository } from 'typeorm';
 import { PostsModel } from './entities/posts.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PaginatePostDto } from './dto/paginate-post.dto';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postsRepository: Repository<PostsModel>,
+    private readonly commonService: CommonService,
   ) {}
 
   async getAllPosts() {
     return this.postsRepository.find({
       relations: ['author'],
     });
+  }
+
+  async paginatePosts(dto: PaginatePostDto) {
+    return this.commonService.paginate(dto, this.postsRepository, {}, 'posts');
   }
 
   async getPostById(postId: number) {
