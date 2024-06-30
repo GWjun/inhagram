@@ -10,9 +10,12 @@ import {
 } from 'typeorm';
 import { BaseModel } from './entity/base.entity';
 import { FILTER_MAPPER } from './const/filter-mapper.const';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CommonService {
+  constructor(private readonly configService: ConfigService) {}
+
   paginate<T extends BaseModel>(
     dto: BasePaginationDto,
     repository: Repository<T>,
@@ -40,7 +43,9 @@ export class CommonService {
         ? results[results.length - 1]
         : null;
 
-    const nextUrl = lastItem && new URL(`http://localhost:8000/${path}`);
+    const PROTOCOL = this.configService.get('PROTOCOL');
+    const HOST = this.configService.get('HOST');
+    const nextUrl = lastItem && new URL(`${PROTOCOL}://${HOST}/${path}`);
 
     if (nextUrl) {
       for (const key of Object.keys(dto)) {

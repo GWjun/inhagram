@@ -28,11 +28,39 @@
 
 ## Installation
 
-```bash
-$ pnpm install
-```
+1. Clone the repository:
 
-## Running the app
+   ```bash
+   git clone https://github.com/GWjun/insta-clone.git
+   cd backend
+   ```
+
+2. Install the dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+3. Create `.env.local` files in the frontend directory and configure them as needed.
+
+   ```bash
+   # common
+   PROTOCOL=http
+   HOST=localhost:8000
+   
+   # auth
+   JWT_SECRET=your-secret-key
+   HASH_ROUNDS=10
+   
+   # DB
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USERNAME=name
+   DB_PASSWORD=password
+   DB_DATABASE=database
+   ```
+
+## Usage
 
 ```bash
 # development
