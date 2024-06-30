@@ -53,12 +53,13 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))',
         },
         button: {
-          light: '#67B5FA',
           DEFAULT: '#0095F6',
+          light: '#67B5FA',
           dark: '#1977F2',
         },
         gray: {
           DEFAULT: '#737373',
+          light: '#F2F2F2',
         },
       },
       borderRadius: {

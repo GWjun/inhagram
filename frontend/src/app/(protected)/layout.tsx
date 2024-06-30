@@ -1,3 +1,4 @@
+import Footer from '#components/layout/footer'
 import Sidebar from '#components/layout/slidebar'
 
 export default function ProtectedLayout({
@@ -9,6 +10,7 @@ export default function ProtectedLayout({
     <>
       <Sidebar />
       {children}
+      <Footer />
     </>
   )
 }
