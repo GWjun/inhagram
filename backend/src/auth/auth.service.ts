@@ -3,17 +3,18 @@ import { JwtService } from '@nestjs/jwt';
 
 import { UsersModel } from 'src/users/entities/users.entity';
 
-import { HASH_ROUNDS, JWT_SECRET } from './const/auth.const';
 import { UsersService } from 'src/users/users.service';
 
 import * as bcrypt from 'bcrypt';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
 
   signToken(
@@ -28,7 +29,7 @@ export class AuthService {
     };
 
     return this.jwtService.sign(payload, {
-      secret: JWT_SECRET,
+      secret: this.configService.get('JWT_SECRET'),
       expiresIn: isRefreshToken ? 3600 : 300, // 초 단위
     });
   }
@@ -63,7 +64,10 @@ export class AuthService {
   }
 
   async register(user: RegisterUserDto) {
-    const hashValue = await bcrypt.hash(user.password, HASH_ROUNDS);
+    const hashValue = await bcrypt.hash(
+      user.password,
+      this.configService.get('HASH_ROUNDS'),
+    );
 
     const newUser = await this.userService.createUser({
       ...user,
@@ -102,7 +106,7 @@ export class AuthService {
   verifyToken(token: string) {
     try {
       return this.jwtService.verify(token, {
-        secret: JWT_SECRET,
+        secret: this.configService.get('JWT_SECRET'),
       });
     } catch (e) {
       throw new UnauthorizedException('Token is expired or invalid');

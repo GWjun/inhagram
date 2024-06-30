@@ -70,6 +70,15 @@ backend/.vscode/*
 # Docker Volumes
 backend/postgres-data/
 
+# Image Files
+backend/public/temp/*.jpg
+backend/public/temp/*.jpeg
+backend/public/temp/*.png
+
+backend/public/posts/*.jpg
+backend/public/posts/*.jpeg
+backend/public/posts/*.png
+
 # --- Frontend specific ---
 
 # Next.js build output
