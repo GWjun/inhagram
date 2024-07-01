@@ -4,9 +4,9 @@ import Link from 'next/link'
 
 import { Home, Compass, Film, PlusSquare, User, Send } from 'lucide-react'
 
+import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
 import { useUserStore } from '#store/client/user.store'
-import { Avatar, AvatarImage } from '#components/ui/avatar'
 
 export default function Footer() {
   const { activeItem, setActiveItem } = useSidebarStore()
