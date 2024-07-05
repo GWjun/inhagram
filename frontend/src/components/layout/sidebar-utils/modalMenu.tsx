@@ -14,13 +14,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '#components/ui/dropdown-menu'
+import { cn } from 'utils/utils'
 
-export default function ModalMenu() {
+export default function ModalMenu({ isModalOpen }: { isModalOpen: boolean }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center p-3 mb-1 hover:bg-gray-light rounded-lg w-full group">
-        <Menu className="xl:mr-4 group-hover:scale-110 transition duration-200 ease-in-out" />
-        <span className="hidden xl:inline">더 보기</span>
+        <Menu
+          className={cn(
+            'xl:mr-4 min-w-6 min-h-6 group-hover:scale-110 transition duration-200 ease-in-out',
+            isModalOpen && 'xl:mr-0',
+          )}
+        />
+        <span
+          className={cn(
+            'hidden xl:inline whitespace-nowrap',
+            isModalOpen && 'xl:hidden',
+          )}
+        >
+          더 보기
+        </span>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="hidden md:flex flex-col w-[266px] h-[404.5px] relative top-14 left-14 xl:left-3 xl:top-0 3xl:-left-[23px] rounded-2xl shadow-lg">

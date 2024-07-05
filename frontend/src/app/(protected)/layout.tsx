@@ -1,5 +1,5 @@
 import Footer from '#components/layout/footer'
-import Sidebar from '#components/layout/slidebar'
+import Sidebar from '#components/layout/sidebar'
 
 export default function ProtectedLayout({
   children,
