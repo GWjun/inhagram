@@ -13,12 +13,11 @@ import { Card, CardContent, CardFooter, CardHeader } from '#components/ui/card'
 import { Input } from '#components/ui/input'
 import { useGetTokenQuery } from '#store/server/auth.queries'
 
-const slideshowImages = [
-  '/images/login/screenshot1.png',
-  '/images/login/screenshot2.png',
-  '/images/login/screenshot3.png',
-  '/images/login/screenshot4.png',
-]
+import homePhone from '../../../../public/images/login/home-phones.png'
+import screen1 from '../../../../public/images/login/screenshot1.png'
+import screen2 from '../../../../public/images/login/screenshot2.png'
+import screen3 from '../../../../public/images/login/screenshot3.png'
+import screen4 from '../../../../public/images/login/screenshot4.png'
 
 export default function LogIn() {
   const [email, setEmail] = useState('')
@@ -44,13 +43,13 @@ export default function LogIn() {
     <div className="flex justify-center items-center min-h-screen lg:-translate-x-8">
       <div className="hidden lg:flex relative">
         <Image
-          src="/images/login/home-phones.png"
+          src={homePhone}
           width={460}
           height={0}
           alt="instagram Home Phones"
         />
         <Slideshow
-          images={slideshowImages}
+          images={[screen1, screen2, screen3, screen4]}
           interval={5000}
           className="absolute right-14 top-6"
         />
@@ -111,7 +110,7 @@ export default function LogIn() {
           <CardContent className="flex justify-center p-2">
             <p className="text-sm">계정이 없으신가요?</p>
             <Link
-              href="signup"
+              href="/signup"
               className="px-2 text-button text-sm font-semibold"
             >
               가입하기

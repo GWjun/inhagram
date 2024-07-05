@@ -1,11 +1,11 @@
-import Image from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 
 import { useState, useEffect } from 'react'
 
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface SlideshowProps {
-  images: string[]
+  images: StaticImageData[]
   interval?: number
   className?: string
 }
