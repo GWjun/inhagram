@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/require-await */
 
-import NextAuth, { DefaultSession } from 'next-auth'
+import jwt from 'jsonwebtoken'
+import NextAuth, { DefaultSession, NextAuthOptions } from 'next-auth'
 import { DefaultJWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
@@ -28,7 +29,7 @@ interface User {
   refreshToken: string
 }
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -73,16 +74,29 @@ export default NextAuth({
         token.expiresAt = Date.now() + expiresDuration
       }
 
-      if (Date.now() < token.expiresAt) return token
-
       // refresh accessToken
-      const newAccessToken = await refreshAccessToken(
-        token.refreshToken as string,
-      )
+      if (Date.now() >= token.expiresAt) {
+        const newAccessToken = await refreshAccessToken(
+          token.refreshToken as string,
+        )
 
-      if (newAccessToken) {
-        token.accessToken = newAccessToken
-        token.expiresAt = Date.now() + expiresDuration
+        if (newAccessToken) {
+          token.accessToken = newAccessToken
+          token.expiresAt = Date.now() + expiresDuration
+        }
+      }
+
+      try {
+        const decoded = jwt.decode(token.accessToken as string) as CustomJWT
+        if (decoded && decoded.email) {
+          token.name = decoded.email
+          token.email = decoded.email
+        } else if (process.env.NODE_ENV === 'development') {
+          token.name = 'admin'
+          token.email = 'admin'
+        }
+      } catch (error) {
+        console.error('Failed to decode accessToken:', error)
       }
 
       return token
@@ -99,4 +113,6 @@ export default NextAuth({
       return session
     },
   },
-})
+}
+
+export default NextAuth(authOptions)

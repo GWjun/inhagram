@@ -46,7 +46,7 @@ export default function SignUp() {
       <Card className="w-[350px] p-4 mb-3">
         <CardHeader className="items-center">
           <Image
-            src="/images/text-icon.svg"
+            src="/images/static/text-icon.svg"
             width={150}
             height={150}
             alt="instagram"
