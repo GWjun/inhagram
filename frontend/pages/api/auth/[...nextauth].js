@@ -1,35 +1,10 @@
-/* eslint-disable @typescript-eslint/require-await */
-
 import jwt from 'jsonwebtoken'
-import NextAuth, { DefaultSession, NextAuthOptions } from 'next-auth'
-import { DefaultJWT } from 'next-auth/jwt'
+import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 import { loginUser, refreshAccessToken, registerUser } from '#utils/FetchUser'
 
-interface CustomSession extends DefaultSession {
-  accessToken?: string
-  refreshToken?: string
-}
-
-interface CustomJWT extends DefaultJWT {
-  accessToken?: string
-  refreshToken?: string
-}
-
-interface AuthCredentials {
-  nickname?: string
-  email: string
-  password: string
-  type?: string
-}
-
-interface User {
-  accessToken: string
-  refreshToken: string
-}
-
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -38,31 +13,37 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: AuthCredentials): Promise<User | null> {
+      async authorize(credentials) {
+        if (credentials === undefined) return null
+
         if (
           process.env.NODE_ENV === 'development' &&
           credentials.email === 'admin'
         )
-          return { accessToken: 'admin', refreshToken: 'admin' }
+          return { id: 'admin', accessToken: 'admin', refreshToken: 'admin' }
 
-        if (credentials.type === 'register' && credentials.nickname)
-          return registerUser(
+        if (credentials.type === 'register' && credentials.nickname) {
+          const data = await registerUser(
             credentials.nickname,
             credentials.email,
             credentials.password,
           )
-        else return loginUser(credentials.email, credentials.password)
+          return {
+            id: credentials.email,
+            ...data,
+          }
+        } else {
+          const data = await loginUser(credentials.email, credentials.password)
+          return {
+            id: credentials.email,
+            ...data,
+          }
+        }
       },
     }),
   ],
   callbacks: {
-    async jwt({
-      token,
-      user,
-    }: {
-      token: CustomJWT
-      user: User | undefined
-    }): Promise<CustomJWT> {
+    async jwt({ token, user }) {
       const expiresDuration =
         process.env.NODE_ENV === 'development'
           ? 24 * 3600 * 1000
@@ -76,9 +57,7 @@ export const authOptions: NextAuthOptions = {
 
       // refresh accessToken
       if (Date.now() >= token.expiresAt) {
-        const newAccessToken = await refreshAccessToken(
-          token.refreshToken as string,
-        )
+        const newAccessToken = await refreshAccessToken(token.refreshToken)
 
         if (newAccessToken) {
           token.accessToken = newAccessToken
@@ -87,7 +66,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       try {
-        const decoded = jwt.decode(token.accessToken as string) as CustomJWT
+        const decoded = jwt.decode(token.accessToken)
         if (decoded && decoded.email) {
           token.name = decoded.email
           token.email = decoded.email
@@ -101,13 +80,7 @@ export const authOptions: NextAuthOptions = {
 
       return token
     },
-    async session({
-      session,
-      token,
-    }: {
-      session: CustomSession
-      token: CustomJWT
-    }): Promise<CustomSession> {
+    async session({ session, token }) {
       session.accessToken = token.accessToken
       session.refreshToken = token.refreshToken
       return session
