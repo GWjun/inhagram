@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import {
   Home,
@@ -19,30 +19,39 @@ import {
   Menu,
 } from 'lucide-react'
 
+import { ItemSkeleton } from '#components/layout/sidebar-utils/itemSkeleton'
 import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
 import { useUserStore } from '#store/client/user.store'
 import { cn } from 'utils/utils'
+import { useSession } from 'next-auth/react'
 
+/* dynamic import */
 const SearchSheet = dynamic(
   () => import('#components/layout/sidebar-utils/searchSheet'),
+  {
+    loading: () => <ItemSkeleton name="검색" Icon={Search} />,
+  },
 )
-
 const AlarmSheet = dynamic(
   () => import('#components/layout/sidebar-utils/alarmSheet'),
+  {
+    loading: () => <ItemSkeleton name="알림" Icon={Heart} />,
+  },
 )
-
+const NewPost = dynamic(
+  () => import('#components/layout/common-utils/newPost'),
+  {
+    loading: () => <ItemSkeleton name="만들기" Icon={PlusSquare} />,
+  },
+)
 const ModalMenu = dynamic(
   () => import('#components/layout/sidebar-utils/modalMenu'),
   {
-    loading: () => (
-      <div className="flex items-center p-3 mb-1 hover:bg-gray-light rounded-lg w-full group">
-        <Menu className="xl:mr-4 group-hover:scale-110 transition duration-200 ease-in-out" />
-        <span className="hidden xl:inline">더 보기</span>
-      </div>
-    ),
+    loading: () => <ItemSkeleton name="더 보기" Icon={Menu} />,
   },
 )
+/* dynamic import */
 
 export default function Sidebar() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -53,16 +62,19 @@ export default function Sidebar() {
 
   const router = useRouter()
 
-  const menuItems = [
-    { name: '홈', icon: Home, path: '/' },
-    { name: '검색', icon: Search },
-    { name: '탐색 탭', icon: Compass, path: '/explore' },
-    { name: '릴스', icon: Film, path: '/reels' },
-    { name: '메시지', icon: Send, path: '/direct/inbox' },
-    { name: '알림', icon: Heart },
-    { name: '만들기', icon: PlusSquare },
-    { name: '프로필', icon: Home, path: `/${userName}` },
-  ]
+  const menuItems = useMemo(
+    () => [
+      { name: '홈', icon: Home, path: '/' },
+      { name: '검색', icon: Search },
+      { name: '탐색 탭', icon: Compass, path: '/explore' },
+      { name: '릴스', icon: Film, path: '/reels' },
+      { name: '메시지', icon: Send, path: '/direct/inbox' },
+      { name: '알림', icon: Heart },
+      { name: '만들기', icon: PlusSquare },
+      { name: '프로필', icon: Home, path: `/${userName}` },
+    ],
+    [userName],
+  )
 
   return (
     <aside
@@ -76,7 +88,7 @@ export default function Sidebar() {
         <div className="relative h-[73px] mb-6">
           <div
             className={cn(
-              'absolute w-0 h-0 xl:min-w-40 xl:min-h-40 pt-8 px-3 pb-4 opacity-0 xl:opacity-100 transition-opacity duration-500 ease-in-out',
+              'absolute w-0 xl:min-w-40 pt-8 px-3 pb-4 opacity-0 xl:opacity-100 transition-opacity duration-500 ease-in-out',
               isModalOpen && 'xl:opacity-0',
             )}
           >
@@ -104,6 +116,7 @@ export default function Sidebar() {
             </div>
           </div>
         </div>
+
         <nav>
           <ul>
             {menuItems.map((item) => {
@@ -138,25 +151,23 @@ export default function Sidebar() {
               return (
                 <li key={item.name}>
                   {item.name === '만들기' && (
-                    <Link
-                      href={item.path || ''}
-                      className={`flex items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`}
-                      onClick={() => setActiveItem(item.name)}
+                    <NewPost
+                      className={`flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`}
                     >
                       {ItemChildren}
                       {NameChildren}
-                    </Link>
+                    </NewPost>
                   )}
                   {item.name === '검색' && (
                     <SearchSheet
+                      onClick={() => setActiveItem(item.name)}
+                      setIsModalOpen={setIsModalOpen}
                       className={cn(
                         `flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`,
                         isModalOpen &&
                           activeItem === '검색' &&
                           'py-[11px] border border-gray-300 max-w-12',
                       )}
-                      onClick={() => setActiveItem(item.name)}
-                      setIsModalOpen={setIsModalOpen}
                     >
                       {ItemChildren}
                       {NameChildren}
@@ -164,14 +175,14 @@ export default function Sidebar() {
                   )}
                   {item.name === '알림' && (
                     <AlarmSheet
+                      onClick={() => setActiveItem(item.name)}
+                      setIsModalOpen={setIsModalOpen}
                       className={cn(
                         `flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`,
                         isModalOpen &&
                           activeItem === '알림' &&
                           'py-[11px] border border-gray-300 max-w-12',
                       )}
-                      onClick={() => setActiveItem(item.name)}
-                      setIsModalOpen={setIsModalOpen}
                     >
                       {ItemChildren}
                       {NameChildren}
@@ -180,8 +191,8 @@ export default function Sidebar() {
                   {item.path && (
                     <Link
                       href={item.path || ''}
-                      className={`flex items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`}
                       onClick={() => setActiveItem(item.name)}
+                      className={`flex items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`}
                     >
                       {ItemChildren}
                       {NameChildren}
