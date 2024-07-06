@@ -8,9 +8,13 @@
   <img src="https://nestjs.com/img/logo_text.svg" alt="NestJS Logo" width="120" height="80" >
 </p>
 
+## Demo
+
+[visit demo site](https://inhastagram.vercel.app)
+
 ## Project Description
 
-This project is an Instagram clone that implements the main features of Instagram. The frontend is built using Next.js and the backend is built using NestJS.
+This project is an Instagram clone that implements the main features of Instagram. The frontend is built using Next.js and the backend is built using NestJS. There are no commercial or advertising purposes, and it is for study purposes only.
 
 ## Installation and Running
 
