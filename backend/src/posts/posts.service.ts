@@ -1,19 +1,14 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { QueryRunner, Repository } from 'typeorm';
 import { PostsModel } from './entities/posts.entity';
+
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/paginate-post.dto';
+
 import { CommonService } from '../common/common.service';
-import { basename, join } from 'path';
-import { POST_IMAGE_PATH, TEMP_FOLDER_PATH } from '../common/const/path.const';
-import { promises } from 'fs';
 
 @Injectable()
 export class PostsService {
@@ -30,13 +25,22 @@ export class PostsService {
   }
 
   async paginatePosts(dto: PaginatePostDto) {
-    return this.commonService.paginate(dto, this.postsRepository, {}, 'posts');
+    return this.commonService.paginate(
+      dto,
+      this.postsRepository,
+      {
+        relations: ['author', 'images'],
+      },
+      'posts',
+    );
   }
 
-  async getPostById(postId: number) {
-    const post = await this.postsRepository.findOne({
+  async getPostById(postId: number, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+
+    const post = await repository.findOne({
       where: { id: postId },
-      relations: ['author'],
+      relations: ['author', 'images'],
     });
 
     if (!post) {
@@ -46,32 +50,26 @@ export class PostsService {
     return post;
   }
 
-  async createPostImage(dto: CreatePostDto) {
-    const tempFilePath = join(TEMP_FOLDER_PATH, dto.image);
-
-    try {
-      await promises.access(tempFilePath);
-    } catch (error) {
-      throw new BadRequestException('Not exist file');
-    }
-
-    const newPath = join(POST_IMAGE_PATH, basename(tempFilePath));
-    await promises.rename(tempFilePath, newPath);
-
-    return true;
+  getRepository(qr?: QueryRunner) {
+    return qr
+      ? qr.manager.getRepository<PostsModel>(PostsModel)
+      : this.postsRepository;
   }
 
-  async createPost(authorId: number, postDto: CreatePostDto) {
-    const post = this.postsRepository.create({
+  async createPost(authorId: number, postDto: CreatePostDto, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+
+    const post = repository.create({
       author: {
         id: authorId,
       },
       ...postDto,
       likeCount: 0,
       commentCount: 0,
+      images: [],
     });
 
-    const newPost = await this.postsRepository.save(post);
+    const newPost = await repository.save(post);
 
     return newPost;
   }
@@ -79,6 +77,7 @@ export class PostsService {
   async updatePost(postId: number, postDto: UpdatePostDto) {
     const post = await this.postsRepository.findOne({
       where: { id: postId },
+      relations: ['author', 'images'],
     });
 
     if (!post) {
