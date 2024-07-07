@@ -1,13 +1,10 @@
 import { BaseModel } from 'src/common/entity/base.entity';
 import { UsersModel } from 'src/users/entities/users.entity';
 
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { IsString } from 'class-validator';
-import { Transform } from 'class-transformer';
-
-import { join } from 'path';
-import { POST_PUBLIC_IMAGE_PATH } from '../../common/const/path.const';
+import { ImageModel } from '../../common/entity/image.entity';
 
 @Entity()
 export class PostsModel extends BaseModel {
@@ -24,13 +21,12 @@ export class PostsModel extends BaseModel {
   })
   content: string;
 
-  @Column({ nullable: true })
-  @Transform(({ value }) => value && `/${join(POST_PUBLIC_IMAGE_PATH, value)}`)
-  image?: string;
-
   @Column()
   likeCount: number;
 
   @Column()
   commentCount: number;
+
+  @OneToMany((type) => ImageModel, (image) => image.post)
+  images: ImageModel[];
 }

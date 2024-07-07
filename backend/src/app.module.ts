@@ -13,6 +13,7 @@ import { CommonModule } from './common/common.module';
 
 import { PostsModel } from './posts/entities/posts.entity';
 import { UsersModel } from './users/entities/users.entity';
+import { ImageModel } from './common/entity/image.entity';
 
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
@@ -31,7 +32,7 @@ import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
       username: process.env['DB_USERNAME'],
       password: process.env['DB_PASSWORD'],
       database: process.env['DB_DATABASE'],
-      entities: [PostsModel, UsersModel],
+      entities: [PostsModel, UsersModel, ImageModel],
       synchronize: true,
     }),
     PostsModule,

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Patch,
@@ -10,18 +11,26 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
+import { DataSource } from 'typeorm';
 import { AccessTokenGuard } from 'src/auth/guard/bearer-token.guard';
+
+import { PostsService } from './posts.service';
 
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/paginate-post.dto';
 
 import { User } from 'src/users/decorator/user.decorator';
+import { ImageModelType } from '../common/entity/image.entity';
+import { PostsImagesService } from './image/images.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+    private readonly postsImageService: PostsImagesService,
+    private readonly dataSource: DataSource,
+  ) {}
 
   @Get()
   getPosts(@Query() query: PaginatePostDto) {
@@ -36,8 +45,34 @@ export class PostsController {
   @Post()
   @UseGuards(AccessTokenGuard)
   async postPosts(@User('id') userId: number, @Body() body: CreatePostDto) {
-    await this.postsService.createPostImage(body);
-    return this.postsService.createPost(userId, body);
+    const qr = this.dataSource.createQueryRunner();
+    await qr.connect();
+    await qr.startTransaction();
+
+    try {
+      const post = await this.postsService.createPost(userId, body, qr);
+
+      for (let i = 0; i < body.images.length; i++) {
+        await this.postsImageService.createPostImage(
+          {
+            post,
+            order: i,
+            path: body.images[i],
+            type: ImageModelType.POST_IMAGE,
+          },
+          qr,
+        );
+      }
+
+      await qr.commitTransaction();
+      await qr.release();
+
+      return this.postsService.getPostById(post.id);
+    } catch (e) {
+      await qr.rollbackTransaction();
+      await qr.release();
+      throw new InternalServerErrorException('create post error');
+    }
   }
 
   @Patch(':id')
