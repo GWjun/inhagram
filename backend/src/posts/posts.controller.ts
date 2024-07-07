@@ -3,15 +3,15 @@ import {
   Controller,
   Delete,
   Get,
-  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { AccessTokenGuard } from 'src/auth/guard/bearer-token.guard';
 
 import { PostsService } from './posts.service';
@@ -23,6 +23,9 @@ import { PaginatePostDto } from './dto/paginate-post.dto';
 import { User } from 'src/users/decorator/user.decorator';
 import { ImageModelType } from '../common/entity/image.entity';
 import { PostsImagesService } from './image/images.service';
+
+import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
+import { QueryRunnerDecorator } from '../common/decorator/query-runner.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -43,36 +46,28 @@ export class PostsController {
   }
 
   @Post()
+  @UseInterceptors(TransactionInterceptor)
   @UseGuards(AccessTokenGuard)
-  async postPosts(@User('id') userId: number, @Body() body: CreatePostDto) {
-    const qr = this.dataSource.createQueryRunner();
-    await qr.connect();
-    await qr.startTransaction();
+  async postPosts(
+    @User('id') userId: number,
+    @Body() body: CreatePostDto,
+    @QueryRunnerDecorator() qr: QueryRunner,
+  ) {
+    const post = await this.postsService.createPost(userId, body, qr);
 
-    try {
-      const post = await this.postsService.createPost(userId, body, qr);
-
-      for (let i = 0; i < body.images.length; i++) {
-        await this.postsImageService.createPostImage(
-          {
-            post,
-            order: i,
-            path: body.images[i],
-            type: ImageModelType.POST_IMAGE,
-          },
-          qr,
-        );
-      }
-
-      await qr.commitTransaction();
-      await qr.release();
-
-      return this.postsService.getPostById(post.id);
-    } catch (e) {
-      await qr.rollbackTransaction();
-      await qr.release();
-      throw new InternalServerErrorException('create post error');
+    for (let i = 0; i < body.images.length; i++) {
+      await this.postsImageService.createPostImage(
+        {
+          post,
+          order: i,
+          path: body.images[i],
+          type: ImageModelType.POST_IMAGE,
+        },
+        qr,
+      );
     }
+
+    return this.postsService.getPostById(post.id, qr);
   }
 
   @Patch(':id')
