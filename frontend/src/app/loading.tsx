@@ -8,6 +8,7 @@ export default function Loading() {
         width={70}
         height={0}
         alt="loading icon"
+        priority
       />
     </div>
   )

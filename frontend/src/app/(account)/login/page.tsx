@@ -47,6 +47,7 @@ export default function LogIn() {
           width={460}
           height={0}
           alt="instagram Home Phones"
+          priority
         />
         <Slideshow
           images={[screen1, screen2, screen3, screen4]}

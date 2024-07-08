@@ -6,6 +6,6 @@ interface SidebarState {
 }
 
 export const useSidebarStore = create<SidebarState>((set) => ({
-  activeItem: '홈',
+  activeItem: '',
   setActiveItem: (item) => set({ activeItem: item }),
 }))

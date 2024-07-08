@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import {
   Sheet,
   SheetContent,
@@ -6,12 +8,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '#components/ui/sheet'
+import { useSidebarStore } from '#store/client/sidebar.store'
 
 interface SheetProps {
   children: React.ReactNode
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   className?: string
-  onClick?: () => void
 }
 
 export default function AlarmSheet({
@@ -19,9 +21,23 @@ export default function AlarmSheet({
   setIsModalOpen,
   ...props
 }: SheetProps) {
+  const [prevItem, setPrevItem] = useState('')
+
+  const { activeItem, setActiveItem } = useSidebarStore()
+
+  function handleClick() {
+    setPrevItem(activeItem)
+    setActiveItem('알림')
+  }
+
+  function handleChange(open: boolean) {
+    setIsModalOpen(open)
+    if (!open) setActiveItem(prevItem)
+  }
+
   return (
-    <Sheet onOpenChange={(open: boolean) => setIsModalOpen(open)}>
-      <SheetTrigger className={props.className} onClick={props.onClick}>
+    <Sheet onOpenChange={handleChange}>
+      <SheetTrigger className={props.className} onClick={handleClick}>
         {children}
       </SheetTrigger>
       <SheetContent side="left_on_sidebar">

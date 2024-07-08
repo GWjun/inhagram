@@ -40,6 +40,7 @@ export default function Slideshow({
           alt={`Slideshow image ${index + 1}`}
           width={250}
           height={0}
+          priority
         />
       </motion.div>
     </AnimatePresence>

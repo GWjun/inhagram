@@ -98,8 +98,9 @@ export default function SignUp() {
           </button>
           {error && (
             <p className="text-sm text-destructive mt-3">
-              {error.message === 'Already exist nickname' &&
-                '이미 존재하는 닉네임 입니다.'}
+              {error.message === 'Already exist nickname'
+                ? '이미 존재하는 닉네임 입니다.'
+                : '현재 가입할 수 없습니다.'}
             </p>
           )}
         </CardFooter>

@@ -3,11 +3,13 @@
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
+import { useMemo } from 'react'
+
 import { Home, Compass, Film, PlusSquare, User, Send } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 
 import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
-import { useUserStore } from '#store/client/user.store'
 
 const NewPost = dynamic(
   () => import('#components/layout/common-utils/newPost'),
@@ -22,16 +24,19 @@ const NewPost = dynamic(
 
 export default function Footer() {
   const { activeItem, setActiveItem } = useSidebarStore()
-  const userName = useUserStore().userName
+  const { data: session } = useSession()
 
-  const menuItems = [
-    { name: '홈', icon: Home, path: '/' },
-    { name: '탐색', icon: Compass, path: '/explore' },
-    { name: '릴스', icon: Film, path: '/reels' },
-    { name: '만들기', icon: PlusSquare },
-    { name: '메시지', icon: Send, path: '/direct/inbox' },
-    { name: '프로필', icon: User, path: `/${userName}` },
-  ]
+  const menuItems = useMemo(
+    () => [
+      { name: '홈', icon: Home, path: '/' },
+      { name: '탐색', icon: Compass, path: '/explore' },
+      { name: '릴스', icon: Film, path: '/reels' },
+      { name: '만들기', icon: PlusSquare },
+      { name: '메시지', icon: Send, path: '/direct/inbox' },
+      { name: '프로필', icon: User, path: `/${session?.user?.name}` },
+    ],
+    [session],
+  )
 
   return (
     <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300">
@@ -45,7 +50,9 @@ export default function Footer() {
                 className={`group-hover:scale-110 ${isActive ? 'text-black' : 'text-gray-500'} transition duration-200 ease-in-out`}
               />
             ) : (
-              <Avatar className="w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out">
+              <Avatar
+                className={`w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out ${isActive ? 'border-2 border-black' : ''}`}
+              >
                 <AvatarImage src="https://avatars.githubusercontent.com/u/145896782?v=4" />
               </Avatar>
             )
