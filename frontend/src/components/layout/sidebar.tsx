@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import {
   Home,
@@ -18,13 +18,12 @@ import {
   Instagram,
   Menu,
 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 
 import { ItemSkeleton } from '#components/layout/sidebar-utils/itemSkeleton'
 import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
-import { useUserStore } from '#store/client/user.store'
 import { cn } from 'utils/utils'
-import { useSession } from 'next-auth/react'
 
 /* dynamic import */
 const SearchSheet = dynamic(
@@ -58,7 +57,7 @@ export default function Sidebar() {
 
   const { activeItem, setActiveItem } = useSidebarStore()
 
-  const userName = useUserStore().userName
+  const { data: session } = useSession()
 
   const router = useRouter()
 
@@ -66,15 +65,98 @@ export default function Sidebar() {
     () => [
       { name: '홈', icon: Home, path: '/' },
       { name: '검색', icon: Search },
-      { name: '탐색 탭', icon: Compass, path: '/explore' },
+      { name: '탐색', icon: Compass, path: '/explore' },
       { name: '릴스', icon: Film, path: '/reels' },
       { name: '메시지', icon: Send, path: '/direct/inbox' },
       { name: '알림', icon: Heart },
       { name: '만들기', icon: PlusSquare },
-      { name: '프로필', icon: Home, path: `/${userName}` },
+      { name: '프로필', icon: Home, path: `/${session?.user?.name}` },
     ],
-    [userName],
+    [session],
   )
+
+  const NavItem = menuItems.map((item) => {
+    const isActive = activeItem === item.name
+
+    const ItemChildren =
+      item.name !== '프로필' ? (
+        <item.icon
+          className={cn(
+            `xl:mr-4 min-w-6 min-h-6 group-hover:scale-110 ${isActive ? 'text-black' : 'text-gray-500'} transition duration-200 ease-in-out`,
+            isModalOpen && 'xl:mr-0',
+          )}
+        />
+      ) : (
+        <Avatar
+          className={`xl:mr-4 w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out ${isActive ? 'border-2 border-black' : ''}`}
+        >
+          <AvatarImage src="https://avatars.githubusercontent.com/u/145896782?v=4" />
+        </Avatar>
+      )
+
+    const NameChildren = (
+      <span
+        className={cn(
+          'hidden xl:inline transition-all duration-500 ease-in-out',
+          isModalOpen ? 'xl:hidden' : 'xl:inline',
+          'whitespace-nowrap',
+        )}
+      >
+        {item.name}
+      </span>
+    )
+
+    return (
+      <li key={item.name}>
+        {item.name === '만들기' && (
+          <NewPost
+            className={`flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`}
+          >
+            {ItemChildren}
+            {NameChildren}
+          </NewPost>
+        )}
+        {item.name === '검색' && (
+          <SearchSheet
+            setIsModalOpen={setIsModalOpen}
+            className={cn(
+              `flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`,
+              isModalOpen &&
+                activeItem === '검색' &&
+                'py-[11px] border border-gray-300 max-w-12',
+            )}
+          >
+            {ItemChildren}
+            {NameChildren}
+          </SearchSheet>
+        )}
+        {item.name === '알림' && (
+          <AlarmSheet
+            setIsModalOpen={setIsModalOpen}
+            className={cn(
+              `flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`,
+              isModalOpen &&
+                activeItem === '알림' &&
+                'py-[11px] border border-gray-300 max-w-12',
+            )}
+          >
+            {ItemChildren}
+            {NameChildren}
+          </AlarmSheet>
+        )}
+        {item.path && (
+          <Link
+            href={item.path || ''}
+            onClick={() => setActiveItem(item.name)}
+            className={`flex items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`}
+          >
+            {ItemChildren}
+            {NameChildren}
+          </Link>
+        )}
+      </li>
+    )
+  })
 
   return (
     <aside
@@ -116,92 +198,8 @@ export default function Sidebar() {
             </div>
           </div>
         </div>
-
         <nav>
-          <ul>
-            {menuItems.map((item) => {
-              const isActive = activeItem === item.name
-
-              const ItemChildren =
-                item.name !== '프로필' ? (
-                  <item.icon
-                    className={cn(
-                      `xl:mr-4 min-w-6 min-h-6 group-hover:scale-110 ${isActive ? 'text-black' : 'text-gray-500'} transition duration-200 ease-in-out`,
-                      isModalOpen && 'xl:mr-0',
-                    )}
-                  />
-                ) : (
-                  <Avatar className="xl:mr-4 w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out">
-                    <AvatarImage src="https://avatars.githubusercontent.com/u/145896782?v=4" />
-                  </Avatar>
-                )
-
-              const NameChildren = (
-                <span
-                  className={cn(
-                    'hidden xl:inline transition-all duration-500 ease-in-out',
-                    isModalOpen ? 'xl:hidden' : 'xl:inline',
-                    'whitespace-nowrap',
-                  )}
-                >
-                  {item.name}
-                </span>
-              )
-
-              return (
-                <li key={item.name}>
-                  {item.name === '만들기' && (
-                    <NewPost
-                      className={`flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`}
-                    >
-                      {ItemChildren}
-                      {NameChildren}
-                    </NewPost>
-                  )}
-                  {item.name === '검색' && (
-                    <SearchSheet
-                      onClick={() => setActiveItem(item.name)}
-                      setIsModalOpen={setIsModalOpen}
-                      className={cn(
-                        `flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`,
-                        isModalOpen &&
-                          activeItem === '검색' &&
-                          'py-[11px] border border-gray-300 max-w-12',
-                      )}
-                    >
-                      {ItemChildren}
-                      {NameChildren}
-                    </SearchSheet>
-                  )}
-                  {item.name === '알림' && (
-                    <AlarmSheet
-                      onClick={() => setActiveItem(item.name)}
-                      setIsModalOpen={setIsModalOpen}
-                      className={cn(
-                        `flex relative w-full items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`,
-                        isModalOpen &&
-                          activeItem === '알림' &&
-                          'py-[11px] border border-gray-300 max-w-12',
-                      )}
-                    >
-                      {ItemChildren}
-                      {NameChildren}
-                    </AlarmSheet>
-                  )}
-                  {item.path && (
-                    <Link
-                      href={item.path || ''}
-                      onClick={() => setActiveItem(item.name)}
-                      className={`flex items-center p-3 my-2 hover:bg-gray-light rounded-lg group ${isActive ? 'font-bold' : ''}`}
-                    >
-                      {ItemChildren}
-                      {NameChildren}
-                    </Link>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
+          <ul>{NavItem}</ul>
         </nav>
       </div>
       <ModalMenu isModalOpen={isModalOpen} />

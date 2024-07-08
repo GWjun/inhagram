@@ -1,5 +1,4 @@
-import Footer from '#components/layout/footer'
-import Sidebar from '#components/layout/sidebar'
+import ActiveLayout from './activeLayout'
 
 export default function ProtectedLayout({
   children,
@@ -8,9 +7,8 @@ export default function ProtectedLayout({
 }) {
   return (
     <>
-      <Sidebar />
+      <ActiveLayout />
       {children}
-      <Footer />
     </>
   )
 }
