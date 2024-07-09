@@ -41,6 +41,7 @@ export default function Slideshow({
           width={250}
           height={0}
           priority
+          decoding="sync"
         />
       </motion.div>
     </AnimatePresence>

@@ -28,6 +28,8 @@ const AvatarImage = React.memo(
     <AvatarPrimitive.Image
       ref={ref}
       className={cn('aspect-square h-full w-full', className)}
+      fetchPriority="high"
+      decoding="sync"
       {...props}
     />
   )),
