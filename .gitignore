@@ -96,3 +96,7 @@ frontend/*.tsbuildinfo
 frontend/next-env.d.ts
 
 *storybook.log
+
+# PWA
+frontend/public/sw.js
+frontend/public/workbox-*.js
