@@ -1,10 +1,9 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 
 import AuthSessionProvider from '#utils/providers/AuthSessionProvider'
 import ReactQueryProvider from '#utils/providers/ReactQueryProvider'
 
 import './globals.css'
-import type { Viewport } from 'next'
 
 export const metadata: Metadata = {
   title: 'Instagram dev',
