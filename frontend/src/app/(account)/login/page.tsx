@@ -11,6 +11,7 @@ import Slideshow from '#components/feature/slidshow'
 import { Button } from '#components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '#components/ui/card'
 import { Input } from '#components/ui/input'
+import withPwaEvent from '#hooks/withPwaEvent'
 import { useGetTokenQuery } from '#store/server/auth.queries'
 
 import homePhone from '../../../../public/images/login/home-phones.png'
@@ -19,7 +20,7 @@ import screen2 from '../../../../public/images/login/screenshot2.png'
 import screen3 from '../../../../public/images/login/screenshot3.png'
 import screen4 from '../../../../public/images/login/screenshot4.png'
 
-export default function LogIn() {
+function LogIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isFormValid, setIsFormValid] = useState(false)
@@ -123,3 +124,5 @@ export default function LogIn() {
     </div>
   )
 }
+
+export default withPwaEvent(LogIn)

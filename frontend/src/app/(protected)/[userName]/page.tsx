@@ -4,8 +4,8 @@ export default function UserProfile({
   params: { userName: string }
 }) {
   return (
-    <main className="flex min-h-full justify-center items-center">
+    <section className="flex min-h-full justify-center items-center">
       {params.userName}
-    </main>
+    </section>
   )
 }

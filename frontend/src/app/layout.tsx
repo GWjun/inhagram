@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 
+import { Toaster } from '#components/ui/toaster'
 import AuthSessionProvider from '#utils/providers/AuthSessionProvider'
 import ReactQueryProvider from '#utils/providers/ReactQueryProvider'
 
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'GWjun' }],
   manifest: '/manifest.json',
   icons: [
-    { rel: 'apple-touch-icon', url: '/images/static/icon512_rounded.png' },
+    { rel: 'apple-touch-icon', url: '/images/static/icon512_maskable.png' },
     { rel: 'icon', url: '/images/static/instagram-logo-fill.svg' },
   ],
 }
@@ -35,7 +36,12 @@ export default function RootLayout({
     <html lang="ko">
       <AuthSessionProvider>
         <ReactQueryProvider>
-          <body>{children}</body>
+          <body>
+            <div>
+              {children}
+              <Toaster />
+            </div>
+          </body>
         </ReactQueryProvider>
       </AuthSessionProvider>
     </html>

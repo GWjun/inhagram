@@ -2,6 +2,8 @@
 
 import { signOut } from 'next-auth/react'
 
+import withPwaEvent from '#hooks/withPwaEvent'
+
 function Page() {
   return (
     <div className="flex min-h-full justify-center items-center">
@@ -13,4 +15,4 @@ function Page() {
   )
 }
 
-export default Page
+export default withPwaEvent(Page)
