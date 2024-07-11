@@ -1,12 +1,14 @@
 import {
   CallHandler,
   ExecutionContext,
+  Injectable,
   InternalServerErrorException,
   NestInterceptor,
 } from '@nestjs/common';
 import { catchError, Observable, tap } from 'rxjs';
 import { DataSource } from 'typeorm';
 
+@Injectable()
 export class TransactionInterceptor implements NestInterceptor {
   constructor(private readonly dataSource: DataSource) {}
 

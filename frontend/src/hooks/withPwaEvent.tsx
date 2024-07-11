@@ -1,3 +1,5 @@
+'use client'
+
 import { ComponentType, useEffect } from 'react'
 
 import { ToastAction } from '#components/ui/toast'

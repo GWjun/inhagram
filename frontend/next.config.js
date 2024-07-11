@@ -9,6 +9,9 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV !== 'development',
   },
+  images: {
+    domains: ['localhost'],
+  },
 }
 
 const withPWA = require('next-pwa')({
