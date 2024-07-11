@@ -1,4 +1,4 @@
-# Instagram Clone Project
+# Inhastagram
 
 <p align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Next.js Logo" width="120" height="80">

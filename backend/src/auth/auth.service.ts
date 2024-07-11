@@ -66,7 +66,7 @@ export class AuthService {
   async register(user: RegisterUserDto) {
     const hashValue = await bcrypt.hash(
       user.password,
-      this.configService.get('HASH_ROUNDS'),
+      parseInt(this.configService.get('HASH_ROUNDS')),
     );
 
     const newUser = await this.userService.createUser({

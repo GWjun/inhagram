@@ -28,7 +28,7 @@ export default function SignUp() {
 
   useEffect(() => {
     setIsFormValid(
-      nickname.length > 0 && email.length > 0 && password.length >= 4,
+      nickname.length > 4 && email.length > 4 && password.length >= 4,
     )
   }, [nickname, email, password])
 
@@ -98,9 +98,13 @@ export default function SignUp() {
           </button>
           {error && (
             <p className="text-sm text-destructive mt-3">
-              {error.message === 'Already exist nickname'
-                ? '이미 존재하는 닉네임 입니다.'
-                : '현재 가입할 수 없습니다.'}
+              {error.message === 'Already exist nickname' &&
+                '이미 존재하는 닉네임입니다.'}
+              {error.message === 'email must be an email' &&
+                '올바른 이메일 형식이어야 합니다.'}
+              {!['Already exist nickname', 'email must be an email'].includes(
+                error.message,
+              ) && '현재 가입할 수 없습니다.'}
             </p>
           )}
         </CardFooter>
