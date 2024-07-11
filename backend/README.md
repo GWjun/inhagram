@@ -31,7 +31,7 @@
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/GWjun/insta-clone.git
+   git clone https://github.com/GWjun/inhagram.git
    cd backend
    ```
 
@@ -47,11 +47,11 @@
    # common
    PROTOCOL=http
    HOST=localhost:8000
-   
+
    # auth
    JWT_SECRET=your-secret-key
    HASH_ROUNDS=10
-   
+
    # DB
    DB_HOST=localhost
    DB_PORT=5432

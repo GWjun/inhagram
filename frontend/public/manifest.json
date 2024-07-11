@@ -19,8 +19,8 @@
   "display": "standalone",
   "dir": "auto",
   "lang": "ko",
-  "name": "inhastagram",
-  "short_name": "inhastagram",
+  "name": "Inhagram",
+  "short_name": "Inhagram",
   "start_url": "/",
   "scope": "/",
   "splash_pages": null

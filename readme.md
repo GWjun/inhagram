@@ -1,4 +1,4 @@
-# Inhastagram
+# Inhagram
 
 <p align="center">
   <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Next.js Logo" width="120" height="80">
@@ -10,7 +10,7 @@
 
 ## Demo
 
-[visit demo site](https://inhastagram.vercel.app)
+[visit demo site](https://inhagram.vercel.app)
 
 ## Project Description
 
@@ -29,7 +29,7 @@ This project is an Instagram clone that implements the main features of Instagra
 1. Clone the repository.
 
    ```bash
-   git clone https://github.com/GWjun/insta-clone.git
+   git clone https://github.com/GWjun/inhagram.git
    cd insta-clone
    ```
 

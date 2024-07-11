@@ -1,4 +1,4 @@
-# Instagram Clone Frontend
+# Inhagram Frontend
 
 This project is a frontend clone of Instagram, built with modern web development tools and best practices.
 
@@ -14,7 +14,7 @@ This project is a frontend clone of Instagram, built with modern web development
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/GWjun/insta-clone.git
+   git clone https://github.com/GWjun/inhagram.git
    cd frontend
    ```
 
