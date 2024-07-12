@@ -159,50 +159,52 @@ export default function Sidebar() {
   })
 
   return (
-    <aside
-      className={cn(
-        'hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen bg-white border-r border-gray-300 fixed left-0 top-0 flex-col justify-between pt-2 px-3 pb-5',
-        'transition-width duration-500 ease-in-out',
-        isModalOpen && 'xl:w-[73px] 3xl:w-[73px]',
-      )}
-    >
-      <div>
-        <div className="relative h-[73px] mb-6">
-          <div
-            className={cn(
-              'absolute w-0 xl:min-w-40 pt-8 px-3 pb-4 opacity-0 xl:opacity-100 transition-opacity duration-500 ease-in-out',
-              isModalOpen && 'xl:opacity-0',
-            )}
-          >
-            <Image
-              onClick={() => {
-                setActiveItem('홈')
-                router.push('/')
-              }}
-              src="/images/static/text-icon.svg"
-              alt="instagram"
-              width={103}
-              height={32}
-            />
-          </div>
-          <div
-            className={cn(
-              'absolute w-full max-w-12 scale-100 xl:scale-0 transition duration-500 ease-in-out',
-              isModalOpen && 'xl:scale-100',
-            )}
-          >
-            <div className="mt-4 pb-[23px]">
-              <div className="p-3 my-1 group hover:bg-gray-light rounded-lg">
-                <Instagram className="mr-4 group-hover:scale-110 transition duration-300 ease-in-out" />
+    <div className="hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen">
+      <aside
+        className={cn(
+          'hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen bg-white border-r border-gray-300 left-0 top-0 flex-col justify-between pt-2 px-3 pb-5',
+          'transition-width duration-500 ease-in-out',
+          isModalOpen && 'xl:w-[73px] 3xl:w-[73px]',
+        )}
+      >
+        <div>
+          <div className="relative h-[73px] mb-6">
+            <div
+              className={cn(
+                'absolute w-0 xl:min-w-40 pt-8 px-3 pb-4 opacity-0 xl:opacity-100 transition-opacity duration-500 ease-in-out',
+                isModalOpen && 'xl:opacity-0',
+              )}
+            >
+              <Image
+                onClick={() => {
+                  setActiveItem('홈')
+                  router.push('/')
+                }}
+                src="/images/static/text-icon.svg"
+                alt="instagram"
+                width={103}
+                height={32}
+              />
+            </div>
+            <div
+              className={cn(
+                'absolute w-full max-w-12 scale-100 xl:scale-0 transition duration-500 ease-in-out',
+                isModalOpen && 'xl:scale-100',
+              )}
+            >
+              <div className="mt-4 pb-[23px]">
+                <div className="p-3 my-1 group hover:bg-gray-light rounded-lg">
+                  <Instagram className="mr-4 group-hover:scale-110 transition duration-300 ease-in-out" />
+                </div>
               </div>
             </div>
           </div>
+          <nav>
+            <ul>{NavItem}</ul>
+          </nav>
         </div>
-        <nav>
-          <ul>{NavItem}</ul>
-        </nav>
-      </div>
-      <ModalMenu isModalOpen={isModalOpen} />
-    </aside>
+        <ModalMenu isModalOpen={isModalOpen} />
+      </aside>
+    </div>
   )
 }

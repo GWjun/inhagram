@@ -7,11 +7,19 @@ import ReactQueryProvider from '#utils/providers/ReactQueryProvider'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Instagram dev',
+  title: 'Inhagram',
   description:
     'Explore the world of Instagram with this authentic clone, created by gwjun.',
   generator: 'Next.js',
-  keywords: ['inhastagram', 'instagram', 'clone', 'next14', 'nestjs', 'pwa'],
+  keywords: [
+    'Inhagram',
+    'inhastagram',
+    'instagram',
+    'clone',
+    'next14',
+    'nestjs',
+    'pwa',
+  ],
   authors: [{ name: 'GWjun' }],
   manifest: '/manifest.json',
   icons: [

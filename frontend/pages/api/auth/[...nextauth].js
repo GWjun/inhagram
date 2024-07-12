@@ -44,10 +44,7 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      const expiresDuration =
-        process.env.NODE_ENV === 'development'
-          ? 24 * 3600 * 1000
-          : parseInt(process.env.NEXT_PUBLIC_TOKEN_EXPIRE)
+      const expiresDuration = parseInt(process.env.NEXT_PUBLIC_TOKEN_EXPIRE)
 
       if (user) {
         token.accessToken = user.accessToken
@@ -56,23 +53,22 @@ export const authOptions = {
       }
 
       // refresh accessToken
+      let isRefreshed = false
       if (Date.now() >= token.expiresAt) {
         const newAccessToken = await refreshAccessToken(token.refreshToken)
 
         if (newAccessToken) {
           token.accessToken = newAccessToken
           token.expiresAt = Date.now() + expiresDuration
+          isRefreshed = true
         }
       }
 
       try {
         const decoded = jwt.decode(token.accessToken)
-        if (decoded && decoded.email) {
-          token.name = decoded.email
+        if (!isRefreshed && decoded && decoded?.name && decoded?.email) {
+          token.name = decoded.name
           token.email = decoded.email
-        } else if (process.env.NODE_ENV === 'development') {
-          token.name = 'admin'
-          token.email = 'admin'
         }
       } catch (error) {
         console.error('Failed to decode accessToken:', error)

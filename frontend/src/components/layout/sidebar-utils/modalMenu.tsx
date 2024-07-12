@@ -6,6 +6,7 @@ import {
   SquareActivity,
   Sun,
 } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 
 import {
   DropdownMenu,
@@ -62,7 +63,10 @@ export default function ModalMenu({ isModalOpen }: { isModalOpen: boolean }) {
           <span>계정 전환</span>
         </DropdownMenuItem>
         <div className="-mx-2 my-2 bg-gray-light w-[266px] h-[0.5px]" />
-        <DropdownMenuItem className="h-[50px]">
+        <DropdownMenuItem
+          className="h-[50px]"
+          onClick={() => signOut({ callbackUrl: '/login' })}
+        >
           <span>로그아웃</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

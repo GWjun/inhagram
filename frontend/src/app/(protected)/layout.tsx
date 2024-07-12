@@ -6,9 +6,9 @@ export default function ProtectedLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <div className="flex">
       <ActiveLayout />
-      {children}
-    </>
+      <main className="flex flex-col grow">{children}</main>
+    </div>
   )
 }
