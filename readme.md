@@ -57,9 +57,10 @@ This project is an Instagram clone that implements the main features of Instagra
 
    ```bash
    NEXT_PUBLIC_SERVER_URL=http://localhost:8000
-   NEXT_PUBLIC_TOKEN_EXPIRE=300000
+   NEXT_PUBLIC_SERVER_DOMAIN=localhost
+   NEXT_PUBLIC_TOKEN_EXPIRE=your-accessToken-expire-milli-second
    NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=gwjun-mooyaho
+   NEXTAUTH_SECRET=your-secret-key
    ```
 
 2. Create `.env.local` files in the `backend` directory and configure them as needed.
@@ -71,7 +72,9 @@ This project is an Instagram clone that implements the main features of Instagra
 
    # auth
    JWT_SECRET=your-secret-key
-   HASH_ROUNDS=10
+   HASH_ROUNDS=your-hash-round-value
+   ACCESS_EXPIRE=your-accessToken-expire-second
+   REFRESH_EXPIRE=your-refreshToken-expire-second
 
    # DB
    DB_HOST=localhost

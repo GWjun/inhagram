@@ -29,8 +29,7 @@ export async function loginUser(
 
   if (!response.ok) throw new Error('Login failed')
 
-  const data = (await response.json()) as AuthResponse
-  return data
+  return (await response.json()) as AuthResponse
 }
 
 export async function registerUser(

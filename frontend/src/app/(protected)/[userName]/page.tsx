@@ -1,17 +1,21 @@
 import Image from 'next/image'
 
 import { Avatar, AvatarImage } from '#components/ui/avatar'
+import PostsResponse from '#types/postsType'
 
 export default async function UserProfile({
   params,
 }: {
   params: { userName: string }
 }) {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/posts`, {
-    cache: 'no-cache',
-  })
-  const posts = await response.json()
-  const data = posts.data
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/posts?order__createdAt=DESC`,
+    {
+      cache: 'no-cache',
+    },
+  )
+  const postsRespose = (await response.json()) as PostsResponse
+  const postsData = postsRespose.data
 
   return (
     <section className="flex min-h-full justify-center items-center">
@@ -48,19 +52,24 @@ export default async function UserProfile({
           </ul>
         </header>
         <div className="flex justify-center items-center h-[53px] border-t border-t-gray-300 text-gray-600 text-xs text-center font-semibold tracking-wide" />
-        <div className="flex">
-          {data.map((it, index) => {
+        <div className="grid grid-cols-3 gap-1">
+          {postsData.map((it, index) => {
             const imageUrl = it.images[0].path
             const srcUrl = process.env.NEXT_PUBLIC_SERVER_URL + imageUrl
 
             return (
-              <Image
+              <div
                 key={index}
-                src={srcUrl}
-                width={200}
-                height={200}
-                alt="posts"
-              />
+                className="relative w-full aspect-square max-w-[307.67px]"
+              >
+                <Image
+                  src={srcUrl}
+                  alt="posts"
+                  fill
+                  sizes="(max-width: 307.67px) 100vw, 307.67px"
+                  className="object-cover"
+                />
+              </div>
             )
           })}
         </div>

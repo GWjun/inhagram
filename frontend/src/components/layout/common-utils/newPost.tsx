@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '#components/ui/dialog'
+import authFetch from '#utils/authFetch'
 
 interface NewPostProps {
   children: React.ReactNode
@@ -34,37 +35,32 @@ export default function NewPost({ children, ...props }: NewPostProps) {
     const formData = new FormData()
     if (image) formData.append('image', image)
 
-    const commonResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/common/image`,
+    const commonResponse = await authFetch<CommonImageResponse>(
+      `/common/image`,
       {
         method: 'POST',
         body: formData,
-        headers: {
-          Authorization: `Bearer ${session?.accessToken}`,
-        },
       },
+      session,
     )
-    const commonData = (await commonResponse.json()) as CommonImageResponse
-    console.log(commonData.fileName)
 
-    const postResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/posts`,
+    const postResponse = await authFetch(
+      `/posts`,
       {
         method: 'POST',
         body: JSON.stringify({
           title,
           content,
-          images: [commonData.fileName],
+          images: [commonResponse.fileName],
         }),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.accessToken}`,
         },
       },
+      session,
     )
 
-    const data = await postResponse.json()
-    console.log(data)
+    console.log(postResponse)
   }
 
   return (

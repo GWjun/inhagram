@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-import { loginUser, refreshAccessToken, registerUser } from '#utils/FetchUser'
+import { loginUser, refreshAccessToken, registerUser } from '#utils/fetchUser'
 
 export const authOptions = {
   providers: [
