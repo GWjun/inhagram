@@ -30,7 +30,9 @@ export class AuthService {
 
     return this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
-      expiresIn: isRefreshToken ? 3600 : 300, // 초 단위
+      expiresIn: isRefreshToken
+        ? parseInt(process.env['REFRESH_EXPIRE'])
+        : parseInt(process.env['ACCESS_EXPIRE']),
     });
   }
 

@@ -28,9 +28,10 @@ This project is a frontend clone of Instagram, built with modern web development
 
    ```bash
    NEXT_PUBLIC_SERVER_URL=http://localhost:8000
-   NEXT_PUBLIC_TOKEN_EXPIRE=300000
+   NEXT_PUBLIC_SERVER_DOMAIN=localhost
+   NEXT_PUBLIC_TOKEN_EXPIRE=your-accessToken-expire-milli-second
    NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=your-nextauth-secret
+   NEXTAUTH_SECRET=your-secret-key
    ```
 
 ## Usage

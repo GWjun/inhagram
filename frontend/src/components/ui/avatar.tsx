@@ -24,7 +24,7 @@ const AvatarImage = React.memo(
   React.forwardRef<
     React.ElementRef<typeof AvatarPrimitive.Image>,
     React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
-  >(async ({ className, ...props }, ref) => (
+  >(({ className, ...props }, ref) => (
     <AvatarPrimitive.Image
       ref={ref}
       className={cn('aspect-square h-full w-full', className)}
