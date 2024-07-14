@@ -14,40 +14,24 @@ export default function PostForm({
   handleSubmit,
 }: PostFromProps) {
   return (
-    <form onSubmit={handleSubmit} className="mt-4">
-      <div className="space-y-4">
-        <div>
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            제목
-          </label>
-          <input
-            id="title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목을 입력하세요"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="content"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            내용
-          </label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="내용을 입력하세요"
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
+    <form onSubmit={handleSubmit} className="h-full">
+      <div className="h-[20%] p-3 border-b border-gray-300">
+        <textarea
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="제목을 입력하세요"
+          className="w-full h-full px-3 py-2 resize-none focus:outline-none"
+        />
+      </div>
+      <div className="h-[80%] p-3">
+        <textarea
+          id="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="내용을 입력하세요"
+          className="w-full h-full px-3 py-2 resize-none focus:outline-none"
+        />
       </div>
     </form>
   )

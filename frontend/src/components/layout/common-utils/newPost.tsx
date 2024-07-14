@@ -2,12 +2,22 @@
 
 import Image from 'next/image'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import { ArrowLeft } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
 import PostForm from '#components/layout/common-utils/postForm'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '#components/ui/alert-dialog'
 import { Button } from '#components/ui/button'
 import {
   Dialog,
@@ -39,6 +49,9 @@ export default function NewPost({ children, ...props }: NewPostProps) {
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [alertOpen, setAlertOpen] = useState(false)
 
   const { data: session } = useSession()
 
@@ -112,10 +125,77 @@ export default function NewPost({ children, ...props }: NewPostProps) {
     console.log(postResponse)
   }
 
+  function handleDeletePost() {
+    setAlertOpen(false)
+    setDialogOpen(false)
+    setPage(0)
+    setImageUrls([])
+    setPreviewUrls([])
+    setTitle('')
+    setContent('')
+  }
+
+  const DeleteAlert = (
+    <AlertDialog open={alertOpen}>
+      <AlertDialogContent className="h-56 p-0 grid-rows-[auto_1fr] gap-0">
+        <AlertDialogHeader className="p-6">
+          <AlertDialogTitle className="text-center">
+            게시물을 삭제하시겠어요?
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-center">
+            지금 나가면 수정 내용이 저장되지 않습니다.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="w-full h-full sm:flex-col-reverse sm:space-x-0 sm:justify-start">
+          <AlertDialogAction
+            onClick={() => setAlertOpen(false)}
+            className="h-[50%] rounded-t-none bg-white text-black border-t border-gray-200 hover:bg-white focus-visible:ring-0 focus-visible:ring-offset-0"
+          >
+            취소
+          </AlertDialogAction>
+          <AlertDialogCancel
+            onClick={handleDeletePost}
+            className="h-[50%] mt-0 rounded-none text-destructive font-bold hover:bg-white hover:text-destructive focus-visible:ring-0 focus-visible:ring-offset-0"
+          >
+            삭제
+          </AlertDialogCancel>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+
+  useEffect(() => {
+    function handleDialogDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setAlertOpen(true)
+    }
+
+    function handleAlertDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setAlertOpen(false)
+    }
+
+    if (dialogOpen && !alertOpen)
+      window.addEventListener('keydown', handleDialogDown)
+    else if (alertOpen) window.addEventListener('keydown', handleAlertDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleDialogDown)
+      window.removeEventListener('keydown', handleAlertDown)
+    }
+  }, [dialogOpen, alertOpen])
+
   return (
-    <Dialog>
-      <DialogTrigger className={props.className}>{children}</DialogTrigger>
+    <Dialog open={dialogOpen}>
+      <DialogTrigger
+        className={props.className}
+        onClick={() => setDialogOpen(true)}
+      >
+        {children}
+      </DialogTrigger>
       <DialogContent
+        onInteractOutside={(e) => {
+          e.preventDefault()
+          setAlertOpen(true)
+        }}
         className={cn(
           'grid-rows-[auto_1fr] gap-0 w-full h-full max-w-[50vw] max-h-[55vw] lg:max-w-[855px] lg:max-h-[898px] p-0',
           page !== 0 && 'max-w-[90vw] lg:max-w-[1195px]',
@@ -191,6 +271,7 @@ export default function NewPost({ children, ...props }: NewPostProps) {
             </section>
           )}
         </div>
+        {DeleteAlert}
       </DialogContent>
     </Dialog>
   )
