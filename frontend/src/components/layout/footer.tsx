@@ -12,7 +12,7 @@ import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
 
 const NewPost = dynamic(
-  () => import('#components/layout/common-utils/newPost'),
+  () => import('#components/layout/common-utils/make-post/newPost'),
   {
     loading: () => (
       <div className="flex flex-col w-12 h-full items-center justify-center text-gray-500">

@@ -1,20 +1,10 @@
-interface PostFromProps {
-  title: string
-  setTitle: React.Dispatch<React.SetStateAction<string>>
-  content: string
-  setContent: React.Dispatch<React.SetStateAction<string>>
-  handleSubmit: () => void
-}
+import { useFormStore } from '#store/client/makepost.store'
 
-export default function PostForm({
-  title,
-  setTitle,
-  content,
-  setContent,
-  handleSubmit,
-}: PostFromProps) {
+export default function PostForm() {
+  const { title, content, setTitle, setContent } = useFormStore()
+
   return (
-    <form onSubmit={handleSubmit} className="h-full">
+    <form className="w-full h-full">
       <div className="h-[20%] p-3 border-b border-gray-300">
         <textarea
           id="title"

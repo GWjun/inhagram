@@ -39,7 +39,7 @@ const AlarmSheet = dynamic(
   },
 )
 const NewPost = dynamic(
-  () => import('#components/layout/common-utils/newPost'),
+  () => import('#components/layout/common-utils/make-post/newPost'),
   {
     loading: () => <ItemSkeleton name="만들기" Icon={PlusSquare} />,
   },
