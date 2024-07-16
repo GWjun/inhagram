@@ -5,6 +5,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
+import CheckmarkAnimation from '#components/animation/checkMark'
+import XMarkAnimation from '#components/animation/XMark'
 import PostAlert from '#components/layout/common-utils/make-post/postAlert'
 import PostContent from '#components/layout/common-utils/make-post/postContent'
 import {
@@ -38,7 +40,8 @@ export default function NewPost({ children, ...props }: NewPostProps) {
   const { previewUrls, imageUrls } = useUrlStore()
   const { title, content } = useFormStore()
 
-  const { mutate, isSuccess, isError, isPending } = usePostDataMutation(session)
+  const { mutate, isSuccess, isError, isPending, reset } =
+    usePostDataMutation(session)
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [alertOpen, setAlertOpen] = useState(false)
@@ -62,6 +65,10 @@ export default function NewPost({ children, ...props }: NewPostProps) {
     }
   }, [dialogOpen, alertOpen])
 
+  useEffect(() => {
+    if (isSuccess) resetAllStores()
+  }, [isSuccess])
+
   function handleNextPage() {
     if (page === LAST_PAGE) handleSubmit()
     else usePageStore.setState((state) => ({ page: state.page + 1 }))
@@ -76,7 +83,10 @@ export default function NewPost({ children, ...props }: NewPostProps) {
     if (previewUrls.length !== 0) {
       e.preventDefault()
       setAlertOpen(true)
-    } else setDialogOpen(false)
+    } else {
+      setDialogOpen(false)
+      reset()
+    }
   }
 
   function handleSubmit() {
@@ -85,14 +95,22 @@ export default function NewPost({ children, ...props }: NewPostProps) {
 
   const RenderContent = useCallback(() => {
     if (isPending) return <Loader2 className="h-4 w-4 animate-spin" />
-    else if (isSuccess) {
-      // resetAllStores() 초기화 작성
+    else if (isSuccess)
       return (
-        <div className="flex justify-center items-center">
-          게시물이 공유되었습니다.
+        <div className="flex flex-col justify-center items-center">
+          <CheckmarkAnimation />
+          <span className="text-lg mt-3">게시물이 공유되었습니다.</span>
         </div>
       )
-    } else if (isError) return <div>게시물을 공유하는데 실패했습니다.</div>
+    else if (isError)
+      return (
+        <div className="flex flex-col justify-center items-center">
+          <XMarkAnimation />
+          <span className="text-lg mt-3">
+            게시물을 공유하는데 실패했습니다.
+          </span>
+        </div>
+      )
     else return <PostContent />
   }, [isPending, isSuccess, isError])
 
