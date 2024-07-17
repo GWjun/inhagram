@@ -10,7 +10,7 @@ import {
 } from '#components/ui/alert-dialog'
 import { resetAllStores } from '#store/client/makepost.store'
 
-interface PostAlretProps {
+interface PostAlertProps {
   alertOpen: boolean
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>
   setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -20,7 +20,7 @@ export default function PostAlert({
   alertOpen,
   setAlertOpen,
   setDialogOpen,
-}: PostAlretProps) {
+}: PostAlertProps) {
   return (
     <AlertDialog open={alertOpen}>
       <AlertDialogContent className="w-[80vw] rounded-lg sm:w-full h-[25vh] p-0 grid-rows-[auto_1fr] gap-0">

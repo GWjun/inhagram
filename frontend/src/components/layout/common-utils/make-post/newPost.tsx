@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from '#components/ui/dialog'
 import {
+  Page,
   resetAllStores,
   useFormStore,
   usePageStore,
@@ -30,8 +31,6 @@ interface NewPostProps {
   children: React.ReactNode
   className?: string
 }
-
-const LAST_PAGE = 1
 
 export default function NewPost({ children, ...props }: NewPostProps) {
   const { data: session } = useSession()
@@ -47,45 +46,38 @@ export default function NewPost({ children, ...props }: NewPostProps) {
   const [alertOpen, setAlertOpen] = useState(false)
 
   useEffect(() => {
-    function handleDialogDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setAlertOpen(true)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape')
+        if (previewUrls.length !== 0 && !alertOpen) setAlertOpen(true)
+        else if (!alertOpen) setDialogOpen(false)
+        else setAlertOpen(false)
     }
 
-    function handleAlertDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setAlertOpen(false)
-    }
+    window.addEventListener('keydown', handleKeyDown)
 
-    if (dialogOpen && !alertOpen)
-      window.addEventListener('keydown', handleDialogDown)
-    else if (alertOpen) window.addEventListener('keydown', handleAlertDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleDialogDown)
-      window.removeEventListener('keydown', handleAlertDown)
-    }
-  }, [dialogOpen, alertOpen])
-
-  useEffect(() => {
-    if (isSuccess) resetAllStores()
-  }, [isSuccess])
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [previewUrls.length, alertOpen])
 
   function handleNextPage() {
-    if (page === LAST_PAGE) handleSubmit()
-    else usePageStore.setState((state) => ({ page: state.page + 1 }))
+    if (page === Page.Form) handleSubmit()
+    usePageStore.setState((state) => ({ page: state.page + 1 }))
   }
 
   function handlePrevPage() {
-    if (page === 0) setAlertOpen(true)
-    else usePageStore.setState((state) => ({ page: state.page - 1 }))
+    if (page === Page.Image) setAlertOpen(true)
+    else {
+      if (page === Page.Result) reset()
+      usePageStore.setState((state) => ({ page: state.page - 1 }))
+    }
   }
 
   function handleOutsidePage(e: CustomEvent) {
-    if (previewUrls.length !== 0) {
+    if (isSuccess || previewUrls.length === 0) {
+      setDialogOpen(false)
+      resetAllStores()
+    } else {
       e.preventDefault()
       setAlertOpen(true)
-    } else {
-      setDialogOpen(false)
-      reset()
     }
   }
 
@@ -93,7 +85,7 @@ export default function NewPost({ children, ...props }: NewPostProps) {
     mutate({ title, content, images: imageUrls })
   }
 
-  const RenderContent = useCallback(() => {
+  const ResultContent = useCallback(() => {
     if (isPending) return <Loader2 className="h-4 w-4 animate-spin" />
     else if (isSuccess)
       return (
@@ -111,7 +103,7 @@ export default function NewPost({ children, ...props }: NewPostProps) {
           </span>
         </div>
       )
-    else return <PostContent />
+    else return <div>error</div>
   }, [isPending, isSuccess, isError])
 
   return (
@@ -125,32 +117,37 @@ export default function NewPost({ children, ...props }: NewPostProps) {
       <DialogContent
         onInteractOutside={handleOutsidePage}
         className={cn(
-          'grid-rows-[auto_1fr] gap-0 w-full h-full max-w-[47vw] max-h-[50vh] lg:max-h-[80vh] p-0',
-          page !== 0 && 'max-w-[85vw]',
+          'grid-rows-[auto_1fr] gap-0 w-full h-full max-w-[90vw] md:max-w-[47vw] max-h-[50vh] lg:max-h-[80vh] p-0',
+          page !== Page.Image && 'md:max-w-[85vw]',
+          (isPending || isError || isSuccess) && 'md:max-w-[47vw]',
         )}
       >
         <DialogHeader className="justify-center h-11 border-b border-gray-300 space-y-0">
           <DialogTitle className="text-md text-center font-semibold">
-            새 게시물 만들기
+            {page !== Page.Result ? '새 게시물 만들기' : '공유'}
           </DialogTitle>
           <DialogDescription />
           {previewUrls.length > 0 && (
             <>
-              <ArrowLeft
-                className="absolute left-2 cursor-pointer"
-                onClick={handlePrevPage}
-              />
-              <button
-                className="absolute right-4 text-sm text-center font-semibold text-button"
-                onClick={handleNextPage}
-              >
-                {page === LAST_PAGE ? '공유하기' : '다음'}
-              </button>
+              {!isSuccess && (
+                <ArrowLeft
+                  className="absolute left-2 cursor-pointer"
+                  onClick={handlePrevPage}
+                />
+              )}
+              {page !== Page.Result && (
+                <button
+                  className="absolute right-4 text-sm text-center font-semibold text-button"
+                  onClick={handleNextPage}
+                >
+                  {page !== Page.Form ? '다음' : '공유하기'}
+                </button>
+              )}
             </>
           )}
         </DialogHeader>
 
-        <RenderContent />
+        {page !== Page.Result ? <PostContent /> : <ResultContent />}
         <PostAlert
           alertOpen={alertOpen}
           setAlertOpen={setAlertOpen}
