@@ -5,13 +5,12 @@ import { useRef } from 'react'
 import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
+import Alert from '#components/feature/alert'
 import PostForm from '#components/layout/common-utils/make-post/postForm'
 import { Button } from '#components/ui/button'
-import { usePageStore, useUrlStore } from '#store/client/makepost.store'
+import { Page, usePageStore, useUrlStore } from '#store/client/makepost.store'
 import { useUploadImageMutation } from '#store/server/post.queries'
 import { cn } from '#utils/utils'
-
-const LAST_PAGE = 1
 
 export default function PostContent() {
   const { data: session } = useSession()
@@ -19,7 +18,8 @@ export default function PostContent() {
   const page = usePageStore((state) => state.page)
   const { previewUrls, addPreviewUrls } = useUrlStore()
 
-  const { mutate, isPending } = useUploadImageMutation(session)
+  const { mutateAsync, isPending, isError, reset } =
+    useUploadImageMutation(session)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -36,11 +36,15 @@ export default function PostContent() {
     const files = event.target.files
     if (files && files.length > 0) {
       const file = files[0]
-      mutate(file)
 
-      // 예외 처리 필요
-      const previewUrl = await createPreviewUrl(file)
-      addPreviewUrls(previewUrl)
+      try {
+        await mutateAsync(file)
+
+        const previewUrl = await createPreviewUrl(file)
+        addPreviewUrls(previewUrl)
+      } catch (error) {
+        console.error('file upload fail', error)
+      }
     }
   }
 
@@ -57,7 +61,7 @@ export default function PostContent() {
           priority
           decoding="sync"
         />
-        <div className="text-xl">사진과 동영상을 여기에 끌어다 놓으세요</div>
+        <div className="text-xl p-2">사진과 동영상을 선택해 주세요.</div>
         <input
           type="file"
           ref={fileInputRef}
@@ -73,16 +77,16 @@ export default function PostContent() {
   }
 
   return (
-    <div className="flex w-full h-full">
-      <section className="flex flex-col justify-center relative items-center w-full h-full max-w-[70vw] gap-3">
+    <div className="flex w-full h-full justify-center items-center">
+      <section className="flex flex-col justify-center relative items-center w-full h-full gap-3">
         {previewUrls.length > 0 ? (
-          <div className="w-full h-full flex justify-center relative items-center bg-gray-100 rounded-b-xl">
+          <div className="min-w-[46vw] w-full h-full flex justify-center relative items-center bg-gray-100 rounded-b-xl">
             <Image
               src={previewUrls[0]}
               alt="Uploaded image"
               className={cn(
                 'object-contain rounded-b-xl',
-                page !== 0 && 'rounded-br-none',
+                page !== Page.Image && 'rounded-br-none',
               )}
               fill
             />
@@ -91,10 +95,19 @@ export default function PostContent() {
           <DefaultContent />
         )}
       </section>
-      {page === LAST_PAGE && (
+      {page === Page.Form && (
         <section className="w-full h-full max-w-[30vw] lg:max-w-[339px] border-l border-gray-300">
           <PostForm />
         </section>
+      )}
+
+      {isError && (
+        <Alert
+          isOpen={isError}
+          closeCallback={reset}
+          title="실패"
+          message="이미지 업로드에 실패했습니다."
+        />
       )}
     </div>
   )

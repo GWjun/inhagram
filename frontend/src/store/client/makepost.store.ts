@@ -1,16 +1,22 @@
 import { create } from 'zustand'
 
 // Page Store
+export enum Page {
+  Image,
+  Form,
+  Result,
+}
+
 interface PageState {
-  page: number
+  page: Page
 }
 
 interface PageActions {
-  setPage: (page: number) => void
+  setPage: (page: Page) => void
 }
 
 export const usePageStore = create<PageState & PageActions>((set) => ({
-  page: 0,
+  page: Page.Image,
   setPage: (page) => set({ page }),
 }))
 

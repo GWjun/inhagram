@@ -2,7 +2,11 @@
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -23,12 +27,24 @@
     "incremental": true,
     "baseUrl": "src",
     "paths": {
-      "#store/*": ["store/*"],
-      "#types/*": ["types/*"],
-      "#components/*": ["components/*"],
-      "#utils/*": ["utils/*"],
-      "#hooks/*": ["hooks/*"],
-      "#pages/*": ["../pages/*"],
+      "#store/*": [
+        "store/*"
+      ],
+      "#types/*": [
+        "types/*"
+      ],
+      "#components/*": [
+        "components/*"
+      ],
+      "#utils/*": [
+        "utils/*"
+      ],
+      "#hooks/*": [
+        "hooks/*"
+      ],
+      "#pages/*": [
+        "../pages/*"
+      ]
     },
     "plugins": [
       {
@@ -36,6 +52,13 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
