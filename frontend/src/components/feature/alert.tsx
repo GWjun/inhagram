@@ -32,7 +32,7 @@ export default function Alert({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogAction
-            className="h-full rounded-t-none bg-white text-black border-t border-gray-200 hover:bg-white focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="h-full w-full rounded-t-none bg-white text-black border-t border-gray-200 hover:bg-white focus-visible:ring-0 focus-visible:ring-offset-0"
             onClick={closeCallback}
           >
             확인

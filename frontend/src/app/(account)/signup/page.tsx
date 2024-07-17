@@ -5,8 +5,7 @@ import Link from 'next/link'
 
 import { useEffect, useState } from 'react'
 
-import { Loader2 } from 'lucide-react'
-
+import LoadingSpinner from '#components/animation/loadingSpinner'
 import { Button } from '#components/ui/button'
 import {
   Card,
@@ -79,11 +78,7 @@ export default function SignUp() {
           </CardContent>
           <CardContent>
             <Button type="submit" className="w-full" disabled={!isFormValid}>
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                '가입'
-              )}
+              {isPending ? <LoadingSpinner /> : '가입'}
             </Button>
           </CardContent>
         </form>

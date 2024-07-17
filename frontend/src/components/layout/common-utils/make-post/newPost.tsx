@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
 import CheckmarkAnimation from '#components/animation/checkMark'
+import LoadingSpinner from '#components/animation/loadingSpinner'
 import XMarkAnimation from '#components/animation/XMark'
 import PostAlert from '#components/layout/common-utils/make-post/postAlert'
 import PostContent from '#components/layout/common-utils/make-post/postContent'
@@ -75,6 +76,7 @@ export default function NewPost({ children, ...props }: NewPostProps) {
     if (isSuccess || previewUrls.length === 0) {
       setDialogOpen(false)
       resetAllStores()
+      reset()
     } else {
       e.preventDefault()
       setAlertOpen(true)
@@ -86,7 +88,7 @@ export default function NewPost({ children, ...props }: NewPostProps) {
   }
 
   const ResultContent = useCallback(() => {
-    if (isPending) return <Loader2 className="h-4 w-4 animate-spin" />
+    if (isPending) return <LoadingSpinner />
     else if (isSuccess)
       return (
         <div className="flex flex-col justify-center items-center">

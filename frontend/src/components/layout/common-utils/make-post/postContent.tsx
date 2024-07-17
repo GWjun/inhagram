@@ -2,9 +2,9 @@ import Image from 'next/image'
 
 import { useRef } from 'react'
 
-import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
+import LoadingSpinner from '#components/animation/loadingSpinner'
 import Alert from '#components/feature/alert'
 import PostForm from '#components/layout/common-utils/make-post/postForm'
 import { Button } from '#components/ui/button'
@@ -49,7 +49,7 @@ export default function PostContent() {
   }
 
   const DefaultContent = () => {
-    if (isPending) return <Loader2 className="h-4 w-4 animate-spin" />
+    if (isPending) return <LoadingSpinner />
 
     return (
       <>
@@ -101,14 +101,12 @@ export default function PostContent() {
         </section>
       )}
 
-      {isError && (
-        <Alert
-          isOpen={isError}
-          closeCallback={reset}
-          title="실패"
-          message="이미지 업로드에 실패했습니다."
-        />
-      )}
+      <Alert
+        isOpen={isError}
+        closeCallback={reset}
+        title="실패"
+        message="이미지 업로드에 실패했습니다."
+      />
     </div>
   )
 }

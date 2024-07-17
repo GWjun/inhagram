@@ -5,8 +5,7 @@ import Link from 'next/link'
 
 import { useEffect, useState } from 'react'
 
-import { Loader2 } from 'lucide-react'
-
+import LoadingSpinner from '#components/animation/loadingSpinner'
 import { Button } from '#components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '#components/ui/card'
 import { Input } from '#components/ui/input'
@@ -62,11 +61,7 @@ function LoginForm() {
           </CardContent>
           <CardContent>
             <Button type="submit" className="w-full" disabled={!isFormValid}>
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                '로그인'
-              )}
+              {isPending ? <LoadingSpinner /> : '로그인'}
             </Button>
           </CardContent>
         </form>

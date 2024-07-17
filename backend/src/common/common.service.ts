@@ -50,15 +50,15 @@ export class CommonService {
     if (nextUrl) {
       for (const key of Object.keys(dto)) {
         if (dto[key]) {
-          if (key !== 'where__id_more_than' && key !== 'where__id_more_than')
+          if (key !== 'where__id__more_than' && key !== 'where__id__more_than')
             nextUrl.searchParams.append(key, dto[key]);
         }
       }
 
       const key =
         dto.order__createdAt === 'ASC'
-          ? 'where__id_more_than'
-          : 'where__id_less_than';
+          ? 'where__id__more_than'
+          : 'where__id__less_than';
 
       nextUrl.searchParams.append(key, lastItem.id.toString());
     }
