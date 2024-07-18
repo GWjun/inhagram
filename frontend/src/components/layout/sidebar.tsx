@@ -162,7 +162,7 @@ export default function Sidebar() {
     <div className="hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen">
       <aside
         className={cn(
-          'hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen bg-white border-r border-gray-300 left-0 top-0 flex-col justify-between pt-2 px-3 pb-5',
+          'fixed hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen bg-white border-r border-gray-300 left-0 top-0 flex-col justify-between pt-2 px-3 pb-5',
           'transition-width duration-500 ease-in-out',
           isModalOpen && 'xl:w-[73px] 3xl:w-[73px]',
         )}

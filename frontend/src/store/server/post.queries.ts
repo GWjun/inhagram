@@ -1,8 +1,14 @@
-import { useMutation } from '@tanstack/react-query'
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { Session } from 'next-auth'
 
-import authFetch from '#utils/authFetch'
 import { useUrlStore } from '#store/client/makepost.store'
+import { Post, PostsResponse } from '#types/postsType'
+import authFetch from '#utils/authFetch'
 
 type CustomSesson = Session | null
 
@@ -16,6 +22,7 @@ interface PostData {
   images: string[]
 }
 
+// Upload Query
 async function uploadImage(image: File, session: CustomSesson) {
   const formData = new FormData()
   if (image) formData.append('image', image)
@@ -31,7 +38,6 @@ async function uploadImage(image: File, session: CustomSesson) {
 
   return commonResponse.fileName
 }
-
 export function useUploadImageMutation(session: CustomSesson) {
   const addImageUrls = useUrlStore((state) => state.addImageUrls)
 
@@ -42,6 +48,7 @@ export function useUploadImageMutation(session: CustomSesson) {
   })
 }
 
+// Post Data Query
 async function postData(data: PostData, session: CustomSesson) {
   return authFetch(
     `/posts`,
@@ -55,15 +62,50 @@ async function postData(data: PostData, session: CustomSesson) {
     session,
   )
 }
-
 export function usePostDataMutation(session: CustomSesson) {
-  // const queryClient = useQueryClient()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (data: PostData) => postData(data, session),
     gcTime: 0,
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries(['posts']) // 'posts' 쿼리를 무효화하여 데이터를 다시 가져오도록 함
-    // },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['posts'] })
+    },
+  })
+}
+
+// Get Posts Query
+async function getPosts(url: string) {
+  const response = await fetch(url, {
+    cache: 'no-cache',
+  })
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+  return (await response.json()) as Promise<PostsResponse>
+}
+export function useGetPostsQuery() {
+  return useInfiniteQuery({
+    queryKey: ['posts'],
+    queryFn: ({ pageParam }) => getPosts(pageParam),
+    initialPageParam: `${process.env.NEXT_PUBLIC_SERVER_URL}/posts?order__createdAt=DESC&take=18`,
+    getNextPageParam: (lastPage) => lastPage.next,
+    retry: 2,
+  })
+}
+
+// Get Post Query
+async function getPost(id: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${id}`,
+  )
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+  return (await response.json()) as Promise<Post>
+}
+export function useGetPostQuery(id: string) {
+  return useQuery({
+    queryKey: ['post'],
+    queryFn: () => getPost(id),
+    gcTime: 0,
   })
 }

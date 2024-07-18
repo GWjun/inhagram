@@ -27,17 +27,17 @@ interface UrlState {
 }
 
 interface UrlActions {
-  addPreviewUrls: (url: string) => void
-  addImageUrls: (url: string) => void
+  addPreviewUrls: (...urls: string[]) => void
+  addImageUrls: (...urls: string[]) => void
 }
 
 export const useUrlStore = create<UrlState & UrlActions>((set) => ({
   previewUrls: [],
   imageUrls: [],
-  addPreviewUrls: (url) =>
-    set((state) => ({ previewUrls: [...state.previewUrls, url] })),
-  addImageUrls: (url) =>
-    set((state) => ({ imageUrls: [...state.imageUrls, url] })),
+  addPreviewUrls: (...urls) =>
+    set((state) => ({ previewUrls: [...state.previewUrls, ...urls] })),
+  addImageUrls: (...urls) =>
+    set((state) => ({ imageUrls: [...state.imageUrls, ...urls] })),
 }))
 
 // Form Store

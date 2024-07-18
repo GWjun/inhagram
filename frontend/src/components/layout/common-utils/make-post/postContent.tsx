@@ -2,12 +2,19 @@ import Image from 'next/image'
 
 import { useRef } from 'react'
 
-import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
+import LoadingSpinner from '#components/animation/loadingSpinner'
 import Alert from '#components/feature/alert'
 import PostForm from '#components/layout/common-utils/make-post/postForm'
 import { Button } from '#components/ui/button'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '#components/ui/carousel'
 import { Page, usePageStore, useUrlStore } from '#store/client/makepost.store'
 import { useUploadImageMutation } from '#store/server/post.queries'
 import { cn } from '#utils/utils'
@@ -34,22 +41,27 @@ export default function PostContent() {
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files
+
     if (files && files.length > 0) {
-      const file = files[0]
+      const uploadPromises = Array.from(files).map(async (file) => {
+        try {
+          await mutateAsync(file)
+          return await createPreviewUrl(file)
+        } catch (error) {
+          console.error('file upload fail', error)
+          return null
+        }
+      })
 
-      try {
-        await mutateAsync(file)
-
-        const previewUrl = await createPreviewUrl(file)
-        addPreviewUrls(previewUrl)
-      } catch (error) {
-        console.error('file upload fail', error)
-      }
+      const newPreviewUrls = (await Promise.all(uploadPromises)).filter(
+        Boolean,
+      ) as string[]
+      addPreviewUrls(...newPreviewUrls)
     }
   }
 
   const DefaultContent = () => {
-    if (isPending) return <Loader2 className="h-4 w-4 animate-spin" />
+    if (isPending) return <LoadingSpinner />
 
     return (
       <>
@@ -67,6 +79,7 @@ export default function PostContent() {
           ref={fileInputRef}
           onChange={handleFileChange}
           accept="image/*"
+          multiple
           className="hidden"
         />
         <Button className="mt-2" onClick={() => fileInputRef.current?.click()}>
@@ -76,21 +89,32 @@ export default function PostContent() {
     )
   }
 
+  console.log(previewUrls)
   return (
     <div className="flex w-full h-full justify-center items-center">
       <section className="flex flex-col justify-center relative items-center w-full h-full gap-3">
         {previewUrls.length > 0 ? (
-          <div className="min-w-[46vw] w-full h-full flex justify-center relative items-center bg-gray-100 rounded-b-xl">
-            <Image
-              src={previewUrls[0]}
-              alt="Uploaded image"
-              className={cn(
-                'object-contain rounded-b-xl',
-                page !== Page.Image && 'rounded-br-none',
-              )}
-              fill
-            />
-          </div>
+          <Carousel className="min-w-[46vw] w-full h-full bg-gray-100 rounded-b-xl">
+            <CarouselContent className="h-full">
+              {previewUrls.map((url, index) => (
+                <CarouselItem key={index}>
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={url}
+                      alt={`Uploaded image ${index + 1}`}
+                      className={cn(
+                        'object-contain',
+                        page !== Page.Image && 'rounded-br-none',
+                      )}
+                      fill
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4 bg-black/70 text-white hover:bg-black/70 hover:text-white disabled:hidden" />
+            <CarouselNext className="right-4 bg-black/70 text-white hover:bg-black/70 hover:text-white disabled:hidden" />
+          </Carousel>
         ) : (
           <DefaultContent />
         )}
@@ -101,14 +125,12 @@ export default function PostContent() {
         </section>
       )}
 
-      {isError && (
-        <Alert
-          isOpen={isError}
-          closeCallback={reset}
-          title="실패"
-          message="이미지 업로드에 실패했습니다."
-        />
-      )}
+      <Alert
+        isOpen={isError}
+        closeCallback={reset}
+        title="실패"
+        message="이미지 업로드에 실패했습니다."
+      />
     </div>
   )
 }

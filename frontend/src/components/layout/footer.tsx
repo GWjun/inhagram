@@ -39,7 +39,7 @@ export default function Footer() {
   )
 
   return (
-    <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300">
+    <footer className="md:hidden fixed z-30 bottom-0 left-0 right-0 bg-white border-t border-gray-300">
       <nav className="flex justify-evenly items-center h-12">
         {menuItems.map((item) => {
           const isActive = activeItem === item.name
