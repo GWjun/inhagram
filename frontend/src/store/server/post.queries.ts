@@ -1,12 +1,13 @@
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
 import { Session } from 'next-auth'
 
 import { useUrlStore } from '#store/client/makepost.store'
-import PostsResponse from '#types/postsType'
+import { Post, PostsResponse } from '#types/postsType'
 import authFetch from '#utils/authFetch'
 
 type CustomSesson = Session | null
@@ -73,8 +74,8 @@ export function usePostDataMutation(session: CustomSesson) {
   })
 }
 
-// Get Data Query
-async function getData(url: string) {
+// Get Posts Query
+async function getPosts(url: string) {
   const response = await fetch(url, {
     cache: 'no-cache',
   })
@@ -85,9 +86,26 @@ async function getData(url: string) {
 export function useGetPostsQuery() {
   return useInfiniteQuery({
     queryKey: ['posts'],
-    queryFn: ({ pageParam }) => getData(pageParam),
+    queryFn: ({ pageParam }) => getPosts(pageParam),
     initialPageParam: `${process.env.NEXT_PUBLIC_SERVER_URL}/posts?order__createdAt=DESC&take=18`,
     getNextPageParam: (lastPage) => lastPage.next,
     retry: 2,
+  })
+}
+
+// Get Post Query
+async function getPost(id: string) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${id}`,
+  )
+  if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+  return (await response.json()) as Promise<Post>
+}
+export function useGetPostQuery(id: string) {
+  return useQuery({
+    queryKey: ['post'],
+    queryFn: () => getPost(id),
+    gcTime: 0,
   })
 }

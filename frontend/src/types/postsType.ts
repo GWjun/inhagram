@@ -1,4 +1,4 @@
-export interface Author {
+interface Author {
   id: number
   updateAt: string
   createdAt: string
@@ -7,7 +7,7 @@ export interface Author {
   role: string
 }
 
-export interface Image {
+interface Image {
   id: number
   updateAt: string
   createdAt: string
@@ -16,7 +16,11 @@ export interface Image {
   path: string
 }
 
-export interface Posts {
+interface Cursor {
+  after: string | null
+}
+
+export interface Post {
   id: number
   updateAt: string
   createdAt: string
@@ -26,12 +30,8 @@ export interface Posts {
   images: Image[]
 }
 
-export interface Cursor {
-  after: string | null
-}
-
-export default interface PostsResponse {
-  data: Posts[]
+export interface PostsResponse {
+  data: Post[]
   cursor: Cursor
   count: number
   next: string | null
