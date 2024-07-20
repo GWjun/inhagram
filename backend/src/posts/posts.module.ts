@@ -11,6 +11,7 @@ import { UsersModule } from 'src/users/users.module';
 import { CommonModule } from '../common/common.module';
 
 import { PostsImagesService } from './image/images.service';
+import { CloudStorageService } from '../common/cloud/cloud-storage.service';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { PostsImagesService } from './image/images.service';
     CommonModule,
   ],
   controllers: [PostsController],
-  providers: [PostsService, PostsImagesService],
+  providers: [PostsService, PostsImagesService, CloudStorageService],
 })
 export class PostsModule {}

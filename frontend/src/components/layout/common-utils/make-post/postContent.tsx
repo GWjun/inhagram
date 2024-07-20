@@ -41,21 +41,17 @@ export default function PostContent() {
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files
-
     if (files && files.length > 0) {
-      const uploadPromises = Array.from(files).map(async (file) => {
+      const newPreviewUrls = []
+      for (const file of Array.from(files))
         try {
           await mutateAsync(file)
-          return await createPreviewUrl(file)
+          const url = await createPreviewUrl(file)
+          if (url) newPreviewUrls.push(url)
         } catch (error) {
           console.error('file upload fail', error)
-          return null
         }
-      })
 
-      const newPreviewUrls = (await Promise.all(uploadPromises)).filter(
-        Boolean,
-      ) as string[]
       addPreviewUrls(...newPreviewUrls)
     }
   }
@@ -89,7 +85,6 @@ export default function PostContent() {
     )
   }
 
-  console.log(previewUrls)
   return (
     <div className="flex w-full h-full justify-center items-center">
       <section className="flex flex-col justify-center relative items-center w-full h-full gap-3">

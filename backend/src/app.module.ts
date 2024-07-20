@@ -11,7 +11,6 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
@@ -22,17 +21,12 @@ import { UsersModel } from './users/entities/users.entity';
 import { ImageModel } from './common/entity/image.entity';
 
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
 
 import { LogMiddleware } from './common/middleware/log.middleware';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env.local', isGlobal: true }),
-    ServeStaticModule.forRoot({
-      rootPath: PUBLIC_FOLDER_PATH,
-      serveRoot: '/public',
-    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env['DB_HOST'],

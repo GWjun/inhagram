@@ -56,7 +56,7 @@ This project is an Instagram clone that implements the main features of Instagra
 1. Create `.env.local` files in the `frontend` directory and configure them as needed.
 
    ```bash
-   NEXT_PUBLIC_SERVER_URL=http://localhost:8000
+   NEXT_PUBLIC_SERVER_URL=http://localhost:8080
    NEXT_PUBLIC_SERVER_DOMAIN=localhost
    NEXT_PUBLIC_TOKEN_EXPIRE=your-accessToken-expire-milli-second
    NEXTAUTH_URL=http://localhost:3000
@@ -66,9 +66,9 @@ This project is an Instagram clone that implements the main features of Instagra
 2. Create `.env.local` files in the `backend` directory and configure them as needed.
 
    ```bash
-   # common
    PROTOCOL=http
    HOST=localhost:8000
+   PORT=8080
 
    # auth
    JWT_SECRET=your-secret-key
@@ -82,6 +82,12 @@ This project is an Instagram clone that implements the main features of Instagra
    DB_USERNAME=name
    DB_PASSWORD=password
    DB_DATABASE=database
+
+   # Cloud Storage
+   PROJECT_ID=your-id
+   PRIVATE_KEY=your0key
+   CLIENT_EMAIL=your-email
+   STORAGE_BUCKET=your-bucket-name
    ```
 
 ### Running the Project
@@ -95,7 +101,7 @@ This project is an Instagram clone that implements the main features of Instagra
 3. Accessing the Application
 
 - You can access the frontend application at http://localhost:3000.
-- You can access the backend application at http://localhost:8000.
+- You can access the backend application at http://localhost:8080.
 
 ### Scripts
 

@@ -4,12 +4,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { ImageModel } from '../../common/entity/image.entity';
 import { CreatePostImageDto } from './dto/create-image.dto';
+import { CloudStorageService } from '../../common/cloud/cloud-storage.service';
 
-import { basename, join } from 'path';
-import {
-  POST_IMAGE_PATH,
-  TEMP_FOLDER_PATH,
-} from '../../common/const/path.const';
+import { join } from 'path';
+import { TEMP_FOLDER_PATH } from '../../common/const/path.const';
 import { promises } from 'fs';
 
 @Injectable()
@@ -17,6 +15,7 @@ export class PostsImagesService {
   constructor(
     @InjectRepository(ImageModel)
     private readonly imageRepository: Repository<ImageModel>,
+    private readonly cloudStorageService: CloudStorageService,
   ) {}
 
   getRepository(qr?: QueryRunner) {
@@ -33,16 +32,21 @@ export class PostsImagesService {
     try {
       await promises.access(tempFilePath);
     } catch (error) {
-      throw new BadRequestException('Not exist file');
+      throw new BadRequestException('File does not exist');
     }
 
-    const newPath = join(POST_IMAGE_PATH, basename(tempFilePath));
-    const result = await repository.save({
-      ...dto,
-    });
+    try {
+      await this.cloudStorageService.uploadFile(tempFilePath);
 
-    await promises.rename(tempFilePath, newPath);
+      const result = await repository.save({
+        ...dto,
+      });
 
-    return result;
+      await promises.unlink(tempFilePath);
+
+      return result;
+    } catch (error) {
+      throw new BadRequestException('Failed to upload image');
+    }
   }
 }

@@ -46,7 +46,6 @@ export class PostsService {
     if (!post) {
       throw new NotFoundException();
     }
-
     return post;
   }
 

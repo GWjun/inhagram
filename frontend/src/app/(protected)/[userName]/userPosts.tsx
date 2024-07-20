@@ -42,9 +42,7 @@ export default function UserPost() {
               <Link href={`/post/${post.id}`} key={post.id}>
                 <div className="relative w-full aspect-square max-w-[307.67px] group">
                   <Image
-                    src={
-                      process.env.NEXT_PUBLIC_SERVER_URL + post.images[0].path
-                    }
+                    src={post.images[0].path}
                     alt="posts"
                     fill
                     sizes="(max-width: 307.67px) 100vw, 307.67px"
