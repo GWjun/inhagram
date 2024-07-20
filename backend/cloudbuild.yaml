@@ -3,6 +3,8 @@ steps:
     args: [
       'build',
       '-t', 'gcr.io/$PROJECT_ID/backend:$COMMIT_SHA',
+      '--build-arg', 'NODE_VERSION=${_NODE_VERSION}',
+      '--build-arg', 'PORT=${_PORT}',
       '--build-arg', 'PROTOCOL=${_PROTOCOL}',
       '--build-arg', 'HOST=${_HOST}',
       '--build-arg', 'JWT_SECRET=${_JWT_SECRET}',
@@ -14,6 +16,10 @@ steps:
       '--build-arg', 'DB_USERNAME=${_DB_USERNAME}',
       '--build-arg', 'DB_PASSWORD=${_DB_PASSWORD}',
       '--build-arg', 'DB_DATABASE=${_DB_DATABASE}',
+      '--build-arg', 'PROJECT_ID=${_PROJECT_ID}',
+      '--build-arg', 'PRIVATE_KEY=${_PRIVATE_KEY}',
+      '--build-arg', 'CLIENT_EMAIL=${_CLIENT_EMAIL}',
+      '--build-arg', 'STORAGE_BUCKET=${_STORAGE_BUCKET}',
       './backend'
     ]
 
