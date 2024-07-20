@@ -1,0 +1,38 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'gcr.io/$PROJECT_ID/backend:$COMMIT_SHA',
+      '--build-arg', 'NODE_VERSION=${_NODE_VERSION}',
+      '--build-arg', 'PORT=${_PORT}',
+      '--build-arg', 'PROTOCOL=${_PROTOCOL}',
+      '--build-arg', 'HOST=${_HOST}',
+      '--build-arg', 'JWT_SECRET=${_JWT_SECRET}',
+      '--build-arg', 'HASH_ROUNDS=${_HASH_ROUNDS}',
+      '--build-arg', 'ACCESS_EXPIRE=${_ACCESS_EXPIRE}',
+      '--build-arg', 'REFRESH_EXPIRE=${_REFRESH_EXPIRE}',
+      '--build-arg', 'DB_HOST=${_DB_HOST}',
+      '--build-arg', 'DB_PORT=${_DB_PORT}',
+      '--build-arg', 'DB_USERNAME=${_DB_USERNAME}',
+      '--build-arg', 'DB_PASSWORD=${_DB_PASSWORD}',
+      '--build-arg', 'DB_DATABASE=${_DB_DATABASE}',
+      '--build-arg', 'PROJECT_ID=${_PROJECT_ID}',
+      '--build-arg', 'PRIVATE_KEY=${_PRIVATE_KEY}',
+      '--build-arg', 'CLIENT_EMAIL=${_CLIENT_EMAIL}',
+      '--build-arg', 'STORAGE_BUCKET=${_STORAGE_BUCKET}',
+      './backend'
+    ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/backend:$COMMIT_SHA']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: ['run', 'deploy', 'backend', '--image', 'gcr.io/$PROJECT_ID/backend:$COMMIT_SHA', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated']
+
+images:
+  - 'gcr.io/$PROJECT_ID/backend:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitution_option: 'ALLOW_LOOSE'

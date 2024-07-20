@@ -30,6 +30,12 @@ export class PostsService {
       this.postsRepository,
       {
         relations: ['author', 'images'],
+        order: {
+          createdAt: dto.order__createdAt,
+          images: {
+            order: 'ASC',
+          },
+        },
       },
       'posts',
     );
