@@ -47,6 +47,7 @@
    # common
    PROTOCOL=http
    HOST=localhost:8000
+   PORT=8080
    
    # auth
    JWT_SECRET=your-secret-key
@@ -60,6 +61,12 @@
    DB_USERNAME=name
    DB_PASSWORD=password
    DB_DATABASE=database
+
+   # Cloud Storage
+   PROJECT_ID=your-id
+   PRIVATE_KEY=your0key
+   CLIENT_EMAIL=your-email
+   STORAGE_BUCKET=your-bucket-name
    ```
 
 ## Usage

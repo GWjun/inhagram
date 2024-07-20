@@ -26,8 +26,9 @@ export default function PostModal({ params }: { params: { id: string } }) {
   const router = useRouter()
 
   const [dialogOpen, setDialogOpen] = useState(true)
+  const [isImageLoad, setIsImageLoad] = useState(false)
 
-  const { data, isError, isPending, refetch } = useGetPostQuery(params.id)
+  const { data, isError, refetch } = useGetPostQuery(params.id)
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -51,22 +52,20 @@ export default function PostModal({ params }: { params: { id: string } }) {
       >
         <Carousel className="w-full h-full">
           <CarouselContent className="h-full">
-            {isPending ? (
-              <LoadingSpinner />
-            ) : (
-              data?.images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <div key={index} className="relative w-full h-full">
-                    <Image
-                      src={process.env.NEXT_PUBLIC_SERVER_URL + image.path}
-                      alt={`Post image ${index + 1}`}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                </CarouselItem>
-              ))
-            )}
+            {data?.images.map((image, index) => (
+              <CarouselItem key={index}>
+                <div key={index} className="relative w-full h-full">
+                  {!isImageLoad && <LoadingSpinner variant="inset" />}
+                  <Image
+                    src={image.path}
+                    alt={`Post image ${index + 1}`}
+                    fill
+                    onLoad={() => setIsImageLoad(true)}
+                    className="object-contain"
+                  />
+                </div>
+              </CarouselItem>
+            ))}
           </CarouselContent>
           <CarouselPrevious className="left-4 md:-left-16 disabled:pointer-events-auto" />
           <CarouselNext className="right-4 md:-right-16 disabled:pointer-events-auto" />
