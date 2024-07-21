@@ -12,7 +12,7 @@ export class UsersService {
   ) {}
 
   async getAllUsers() {
-    return this.usersRepository.find();
+    return this.usersRepository.find({ select: ['nickname'] });
   }
 
   async createUser(user: Pick<UsersModel, 'nickname' | 'email' | 'password'>) {
@@ -47,5 +47,33 @@ export class UsersService {
     return this.usersRepository.findOne({
       where: { email },
     });
+  }
+
+  async getIdByNickname(nickname: string) {
+    const user = await this.usersRepository.findOne({
+      where: { nickname },
+    });
+
+    if (!user) {
+      throw new BadRequestException(
+        `User with nickname '${nickname}' not found.`,
+      );
+    }
+
+    return user.id;
+  }
+
+  async getImageUrlByNickname(nickname: string) {
+    const user = await this.usersRepository.findOne({
+      where: { nickname },
+    });
+
+    if (!user) {
+      throw new BadRequestException(
+        `User with nickname '${nickname}' not found.`,
+      );
+    }
+
+    return { path: user.image };
   }
 }

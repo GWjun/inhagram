@@ -1,5 +1,5 @@
 import { BasePaginationDto } from '../../common/dto/base-pagination.dto';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PaginatePostDto extends BasePaginationDto {
   @IsNumber()
@@ -9,4 +9,8 @@ export class PaginatePostDto extends BasePaginationDto {
   @IsNumber()
   @IsOptional()
   where__title_i_like: number;
+
+  @IsString()
+  @IsOptional()
+  where__author: string;
 }

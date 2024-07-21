@@ -1,17 +1,23 @@
 import { BadRequestException, Module } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { CommonController } from './common.controller';
-import { MulterModule } from '@nestjs/platform-express';
-import * as multer from 'multer';
-import { v4 as uuid } from 'uuid';
 
-import { extname } from 'path';
-import { TEMP_FOLDER_PATH } from './const/path.const';
+import { UsersModel } from '../users/entities/users.entity';
+
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
+
+import { CloudStorageService } from './cloud/cloud-storage.service';
+import { extname } from 'path';
+import { TEMP_FOLDER_PATH } from './const/path.const';
+import { v4 as uuid } from 'uuid';
+import * as multer from 'multer';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([UsersModel]),
     AuthModule,
     UsersModule,
     MulterModule.register({
@@ -38,7 +44,7 @@ import { UsersModule } from '../users/users.module';
     }),
   ],
   controllers: [CommonController],
-  providers: [CommonService],
+  providers: [CommonService, CloudStorageService],
   exports: [CommonService],
 })
 export class CommonModule {}

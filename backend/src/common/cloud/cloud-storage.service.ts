@@ -33,7 +33,14 @@ export class CloudStorageService {
         destination: fileName,
       });
     } catch (error) {
-      console.log(error);
+      throw new Error('cloud image error');
+    }
+  }
+
+  async deleteFile(filename: string) {
+    try {
+      await this.bucket.file(filename).delete();
+    } catch (error) {
       throw new Error('cloud image error');
     }
   }

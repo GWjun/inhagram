@@ -64,7 +64,7 @@
 
    # Cloud Storage
    PROJECT_ID=your-id
-   PRIVATE_KEY=your0key
+   PRIVATE_KEY=your-key
    CLIENT_EMAIL=your-email
    STORAGE_BUCKET=your-bucket-name
    ```

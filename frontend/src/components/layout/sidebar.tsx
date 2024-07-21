@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import {
   Home,
@@ -23,6 +23,7 @@ import { useSession } from 'next-auth/react'
 import { ItemSkeleton } from '#components/layout/sidebar-utils/itemSkeleton'
 import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
+import { useUserImageStore } from '#store/client/user.store'
 import { cn } from 'utils/utils'
 
 /* dynamic import */
@@ -56,10 +57,16 @@ export default function Sidebar() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const { activeItem, setActiveItem } = useSidebarStore()
+  const { imageUrl, initializeUserImage } = useUserImageStore()
 
   const { data: session } = useSession()
 
   const router = useRouter()
+
+  useEffect(() => {
+    if (!imageUrl && session?.user?.name)
+      initializeUserImage(session?.user?.name)
+  }, [imageUrl, initializeUserImage, session?.user?.name])
 
   const menuItems = useMemo(
     () => [
@@ -90,7 +97,10 @@ export default function Sidebar() {
         <Avatar
           className={`xl:mr-4 w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out ${isActive ? 'border-2 border-black' : ''}`}
         >
-          <AvatarImage src="https://avatars.githubusercontent.com/u/145896782?v=4" />
+          <AvatarImage
+            src={imageUrl || 'images/avatar-default.jpg'}
+            className="object-cover"
+          />
         </Avatar>
       )
 
