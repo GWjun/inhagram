@@ -11,10 +11,14 @@ import {
 import { BaseModel } from './entity/base.entity';
 import { FILTER_MAPPER } from './const/filter-mapper.const';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class CommonService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
+  ) {}
 
   paginate<T extends BaseModel>(
     dto: BasePaginationDto,
@@ -31,7 +35,7 @@ export class CommonService {
     overrideFindOptions: FindManyOptions<T> = {},
     path: string,
   ) {
-    const findOptions = this.composeFindOptions<T>(dto);
+    const findOptions = await this.composeFindOptions<T>(dto);
 
     const results = await repository.find({
       ...findOptions,
@@ -71,9 +75,9 @@ export class CommonService {
     };
   }
 
-  private composeFindOptions<T extends BaseModel>(
+  private async composeFindOptions<T extends BaseModel>(
     dto: BasePaginationDto,
-  ): FindManyOptions<T> {
+  ): Promise<FindManyOptions<T>> {
     let where: FindOptionsWhere<T> = {};
     let order: FindOptionsOrder<T> = {};
 
@@ -81,12 +85,12 @@ export class CommonService {
       if (key.startsWith('where__')) {
         where = {
           ...where,
-          ...this.parseWhereFilter(key, value),
+          ...(await this.parseWhereFilter(key, value)),
         };
       } else if (key.startsWith('order__')) {
         order = {
           ...order,
-          ...this.parseWhereFilter(key, value),
+          ...(await this.parseWhereFilter(key, value)),
         };
       }
     }
@@ -98,10 +102,10 @@ export class CommonService {
     };
   }
 
-  private parseWhereFilter<T extends BaseModel>(
+  private async parseWhereFilter<T extends BaseModel>(
     key: string,
     value: any,
-  ): FindOptionsWhere<T> | FindOptionsOrder<T> {
+  ): Promise<FindOptionsWhere<T> | FindOptionsOrder<T>> {
     const options: FindOptionsWhere<T> = {};
 
     const split = key.split('__');
@@ -111,7 +115,11 @@ export class CommonService {
 
     if (split.length === 2) {
       const [_, field] = split;
-      options[field] = value;
+
+      if (field === 'author') {
+        const userId = await this.usersService.getIdByNickname(value);
+        options[field] = { id: userId };
+      } else options[field] = value;
     } else {
       const [_, field, operator] = split;
 

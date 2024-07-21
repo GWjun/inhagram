@@ -1,12 +1,18 @@
+import NotExist from '#components/layout/notexist'
 import { Avatar, AvatarImage } from '#components/ui/avatar'
 
 import UserPosts from './userPosts'
 
-export default function UserProfile({
-  params,
+export default async function UserProfile({
+  params: { userName },
 }: {
   params: { userName: string }
 }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/users/${userName}`,
+  )
+  if (!response.ok) return <NotExist />
+
   return (
     <section className="flex min-h-full justify-center items-center">
       <div className="grow max-w-[975px] h-full px-5 pt-[30px]">
@@ -19,7 +25,7 @@ export default function UserProfile({
             </div>
             <div className="flex flex-col">
               <div className="flex items-center h-[48.5px] mb-5">
-                <div className="text-xl">{params.userName}</div>
+                <div className="text-xl">{userName}</div>
               </div>
               <ul className="flex gap-10 mb-[22.5px]">
                 <li>
@@ -44,7 +50,7 @@ export default function UserProfile({
 
         <div className="flex justify-center items-center h-[53px] border-t border-t-gray-300 text-gray-600 text-xs text-center font-semibold tracking-wide" />
 
-        <UserPosts />
+        <UserPosts userName={userName} />
       </div>
     </section>
   )

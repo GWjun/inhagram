@@ -83,11 +83,15 @@ async function getPosts(url: string) {
 
   return (await response.json()) as Promise<PostsResponse>
 }
-export function useGetPostsQuery() {
+export function useGetPostsQuery(nickname?: string) {
+  const baseParam = `${process.env.NEXT_PUBLIC_SERVER_URL}/posts?order__createdAt=DESC&take=18`
+
   return useInfiniteQuery({
-    queryKey: ['posts'],
+    queryKey: ['posts', nickname],
     queryFn: ({ pageParam }) => getPosts(pageParam),
-    initialPageParam: `${process.env.NEXT_PUBLIC_SERVER_URL}/posts?order__createdAt=DESC&take=18`,
+    initialPageParam: nickname
+      ? baseParam + `&where__author=${encodeURIComponent(nickname)}`
+      : baseParam,
     getNextPageParam: (lastPage) => lastPage.next,
     retry: 2,
   })
