@@ -10,10 +10,15 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
-  @Get(':nickname')
-  async getPost(@Param('nickname') nickname: string) {
+  @Get(':nickname/id')
+  async getUserId(@Param('nickname') nickname: string) {
     const userId = await this.usersService.getIdByNickname(nickname);
 
     if (userId) return true;
+  }
+
+  @Get(':nickname/image')
+  async getUserImage(@Param('nickname') nickname: string) {
+    return await this.usersService.getImageUrlByNickname(nickname);
   }
 }

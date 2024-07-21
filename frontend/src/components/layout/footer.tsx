@@ -3,13 +3,14 @@
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { Home, Compass, Film, PlusSquare, User, Send } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
 import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
+import { useUserImageStore } from '#store/client/user.store'
 
 const NewPost = dynamic(
   () => import('#components/layout/common-utils/make-post/newPost'),
@@ -24,7 +25,14 @@ const NewPost = dynamic(
 
 export default function Footer() {
   const { activeItem, setActiveItem } = useSidebarStore()
+  const { imageUrl, initializeUserImage } = useUserImageStore()
+
   const { data: session } = useSession()
+
+  useEffect(() => {
+    if (!imageUrl && session?.user?.name)
+      initializeUserImage(session?.user?.name)
+  }, [imageUrl, initializeUserImage, session?.user?.name])
 
   const menuItems = useMemo(
     () => [
@@ -53,7 +61,10 @@ export default function Footer() {
               <Avatar
                 className={`w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out ${isActive ? 'border-2 border-black' : ''}`}
               >
-                <AvatarImage src="https://avatars.githubusercontent.com/u/145896782?v=4" />
+                <AvatarImage
+                  src={imageUrl || 'images/avatar-default.jpg'}
+                  className="object-cover"
+                />
               </Avatar>
             )
 

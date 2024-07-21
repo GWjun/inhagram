@@ -17,7 +17,7 @@ function Page() {
   useEffect(() => {
     async function getUsers() {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/users/`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/users`,
       )
       if (!response.ok) return <NotExist />
 

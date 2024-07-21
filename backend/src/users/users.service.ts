@@ -62,4 +62,18 @@ export class UsersService {
 
     return user.id;
   }
+
+  async getImageUrlByNickname(nickname: string) {
+    const user = await this.usersRepository.findOne({
+      where: { nickname },
+    });
+
+    if (!user) {
+      throw new BadRequestException(
+        `User with nickname '${nickname}' not found.`,
+      );
+    }
+
+    return { path: user.image };
+  }
 }

@@ -9,15 +9,23 @@ import {
   Repository,
 } from 'typeorm';
 import { BaseModel } from './entity/base.entity';
-import { FILTER_MAPPER } from './const/filter-mapper.const';
+import { UsersModel } from '../users/entities/users.entity';
+
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
+
+import { CloudStorageService } from './cloud/cloud-storage.service';
+import { FILTER_MAPPER } from './const/filter-mapper.const';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class CommonService {
   constructor(
+    @InjectRepository(UsersModel)
+    private readonly usersRepository: Repository<UsersModel>,
     private readonly configService: ConfigService,
     private readonly usersService: UsersService,
+    private readonly cloudStorageService: CloudStorageService,
   ) {}
 
   paginate<T extends BaseModel>(
@@ -129,5 +137,21 @@ export class CommonService {
     }
 
     return options;
+  }
+  async uploadUserImage(userId: number, path: string, filename: string) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (user && user.image) {
+      const oldFilename = user.image.split('/').pop();
+      if (oldFilename) await this.cloudStorageService.deleteFile(oldFilename);
+    }
+
+    await this.cloudStorageService.uploadFile(path);
+
+    const cloudImagePath = `https://storage.googleapis.com/${this.configService.get('STORAGE_BUCKET')}/${filename}`;
+    await this.usersRepository.update(userId, { image: cloudImagePath });
+
+    return {
+      path: cloudImagePath,
+    };
   }
 }
