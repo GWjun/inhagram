@@ -20,8 +20,9 @@ import {
 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
+import ImageWithLoad from '#components/feature/imageWithLoad'
 import { ItemSkeleton } from '#components/layout/sidebar-utils/itemSkeleton'
-import { Avatar, AvatarImage } from '#components/ui/avatar'
+import { Avatar } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
 import { useUserImageStore } from '#store/client/user.store'
 import { cn } from 'utils/utils'
@@ -68,6 +69,11 @@ export default function Sidebar() {
       initializeUserImage(session?.user?.name)
   }, [imageUrl, initializeUserImage, session?.user?.name])
 
+  function handleClickHome() {
+    setActiveItem('홈')
+    router.push('/')
+  }
+
   const menuItems = useMemo(
     () => [
       { name: '홈', icon: Home, path: '/' },
@@ -97,9 +103,11 @@ export default function Sidebar() {
         <Avatar
           className={`xl:mr-4 w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out ${isActive ? 'border-2 border-black' : ''}`}
         >
-          <AvatarImage
-            src={imageUrl || 'images/avatar-default.jpg'}
+          <ImageWithLoad
+            src={imageUrl || '/images/avatar-default.jpg'}
             className="object-cover"
+            alt="avatar iamge"
+            fill
           />
         </Avatar>
       )
@@ -186,10 +194,7 @@ export default function Sidebar() {
               )}
             >
               <Image
-                onClick={() => {
-                  setActiveItem('홈')
-                  router.push('/')
-                }}
+                onClick={handleClickHome}
                 src="/images/static/text-icon.svg"
                 alt="instagram"
                 width={103}
@@ -203,7 +208,15 @@ export default function Sidebar() {
               )}
             >
               <div className="mt-4 pb-[23px]">
-                <div className="p-3 my-1 group hover:bg-gray-light rounded-lg">
+                <div
+                  className="p-3 my-1 group hover:bg-gray-light rounded-lg"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') handleClickHome()
+                  }}
+                  onClick={handleClickHome}
+                >
                   <Instagram className="mr-4 group-hover:scale-110 transition duration-300 ease-in-out" />
                 </div>
               </div>

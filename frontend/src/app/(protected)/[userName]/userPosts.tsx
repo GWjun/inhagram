@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { Fragment, useCallback } from 'react'
@@ -10,6 +9,7 @@ import { useInView } from 'react-intersection-observer'
 
 import LoadingSpinner from '#components/animation/loadingSpinner'
 import Alert from '#components/feature/alert'
+import ImageWithLoad from '#components/feature/imageWithLoad'
 import { useGetPostsQuery } from '#store/server/post.queries'
 
 export default function UserPost({ userName }: { userName: string }) {
@@ -42,7 +42,7 @@ export default function UserPost({ userName }: { userName: string }) {
               {page.data.map((post) => (
                 <Link href={`/post/${post.id}`} key={post.id}>
                   <div className="relative w-full aspect-square max-w-[307.67px] group">
-                    <Image
+                    <ImageWithLoad
                       src={post.images[0].path}
                       alt="posts"
                       fill

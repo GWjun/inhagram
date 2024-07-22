@@ -12,7 +12,7 @@ export class UsersService {
   ) {}
 
   async getAllUsers() {
-    return this.usersRepository.find({ select: ['nickname'] });
+    return this.usersRepository.find({ select: ['nickname', 'image'] });
   }
 
   async createUser(user: Pick<UsersModel, 'nickname' | 'email' | 'password'>) {

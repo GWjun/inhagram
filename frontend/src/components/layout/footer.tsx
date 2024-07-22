@@ -8,7 +8,8 @@ import { useEffect, useMemo } from 'react'
 import { Home, Compass, Film, PlusSquare, User, Send } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
-import { Avatar, AvatarImage } from '#components/ui/avatar'
+import ImageWithLoad from '#components/feature/imageWithLoad'
+import { Avatar } from '#components/ui/avatar'
 import { useSidebarStore } from '#store/client/sidebar.store'
 import { useUserImageStore } from '#store/client/user.store'
 
@@ -61,9 +62,11 @@ export default function Footer() {
               <Avatar
                 className={`w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out ${isActive ? 'border-2 border-black' : ''}`}
               >
-                <AvatarImage
-                  src={imageUrl || 'images/avatar-default.jpg'}
+                <ImageWithLoad
+                  src={imageUrl || '/images/avatar-default.jpg'}
                   className="object-cover"
+                  alt="avatar iamge"
+                  fill
                 />
               </Avatar>
             )

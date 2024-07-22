@@ -85,7 +85,7 @@ This project is an Instagram clone that implements the main features of Instagra
 
    # Cloud Storage
    PROJECT_ID=your-id
-   PRIVATE_KEY=your0key
+   PRIVATE_KEY=your-key
    CLIENT_EMAIL=your-email
    STORAGE_BUCKET=your-bucket-name
    ```
