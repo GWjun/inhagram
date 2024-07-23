@@ -30,9 +30,31 @@ export default async function UserProfile({
     userImageUrl = (await response.json()) as UserImageResponse
   }
 
+  const MobileComponent = () => (
+    <>
+      <div className="flex md:hidden w-full h-[18px] px-5 mb-5">
+        <span className="text-sm font-semibold">{userName}</span>
+      </div>
+      <ul className="flex md:hidden w-full justify-around gap-10 py-3 border-t border-t-gray-300">
+        <li className="flex flex-col items-center">
+          <span className="text-sm text-gray -mb-1">게시물</span>
+          <span className="text-sm font-semibold">0</span>
+        </li>
+        <li className="flex flex-col items-center">
+          <span className="text-sm text-gray -mb-1">팔로워</span>
+          <span className="text-sm font-semibold">0</span>
+        </li>
+        <li className="flex flex-col items-center">
+          <span className="text-sm text-gray -mb-1">팔로우</span>
+          <span className="text-sm font-semibold">0</span>
+        </li>
+      </ul>
+    </>
+  )
+
   return (
-    <section className="flex min-h-full justify-center items-center">
-      <div className="grow max-w-[975px] h-full px-5 pt-[30px]">
+    <section className="flex flex-col min-h-full justify-center items-center">
+      <div className="grow max-w-[975px] w-full px-5 pt-[30px]">
         <header className="w-full">
           <div className="flex w-full h-[150px] md:mb-11">
             <div className="flex relative items-center justify-center md:w-[283px] mr-7">
@@ -78,30 +100,14 @@ export default async function UserProfile({
               </div>
             </div>
           </div>
-          <div className="flex md:hidden h-[18px] mb-5">
-            <span className="text-sm font-semibold">{userName}</span>
-          </div>
-          <ul className="flex md:hidden justify-around gap-10 py-3 border-t border-t-gray-300">
-            <li className="flex flex-col items-center">
-              <span className="text-sm text-gray -mb-1">게시물</span>
-              <span className="text-sm font-semibold">0</span>
-            </li>
-            <li className="flex flex-col items-center">
-              <span className="text-sm text-gray -mb-1">팔로워</span>
-              <span className="text-sm font-semibold">0</span>
-            </li>
-            <li className="flex flex-col items-center">
-              <span className="text-sm text-gray -mb-1">팔로우</span>
-              <span className="text-sm font-semibold">0</span>
-            </li>
-          </ul>
           {/* <ul className="flex items-center w-full h-[130px] pl-12 mb-11"> */}
           {/*  <li className="w-[125px] h-full p-5">스토리</li> */}
           {/* </ul> */}
         </header>
-
-        <div className="flex justify-center items-center h-[53px] border-t border-t-gray-300 text-gray-600 text-xs text-center font-semibold tracking-wide" />
-
+      </div>
+      <div className="w-full h-full max-w-[975px] md:px-5">
+        <MobileComponent />
+        <div className="flex justify-center items-center w-full h-[53px] border-t border-t-gray-300 text-gray-600 text-xs text-center font-semibold tracking-wide" />
         <UserPosts userName={userName} />
       </div>
     </section>

@@ -89,7 +89,7 @@ export default function PostContent() {
     <div className="flex w-full h-full justify-center items-center">
       <section className="flex flex-col justify-center relative items-center w-full h-full gap-3">
         {previewUrls.length > 0 ? (
-          <Carousel className="min-w-[46vw] w-full h-full bg-gray-100 rounded-b-xl">
+          <Carousel className="xl:min-w-[868px] w-full h-full bg-gray-100 rounded-b-xl">
             <CarouselContent className="h-full">
               {previewUrls.map((url, index) => (
                 <CarouselItem key={index}>

@@ -23,7 +23,7 @@ export default function PostAlert({
 }: PostAlertProps) {
   return (
     <AlertDialog open={alertOpen}>
-      <AlertDialogContent className="w-[80vw] rounded-lg sm:w-full h-[25vh] p-0 grid-rows-[auto_1fr] gap-0">
+      <AlertDialogContent className="w-[90vw] max-w-[400px] h-[200px] rounded-lg p-0 grid-rows-[auto_1fr] gap-0">
         <AlertDialogHeader className="p-6">
           <AlertDialogTitle className="text-center">
             게시물을 삭제하시겠어요?
