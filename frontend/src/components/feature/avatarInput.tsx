@@ -4,7 +4,7 @@ import { useRef } from 'react'
 
 import { useSession } from 'next-auth/react'
 
-import { AvatarImage } from '#components/ui/avatar'
+import ImageWithLoad from '#components/feature/imageWithLoad'
 import { UserImageResponse, useUserImageStore } from '#store/client/user.store'
 import authFetch from '#utils/authFetch'
 
@@ -46,9 +46,11 @@ export default function AvatarInput() {
 
   return (
     <>
-      <AvatarImage
-        src={imageUrl || 'images/avatar-default.jpg'}
+      <ImageWithLoad
+        src={imageUrl || '/images/avatar-default.jpg'}
         className="object-cover"
+        alt="avatar image"
+        fill
       />
       <div
         className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black bg-opacity-50 rounded-full cursor-pointer"
