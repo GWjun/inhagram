@@ -32,7 +32,14 @@ export class ChatsMessagesService {
         this.messagesRepository,
         {
           where: { chat: { id: chatId } },
-          relations: { author: true, chat: true },
+          relations: { author: true },
+          select: {
+            author: {
+              id: true,
+              nickname: true,
+              image: true,
+            },
+          },
         },
         'messages',
       );

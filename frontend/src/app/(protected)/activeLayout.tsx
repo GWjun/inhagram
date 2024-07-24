@@ -20,7 +20,7 @@ export default function ActiveLayout() {
 
     if (pathname === '/explore') activeItem = '탐색'
     else if (pathname === '/reels') activeItem = '릴스'
-    else if (pathname === '/direct/inbox') activeItem = '메시지'
+    else if (pathname?.startsWith('/direct')) activeItem = '메시지'
     else if (pathname === '/' + session?.user?.name) activeItem = '프로필'
 
     setActiveItem(activeItem)

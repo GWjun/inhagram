@@ -41,14 +41,14 @@ export default function Footer() {
       { name: '탐색', icon: Compass, path: '/explore' },
       { name: '릴스', icon: Film, path: '/reels' },
       { name: '만들기', icon: PlusSquare },
-      { name: '메시지', icon: Send, path: '/direct/inbox' },
+      { name: '메시지', icon: Send, path: '/direct' },
       { name: '프로필', icon: User, path: `/${session?.user?.name}` },
     ],
     [session],
   )
 
   return (
-    <footer className="md:hidden fixed z-30 bottom-0 left-0 right-0 bg-white border-t border-gray-300">
+    <footer className="md:hidden fixed z-50 bottom-0 left-0 right-0 bg-white border-t border-gray-300">
       <nav className="flex justify-evenly items-center h-12">
         {menuItems.map((item) => {
           const isActive = activeItem === item.name

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { ChatsModel } from './entity/chats.entity';
 import { UsersModel } from '../users/entities/users.entity';
 
@@ -25,10 +25,17 @@ export class ChatsService {
       dto,
       this.chatsRepository,
       {
-        where: { id: In(chatIds) },
+        where: { id: In(chatIds), users: { id: Not(userId) } },
         relations: { users: true },
+        select: {
+          users: {
+            id: true,
+            nickname: true,
+            image: true,
+          },
+        },
       },
-      'chats ',
+      'chats',
     );
   }
 
