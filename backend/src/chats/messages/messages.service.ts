@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagesModel } from './entity/messages.entity';
-import { FindManyOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+
 import { CommonService } from '../../common/common.service';
+import { ChatsService } from '../chats.service';
+
 import { BasePaginationDto } from '../../common/dto/base-pagination.dto';
 import { CreateMessagesDto } from './dto/create-messages.dto';
 
@@ -11,25 +14,37 @@ export class ChatsMessagesService {
   constructor(
     @InjectRepository(MessagesModel)
     private readonly messagesRepository: Repository<MessagesModel>,
+    private readonly chatsService: ChatsService,
     private readonly commonService: CommonService,
   ) {}
 
-  paginateMessages(
+  async paginateMessages(
     dto: BasePaginationDto,
-    overrideFindOptions: FindManyOptions<MessagesModel>,
+    userId: number,
+    chatId: number,
   ) {
-    return this.commonService.paginate(
-      dto,
-      this.messagesRepository,
-      overrideFindOptions,
-      'messages',
-    );
+    const chatIds = await this.chatsService.getChatIdsByUserId(userId);
+    const isExist = chatIds.includes(chatId);
+
+    if (isExist) {
+      return this.commonService.paginate(
+        dto,
+        this.messagesRepository,
+        {
+          where: { chat: { id: chatId } },
+          relations: { author: true, chat: true },
+        },
+        'messages',
+      );
+    } else {
+      throw new UnauthorizedException('CHAT_NOT_FOUND');
+    }
   }
 
-  async createMessage(dto: CreateMessagesDto) {
+  async createMessage(dto: CreateMessagesDto, authorId: number) {
     const message = await this.messagesRepository.save({
       chat: { id: dto.chatId },
-      author: { id: dto.authorId },
+      author: { id: authorId },
       message: dto.message,
     });
 
