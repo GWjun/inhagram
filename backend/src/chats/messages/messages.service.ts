@@ -41,7 +41,7 @@ export class ChatsMessagesService {
             },
           },
         },
-        'messages',
+        `chats/${chatId}/messages`,
       );
     } else {
       throw new UnauthorizedException('CHAT_NOT_FOUND');

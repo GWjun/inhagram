@@ -119,6 +119,7 @@ export default function Sidebar() {
             className="object-cover"
             alt="avatar iamge"
             fill
+            sizes="(max-width: 640px) 3rem, (max-width: 768px) 4rem, 6rem"
           />
         </Avatar>
       )

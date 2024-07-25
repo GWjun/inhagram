@@ -60,6 +60,7 @@ export default function PostModal({ params }: { params: { id: string } }) {
                     src={image.path}
                     alt={`Post image ${index + 1}`}
                     fill
+                    sizes="(max-width: 768px) 90vw, (max-width: 1024px) 70vw, 60vw"
                     onLoad={() => setIsImageLoad(true)}
                     className="object-contain"
                   />

@@ -6,7 +6,7 @@ export default function Loading() {
       <Image
         src="images/static/instagram-logo-outline.svg"
         width={70}
-        height={0}
+        height={70}
         alt="loading icon"
         priority
       />

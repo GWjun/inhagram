@@ -39,7 +39,6 @@ export default async function Page() {
                   height={40}
                   className="object-cover rounded-full"
                   loading="eager"
-                  priority
                 />
               </Avatar>
               {user.nickname}

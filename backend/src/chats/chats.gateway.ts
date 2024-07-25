@@ -52,10 +52,18 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(socket: Socket & { user: UsersModel }) {
     console.log(`on connect called : ${socket.id}`);
 
-    const headers = socket.handshake.headers;
-    const rawToken = headers['authorization'];
+    const authToken = socket.handshake.auth;
+    const headerToken = socket.handshake.headers['authorization'];
 
-    if (!rawToken) socket.disconnect();
+    let rawToken: string;
+    if (!authToken.token && !headerToken) {
+      socket.disconnect();
+      return;
+    } else if (authToken.token) {
+      rawToken = authToken.token;
+    } else {
+      rawToken = headerToken;
+    }
 
     try {
       const token = this.authService.extractToken(rawToken, true);
@@ -65,8 +73,10 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       socket.user = user;
 
+      socket.emit('setup_complete');
       return true;
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       socket.disconnect();
     }
   }
@@ -112,9 +122,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         dto,
         socket.user.id,
       );
-      socket
-        .to(message.chat.id.toString())
-        .emit('receive_message', message.message);
+      this.server.to(message.chat.id.toString()).emit('message_received');
     } else {
       throw new WsException({
         code: 'CHAT_NOT_FOUND',
