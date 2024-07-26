@@ -47,7 +47,7 @@ export default function AvatarInput() {
   return (
     <>
       <ImageWithLoad
-        src={imageUrl || '/images/avatar-default.jpg'}
+        src={imageUrl || '/images/assets/avatar-default.jpg'}
         className="object-cover"
         alt="avatar image"
         fill

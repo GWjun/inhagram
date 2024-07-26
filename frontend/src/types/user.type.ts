@@ -7,3 +7,5 @@ export default interface UserType {
   image: string | null
   role: string
 }
+
+export type BasicUser = Pick<UserType, 'id' | 'nickname' | 'image'>

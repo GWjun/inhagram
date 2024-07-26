@@ -1,13 +1,11 @@
 import PaginationType from '#types/pagination.type'
-import UserType from '#types/user.type'
-
-type User = Pick<UserType, 'id' | 'nickname' | 'image'>
+import { BasicUser } from '#types/user.type'
 
 interface ChatRoom {
   id: number
   updateAt: string
   createdAt: string
-  users: User[]
+  users: BasicUser[]
 }
 
 export interface ChatsResponse extends PaginationType {
@@ -19,7 +17,7 @@ interface Message {
   updateAt: string
   createdAt: string
   message: string
-  author: User
+  author: BasicUser
 }
 
 export interface MessagesResponse extends PaginationType {

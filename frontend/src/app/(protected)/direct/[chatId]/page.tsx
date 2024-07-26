@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 import { Fragment, useCallback, useEffect, useState } from 'react'
 
 import { Session } from 'next-auth'
@@ -10,8 +12,12 @@ import LoadingSpinner from '#components/animation/loadingSpinner'
 import Alert from '#components/feature/alert'
 import { Button } from '#components/ui/button'
 import { Input } from '#components/ui/input'
+import { Skeleton } from '#components/ui/skeleton'
 import useWebSocketStore from '#store/client/websocket.store'
-import { useGetMessageQuery } from '#store/server/chat.queries'
+import {
+  useGetChatUserQuery,
+  useGetMessageQuery,
+} from '#store/server/chat.queries'
 import { cn } from '#utils/utils'
 
 export default function Chat({
@@ -21,7 +27,8 @@ export default function Chat({
 }) {
   const { data: session } = useSession()
 
-  const { socket, sendMessage } = useWebSocketStore()
+  const { socket, writeStartMessage, writeStopMessage, sendMessage } =
+    useWebSocketStore()
   const {
     data: messages,
     fetchNextPage,
@@ -31,7 +38,14 @@ export default function Chat({
     refetch,
   } = useGetMessageQuery(chatId, session as Session)
 
+  const { data: user, status: userStatus } = useGetChatUserQuery(
+    chatId,
+    session as Session,
+  )
+
   const [content, setContent] = useState('')
+  const [myWritten, setMyWritten] = useState(false)
+  const [otherWritten, setOtherWritten] = useState(false)
 
   const { ref } = useInView({
     onChange: useCallback(
@@ -43,11 +57,30 @@ export default function Chat({
   })
 
   useEffect(() => {
-    if (socket)
+    if (socket) {
       socket.on('message_received', async () => {
         await refetch()
       })
+      socket.on('write_start_complete', () => {
+        setOtherWritten(true)
+      })
+      socket.on('write_stop_complete', () => {
+        setOtherWritten(false)
+      })
+    }
   }, [socket, refetch])
+
+  useEffect(() => {
+    if (myWritten && content.trim() === '') {
+      writeStopMessage(chatId)
+      setMyWritten(false)
+    }
+
+    if (!myWritten && content.trim() !== '') {
+      writeStartMessage(chatId)
+      setMyWritten(true)
+    }
+  }, [chatId, content, myWritten, writeStartMessage, writeStopMessage])
 
   function handleSendMessage() {
     sendMessage(chatId, content.trim())
@@ -67,10 +100,37 @@ export default function Chat({
 
   return (
     <div className="flex flex-col w-full h-full pb-16 md:pb-4">
-      <section className="flex h-[75px] border-b border-gray-300">
-        <span>aa</span>
+      <section className="flex items-center h-[75px] border-b border-gray-300 px-4">
+        {userStatus === 'success' ? (
+          <>
+            <div className="relative w-11 h-11">
+              <Image
+                src={user?.image || '/images/assets/avatar-default.jpg'}
+                alt="avatar image"
+                fill
+                sizes="(max-width: 640px) 4rem, (max-width: 768px) 4rem, 4rem"
+                className="object-cover rounded-full"
+              />
+            </div>
+            <span className="ml-4 font-semibold">{user?.nickname}</span>
+          </>
+        ) : (
+          <>
+            <Skeleton className="h-11 w-11 rounded-full" />
+            <Skeleton className="h-4 w-[75px] ml-4" />
+          </>
+        )}
       </section>
       <section className="grow mb-5 flex flex-col-reverse overflow-y-scroll h-0">
+        <div
+          className={cn(
+            'hidden w-12 py-2 px-3 mx-5 my-1 rounded-3xl text-sm bg-gray-200 text-black',
+            otherWritten && 'flex justify-center items-center',
+          )}
+        >
+          ...
+        </div>
+
         {messages?.pages[0].data.length ? (
           messages.pages.map((page, index) => (
             <Fragment key={index}>

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Not, Repository } from 'typeorm';
 import { ChatsModel } from './entity/chats.entity';
@@ -51,14 +51,6 @@ export class ChatsService {
     });
   }
 
-  async checkIfChatExists(chatId: number) {
-    return await this.chatsRepository.exists({
-      where: {
-        id: chatId,
-      },
-    });
-  }
-
   async getChatIdsByUserId(userId: number) {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
@@ -84,5 +76,25 @@ export class ChatsService {
     );
 
     return commonChatIds.length > 0 ? commonChatIds[0] : null;
+  }
+
+  async getUserByChatId(userId: number, chatId: number) {
+    const chatIds = await this.getChatIdsByUserId(userId);
+    if (chatIds.length === 0) return null;
+    if (!chatIds.includes(chatId)) throw new UnauthorizedException('Not Found');
+
+    const chat = await this.chatsRepository.findOne({
+      where: { id: chatId, users: { id: Not(userId) } },
+      relations: { users: true },
+      select: {
+        users: {
+          id: true,
+          nickname: true,
+          image: true,
+        },
+      },
+    });
+
+    return chat.users[0];
   }
 }

@@ -4,25 +4,54 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 
+import { SquarePen } from 'lucide-react'
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
+import { useInView } from 'react-intersection-observer'
 
+import LoadingSpinner from '#components/animation/loadingSpinner'
 import Alert from '#components/feature/alert'
-import { Skeleton } from '#components/ui/skeleton'
+import UserSkeleton from '#components/feature/userSkeleton'
 import useWebSocketStore from '#store/client/websocket.store'
 import { useGetChatQuery } from '#store/server/chat.queries'
 import { cn } from '#utils/utils'
+
+import NewChat from './newChat'
 
 export default function ChatLists() {
   const { data: session } = useSession()
   const pathname = usePathname()
 
-  const { initSocket } = useWebSocketStore()
-  const { data: chats, status, refetch } = useGetChatQuery(session as Session)
+  const { socket, initSocket } = useWebSocketStore()
+  const {
+    data: chats,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+    status,
+    refetch,
+  } = useGetChatQuery(session as Session)
 
   const [activateChat, setActivateChat] = useState<number>()
+
+  const { ref } = useInView({
+    onChange: useCallback(
+      (inView: boolean) => {
+        if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage()
+      },
+      [fetchNextPage, hasNextPage, isFetchingNextPage],
+    ),
+  })
+
+  useEffect(() => {
+    if (socket)
+      socket.on('create_chat_complete', async () => {
+        socket.emit('enter_chat')
+        await refetch()
+      })
+  }, [socket, refetch])
 
   useEffect(() => {
     if (session?.accessToken) initSocket(session)
@@ -35,61 +64,66 @@ export default function ChatLists() {
     }
   }, [pathname])
 
-  function SkeletonList({ count }: { count: number }) {
-    return (
-      <>
-        {Array.from({ length: count }).map((_, index) => (
-          <div key={index} className="flex items-center gap-4 w-full h-20 px-6">
-            <Skeleton className="h-14 w-14 rounded-full" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-[250px]" />
-              <Skeleton className="h-4 w-[200px]" />
-            </div>
-          </div>
-        ))}
-      </>
-    )
-  }
-
   return (
-    <div className="sm:min-w-28 lg:min-w-[397px] h-screen py-6 pt-10 border-r border-gray-300 z-30">
-      <h3 className="font-bold mb-6 px-1 sm:px-6 text-center lg:text-start">
-        메시지
-      </h3>
+    <div className="sm:min-w-28 lg:min-w-[397px] h-screen pb-6 pt-10 border-r border-gray-300 z-30">
+      <section className="flex justify-center lg:justify-between mb-6 lg:pr-6">
+        <h3 className="hidden lg:flex font-bold sm:px-6">메시지</h3>
+        <NewChat>
+          <SquarePen />
+        </NewChat>
+      </section>
 
-      <div className="flex flex-col w-full">
+      <section className="flex flex-col w-full">
         {status === 'success' &&
-          chats.data.map((chat) => {
-            const userName = chat.users[0].nickname
-            const imageUrl = chat.users[0].image
+          (chats?.pages[0].data.length ? (
+            chats.pages.map((page, index) => (
+              <Fragment key={index}>
+                {page.data.map((chat) => {
+                  const userName = chat.users[0].nickname
+                  const imageUrl = chat.users[0].image
 
-            return (
-              <Link
-                href={`/direct/${chat.id}`}
-                key={chat.id}
-                className={cn(
-                  'flex items-center justify-center lg:justify-start gap-4 w-full h-20 px-1 sm:px-6 hover:bg-gray-bright',
-                  activateChat === chat.id &&
-                    'bg-gray-light hover:bg-gray-light',
-                )}
-              >
-                <div className="h-14 w-14 relative">
-                  <Image
-                    src={imageUrl || '/images/avatar-default.jpg'}
-                    alt="avatar image"
-                    fill
-                    sizes="(max-width: 640px) 3.5rem, (max-width: 768px) 3.5rem, 3.5rem"
-                    className="object-cover rounded-full"
-                    priority
-                  />
-                </div>
-                <span className="hidden lg:flex">{userName}</span>
-              </Link>
-            )
-          })}
+                  return (
+                    <Link
+                      href={`/direct/${chat.id}`}
+                      key={chat.id}
+                      className={cn(
+                        'flex items-center justify-center lg:justify-start gap-4 w-full h-20 px-1 sm:px-6 hover:bg-gray-bright',
+                        activateChat === chat.id &&
+                          'bg-gray-light hover:bg-gray-light',
+                      )}
+                    >
+                      <div className="h-14 w-14 relative">
+                        <Image
+                          src={imageUrl || '/images/assets/avatar-default.jpg'}
+                          alt="avatar image"
+                          fill
+                          sizes="(max-width: 640px) 3.5rem, (max-width: 768px) 3.5rem, 3.5rem"
+                          className="object-cover rounded-full"
+                          priority
+                        />
+                      </div>
+                      <span className="hidden lg:flex">{userName}</span>
+                    </Link>
+                  )
+                })}
+              </Fragment>
+            ))
+          ) : (
+            <div className="col-span-3 text-center text-gray-500">
+              대화을 시작해 보세요
+            </div>
+          ))}
 
-        {status === 'pending' && <SkeletonList count={10} />}
-      </div>
+        {isFetchingNextPage ? (
+          <LoadingSpinner className="w-8 h-8 mt-5" />
+        ) : (
+          <div ref={ref} />
+        )}
+
+        {status === 'pending' && (
+          <UserSkeleton count={10} textClassName="hidden lg:flex lg:flex-col" />
+        )}
+      </section>
 
       <Alert
         isOpen={status === 'error'}

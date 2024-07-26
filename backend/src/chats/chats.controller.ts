@@ -1,4 +1,11 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ChatsService } from './chats.service';
 import { BasePaginationDto } from '../common/dto/base-pagination.dto';
 
@@ -13,5 +20,14 @@ export class ChatsController {
   @UseGuards(AccessTokenGuard)
   paginateChat(@User('id') userId: number, @Query() dto: BasePaginationDto) {
     return this.chatsService.paginateChats(dto, userId);
+  }
+
+  @Get(':cid')
+  @UseGuards(AccessTokenGuard)
+  getChatUser(
+    @User('id') userId: number,
+    @Param('cid', ParseIntPipe) chatId: number,
+  ) {
+    return this.chatsService.getUserByChatId(userId, chatId);
   }
 }

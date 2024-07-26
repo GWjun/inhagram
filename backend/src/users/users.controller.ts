@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -20,5 +20,10 @@ export class UsersController {
   @Get(':nickname/image')
   async getUserImage(@Param('nickname') nickname: string) {
     return await this.usersService.getImageUrlByNickname(nickname);
+  }
+
+  @Get('search')
+  searchUsers(@Query('name') nickname: string) {
+    return this.usersService.searchUsersByName(nickname);
   }
 }

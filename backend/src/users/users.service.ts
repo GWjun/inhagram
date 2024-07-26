@@ -76,4 +76,14 @@ export class UsersService {
 
     return { path: user.image };
   }
+
+  async searchUsersByName(nickname: string) {
+    if (!nickname) return [];
+
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.nickname', 'user.image'])
+      .where('user.nickname LIKE :nickname', { nickname: `${nickname}%` })
+      .getMany();
+  }
 }

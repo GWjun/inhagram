@@ -63,7 +63,9 @@ export default async function UserProfile({
                   <AvatarInput />
                 ) : (
                   <AvatarImage
-                    src={userImageUrl?.path || 'images/avatar-default.jpg'}
+                    src={
+                      userImageUrl?.path || 'images/assets/avatar-default.jpg'
+                    }
                   />
                 )}
               </Avatar>

@@ -115,7 +115,7 @@ export default function Sidebar() {
           className={`xl:mr-4 w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out ${isActive ? 'border-2 border-black' : ''}`}
         >
           <ImageWithLoad
-            src={imageUrl || '/images/avatar-default.jpg'}
+            src={imageUrl || '/images/assets/avatar-default.jpg'}
             className="object-cover"
             alt="avatar iamge"
             fill

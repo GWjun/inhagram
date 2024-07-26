@@ -21,6 +21,7 @@ import { CreateMessagesDto } from './messages/dto/create-messages.dto';
 
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { SocketCatchHttpExceptionFilter } from '../common/exception-filter/socket-catch-http.exception-filter';
+import { WriteMessageDto } from './messages/dto/write-message.dto';
 
 @UsePipes(
   new ValidationPipe({
@@ -45,8 +46,11 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  handleDisconnect(socket: Socket): any {
+  private userSocketMap = new Map<number, string>();
+
+  handleDisconnect(socket: Socket & { user: UsersModel }): any {
     console.log(`on disconnect called : ${socket.id}`);
+    this.userSocketMap.delete(socket.user.id);
   }
 
   async handleConnection(socket: Socket & { user: UsersModel }) {
@@ -73,6 +77,8 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       socket.user = user;
 
+      this.userSocketMap.set(user.id, socket.id);
+
       socket.emit('setup_complete');
       return true;
     } catch (error) {
@@ -94,8 +100,13 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
 
     if (!chatId) {
-      const chat = await this.chatsService.createChat([fromUserId, toUserId]);
-      socket.join(chat.id.toString());
+      await this.chatsService.createChat([fromUserId, toUserId]);
+      socket.emit('create_chat_complete');
+
+      const toSocketId = this.userSocketMap.get(toUserId);
+      if (toSocketId) {
+        this.server.to(toSocketId).emit('create_chat_complete');
+      }
     } else {
       throw new WsException({
         code: 'CHAT_ALREADY_EXIST',
@@ -109,6 +120,22 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const chatIds = await this.chatsService.getChatIdsByUserId(socket.user.id);
 
     socket.join(chatIds.map((x) => x.toString()));
+  }
+
+  @SubscribeMessage('write_start')
+  async writeStartMessage(
+    @MessageBody() dto: WriteMessageDto,
+    @ConnectedSocket() socket: Socket & { user: UsersModel },
+  ) {
+    socket.to(dto.chatId.toString()).emit('write_start_complete');
+  }
+
+  @SubscribeMessage('write_stop')
+  async writeStopMessage(
+    @MessageBody() dto: WriteMessageDto,
+    @ConnectedSocket() socket: Socket & { user: UsersModel },
+  ) {
+    socket.to(dto.chatId.toString()).emit('write_stop_complete');
   }
 
   @SubscribeMessage('send_message')

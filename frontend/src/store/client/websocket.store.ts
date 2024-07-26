@@ -6,6 +6,9 @@ interface WebSocketStore {
   socket: Socket | null
   isConnected: boolean
   initSocket: (session: Session) => void
+  createChat: (toUserName: string) => void
+  writeStartMessage: (chatId: string) => void
+  writeStopMessage: (chatId: string) => void
   sendMessage: (chatId: string, message: string) => void
   closeSocket: () => void
 }
@@ -40,11 +43,22 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => ({
       console.log('WebSocket disconnected')
     })
 
-    socket.on('message_received', () => {
-      console.log('received!')
-    })
-
     set({ socket })
+  },
+
+  createChat: (toUserName: string) => {
+    const { socket } = get()
+    if (socket) socket.emit('create_chat', { toUserName })
+  },
+
+  writeStartMessage: (chatId: string) => {
+    const { socket } = get()
+    if (socket) socket.emit('write_start', { chatId })
+  },
+
+  writeStopMessage: (chatId: string) => {
+    const { socket } = get()
+    if (socket) socket.emit('write_stop', { chatId })
   },
 
   sendMessage: (chatId: string, message: string) => {

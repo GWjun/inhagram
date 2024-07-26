@@ -33,7 +33,7 @@ export default async function Page() {
             <div className="flex items-center gap-3">
               <Avatar className="w-10 h-10 group-hover:scale-110 transition duration-200 ease-in-out">
                 <ImageWithLoad
-                  src={user.image || '/images/avatar-default.jpg'}
+                  src={user.image || '/images/assets/avatar-default.jpg'}
                   alt="user avatar"
                   width={40}
                   height={40}
