@@ -1,13 +1,16 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
+import { User } from './decorator/user.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getUsers() {
-    return this.usersService.getAllUsers();
+  @UseGuards(AccessTokenGuard)
+  getUsers(@User('id') userId: number) {
+    return this.usersService.getRandomUsers(userId);
   }
 
   @Get(':nickname/id')

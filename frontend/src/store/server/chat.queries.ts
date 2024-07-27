@@ -30,10 +30,14 @@ export function useGetChatQuery(session: Session) {
 
 // Get Chat User Query
 export function useGetChatUserQuery(chatId: string, session: Session) {
+  let enabled = false
+  if (session) enabled = true
+
   return useQuery({
     queryKey: ['chat', 'user'],
     queryFn: () => authFetch<BasicUser>(`/chats/${chatId}`, {}, session),
     gcTime: 0,
+    enabled,
   })
 }
 
@@ -45,7 +49,7 @@ async function getMessage(url: string, session: Session) {
   return authFetch<MessagesResponse>(resource, {}, session)
 }
 export function useGetMessageQuery(chatId: string, session: Session) {
-  const baseParam = `/chats/${chatId}/messages?order__createdAt=DESC&take=18`
+  const baseParam = `/chats/${chatId}/messages?order__createdAt=DESC&take=30`
 
   let enabled = false
   if (session) enabled = true

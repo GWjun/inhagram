@@ -1,9 +1,15 @@
 import Link from 'next/link'
 
+import { getServerSession, Session } from 'next-auth'
+
 import ImageWithLoad from '#components/feature/imageWithLoad'
 import NotExist from '#components/layout/notexist'
 import { Avatar } from '#components/ui/avatar'
 import { Button } from '#components/ui/button'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { authOptions } from '#pages/api/auth/[...nextauth]'
+import authFetch from '#utils/authFetch'
 
 interface UserResponse {
   nickname: string
@@ -11,13 +17,20 @@ interface UserResponse {
 }
 
 export default async function Page() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
-    cache: 'no-cache',
-  })
-  if (!response.ok) return <NotExist />
+  const session = (await getServerSession(authOptions)) as Session
+  let users
 
-  const users = (await response.json()) as UserResponse[]
-
+  try {
+    users = await authFetch<UserResponse[]>(
+      `/users`,
+      {
+        cache: 'no-cache',
+      },
+      session,
+    )
+  } catch (error) {
+    return <NotExist />
+  }
   return (
     <section className="flex min-h-full justify-center mt-9">
       <div className="flex flex-col w-full max-w-[600px]">

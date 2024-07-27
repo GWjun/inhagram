@@ -18,6 +18,7 @@ import {
   useGetChatUserQuery,
   useGetMessageQuery,
 } from '#store/server/chat.queries'
+import { extractDate, extractTime } from '#utils/dateFormat'
 import { cn } from '#utils/utils'
 
 export default function Chat({
@@ -82,6 +83,8 @@ export default function Chat({
     }
   }, [chatId, content, myWritten, writeStartMessage, writeStopMessage])
 
+  if (status === 'pending') return <LoadingSpinner />
+
   function handleSendMessage() {
     sendMessage(chatId, content.trim())
     setContent('')
@@ -96,7 +99,82 @@ export default function Chat({
       handleSendMessage()
   }
 
-  if (status === 'pending') return <LoadingSpinner />
+  const MessagesComponent = () => {
+    if (!messages || !messages.pages[0].data.length)
+      return (
+        <div className="col-span-3 text-center text-gray-500 mb-8">
+          채팅을 시작해 보세요
+        </div>
+      )
+
+    let prevTime: string = ''
+    let prevDate: string = extractDate(new Date().toUTCString())
+    let prevUser: boolean
+
+    return messages.pages.map((page, pageIndex) => (
+      <Fragment key={pageIndex}>
+        {page.data.map((message) => {
+          const isMine = message.author.nickname === session?.user?.name
+          const content = message.message
+
+          const time = extractTime(message.createdAt)
+          const date = extractDate(message.createdAt)
+
+          const sameTime = time === prevTime
+          const sameDate = date === prevDate
+          const sameUser = isMine === prevUser
+
+          prevTime = time
+          const prevTempDate = prevDate
+          prevDate = date
+          prevUser = isMine
+
+          return (
+            <Fragment key={message.id}>
+              <div
+                className={cn(
+                  'text-center text-sm text-gray-400 py-2',
+                  sameDate && 'hidden',
+                )}
+              >
+                <span>{prevTempDate}</span>
+              </div>
+              <div
+                className={cn(
+                  'flex items-end justify-end mb-6',
+                  !isMine && 'flex-row-reverse',
+                  sameTime && 'mb-1',
+                )}
+              >
+                <div
+                  className={cn(
+                    'text-xs text-gray-400',
+                    sameTime && sameUser && 'hidden',
+                  )}
+                >
+                  {time}
+                </div>
+                <div
+                  className={`max-w-xs py-2 px-3 rounded-3xl text-sm mx-2 ${
+                    isMine
+                      ? 'bg-button text-white mr-5'
+                      : 'bg-gray-200 text-black ml-5'
+                  }`}
+                >
+                  {content}
+                </div>
+              </div>
+            </Fragment>
+          )
+        })}
+        {pageIndex === messages.pages.length - 1 && (
+          <span className="text-center text-sm text-gray-400 py-2">
+            {prevDate}
+          </span>
+        )}
+      </Fragment>
+    ))
+  }
 
   return (
     <div className="flex flex-col w-full h-full pb-16 md:pb-4">
@@ -121,47 +199,19 @@ export default function Chat({
           </>
         )}
       </section>
-      <section className="grow mb-5 flex flex-col-reverse overflow-y-scroll h-0">
+      <section className="grow flex flex-col-reverse overflow-y-scroll h-0">
         <div
           className={cn(
-            'hidden w-12 py-2 px-3 mx-5 my-1 rounded-3xl text-sm bg-gray-200 text-black',
-            otherWritten && 'flex justify-center items-center',
+            'w-12 py-2 px-3 mx-5 mb-1 rounded-3xl text-sm bg-gray-200 text-black transition-opacity ease-in-out duration-500',
+            otherWritten
+              ? 'opacity-100 flex justify-center items-center'
+              : 'opacity-0 h-0 p-0 m-0',
           )}
         >
           ...
         </div>
 
-        {messages?.pages[0].data.length ? (
-          messages.pages.map((page, index) => (
-            <Fragment key={index}>
-              {page.data.map((message) => {
-                const isMine = message.author.nickname === session?.user?.name
-                const content = message.message
-
-                return (
-                  <div
-                    key={message.id}
-                    className={`flex ${isMine ? 'justify-end' : 'justify-start'} my-1`}
-                  >
-                    <div
-                      className={`max-w-xs py-2 px-3 mx-5 rounded-3xl text-sm ${
-                        isMine
-                          ? 'bg-button text-white'
-                          : 'bg-gray-200 text-black'
-                      }`}
-                    >
-                      {content}
-                    </div>
-                  </div>
-                )
-              })}
-            </Fragment>
-          ))
-        ) : (
-          <div className="col-span-3 text-center text-gray-500">
-            채팅을 시작해 보세요
-          </div>
-        )}
+        <MessagesComponent />
 
         {isFetchingNextPage ? (
           <LoadingSpinner className="w-8 h-8 mt-5" />

@@ -8,9 +8,9 @@ export abstract class BaseModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updateAt: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 }

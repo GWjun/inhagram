@@ -2,8 +2,13 @@ import { Session } from 'next-auth'
 import { io, Socket } from 'socket.io-client'
 import { create } from 'zustand'
 
+import { refreshAccessToken } from '#utils/fetchUser'
+
+export const MAX_RETRY_COUNT = 3
+
 interface WebSocketStore {
   socket: Socket | null
+  retry: number
   isConnected: boolean
   initSocket: (session: Session) => void
   createChat: (toUserName: string) => void
@@ -15,6 +20,7 @@ interface WebSocketStore {
 
 const useWebSocketStore = create<WebSocketStore>((set, get) => ({
   socket: null,
+  retry: 0,
   isConnected: false,
 
   initSocket: (session: Session) => {
@@ -25,25 +31,43 @@ const useWebSocketStore = create<WebSocketStore>((set, get) => ({
       },
     })
 
-    socket.on('connect_error', (error) => {
-      console.error('connection error:', error)
-    })
+    if (socket) {
+      socket.on('connect_error', (error) => {
+        console.error('connection error:', error)
+      })
 
-    socket.on('exception', (error) => {
-      console.error('websocket error:', error)
-    })
+      socket.on('exception', (error) => {
+        console.error('websocket error:', error)
+      })
 
-    socket.on('setup_complete', () => {
-      set({ isConnected: true })
-      socket.emit('enter_chat')
-    })
+      socket.on('setup_complete', () => {
+        set({ isConnected: true })
+        socket.emit('enter_chat')
+      })
 
-    socket.on('disconnect', () => {
-      set({ isConnected: false })
-      console.log('WebSocket disconnected')
-    })
+      socket.on('disconnect', async () => {
+        const retry = get().retry
+        if (retry >= MAX_RETRY_COUNT) {
+          console.error('Max retry attempts reached')
+          return
+        }
 
-    set({ socket })
+        try {
+          if (session.refreshToken) {
+            session.accessToken = await refreshAccessToken(session.refreshToken)
+
+            set({ retry: retry + 1 })
+
+            get().initSocket(session)
+          } else throw new Error('Do not have refreshToken')
+        } catch (error) {
+          console.error('Failed to refresh access token:', error)
+          set({ isConnected: false })
+        }
+      })
+
+      set({ socket })
+    }
   },
 
   createChat: (toUserName: string) => {

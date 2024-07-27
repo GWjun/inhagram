@@ -58,6 +58,7 @@ export async function refreshAccessToken(token: string) {
     {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-cache',
     },
   )
 

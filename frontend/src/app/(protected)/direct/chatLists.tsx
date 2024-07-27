@@ -22,9 +22,10 @@ import NewChat from './newChat'
 
 export default function ChatLists() {
   const { data: session } = useSession()
+
   const pathname = usePathname()
 
-  const { socket, initSocket } = useWebSocketStore()
+  const { socket } = useWebSocketStore()
   const {
     data: chats,
     fetchNextPage,
@@ -52,10 +53,6 @@ export default function ChatLists() {
         await refetch()
       })
   }, [socket, refetch])
-
-  useEffect(() => {
-    if (session?.accessToken) initSocket(session)
-  }, [initSocket, session])
 
   useEffect(() => {
     if (pathname) {
