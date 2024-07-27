@@ -27,7 +27,7 @@ export default function SignUp() {
 
   useEffect(() => {
     setIsFormValid(
-      nickname.length > 4 && email.length > 4 && password.length >= 4,
+      nickname.length >= 4 && email.length > 4 && password.length >= 4,
     )
   }, [nickname, email, password])
 

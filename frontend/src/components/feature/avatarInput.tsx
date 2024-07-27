@@ -47,10 +47,11 @@ export default function AvatarInput() {
   return (
     <>
       <ImageWithLoad
-        src={imageUrl || '/images/avatar-default.jpg'}
+        src={imageUrl || '/images/assets/avatar-default.jpg'}
         className="object-cover"
         alt="avatar image"
         fill
+        sizes="(max-width: 640px) 5rem, (max-width: 1024px) 150px, 150px"
       />
       <div
         className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black bg-opacity-50 rounded-full cursor-pointer"

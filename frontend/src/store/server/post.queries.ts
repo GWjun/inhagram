@@ -7,7 +7,7 @@ import {
 import { Session } from 'next-auth'
 
 import { useUrlStore } from '#store/client/makepost.store'
-import { Post, PostsResponse } from '#types/postsType'
+import { Post, PostsResponse } from '#types/posts.type'
 import authFetch from '#utils/authFetch'
 
 type CustomSesson = Session | null

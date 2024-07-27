@@ -15,6 +15,16 @@ export class UsersService {
     return this.usersRepository.find({ select: ['nickname', 'image'] });
   }
 
+  async getRandomUsers(userId: number) {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .select(['user.nickname', 'user.image'])
+      .where('user.id != :userId', { userId })
+      .orderBy('RANDOM()')
+      .limit(5)
+      .getMany();
+  }
+
   async createUser(user: Pick<UsersModel, 'nickname' | 'email' | 'password'>) {
     const nicknameExists = await this.usersRepository.exists({
       where: { nickname: user.nickname },
@@ -75,5 +85,15 @@ export class UsersService {
     }
 
     return { path: user.image };
+  }
+
+  async searchUsersByName(nickname: string) {
+    if (!nickname) return [];
+
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .select(['user.id', 'user.nickname', 'user.image'])
+      .where('user.nickname LIKE :nickname', { nickname: `${nickname}%` })
+      .getMany();
   }
 }

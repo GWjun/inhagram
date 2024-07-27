@@ -89,7 +89,7 @@ export default function PostContent() {
     <div className="flex w-full h-full justify-center items-center">
       <section className="flex flex-col justify-center relative items-center w-full h-full gap-3">
         {previewUrls.length > 0 ? (
-          <Carousel className="xl:min-w-[868px] w-full h-full bg-gray-100 rounded-b-xl">
+          <Carousel className="md:min-w-[698px] 2xl:min-w-[868px] w-full h-full bg-gray-100 rounded-b-xl">
             <CarouselContent className="h-full">
               {previewUrls.map((url, index) => (
                 <CarouselItem key={index}>
@@ -102,6 +102,7 @@ export default function PostContent() {
                         page !== Page.Image && 'rounded-br-none',
                       )}
                       fill
+                      sizes="(max-width: 640px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 70vw, 60vw"
                     />
                   </div>
                 </CarouselItem>

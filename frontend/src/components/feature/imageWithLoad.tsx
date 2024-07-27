@@ -32,8 +32,9 @@ export default function ImageWithLoad({
         width={width}
         height={height}
         className={className}
-        onLoadingComplete={() => setLoaded(true)}
+        onLoad={() => setLoaded(true)}
         {...props}
+        priority
       />
 
       {!loaded && <Loading />}

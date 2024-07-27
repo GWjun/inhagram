@@ -119,9 +119,10 @@ export default function NewPost({ children, ...props }: NewPostProps) {
       <DialogContent
         onInteractOutside={handleOutsidePage}
         className={cn(
-          'grid-rows-[auto_1fr] gap-0 w-full h-full max-w-[90vw] md:max-w-[870px] max-h-[50vh] lg:max-h-[900px] p-0',
-          page !== Page.Image && 'md:max-w-[85vw]',
-          (isPending || isError || isSuccess) && 'md:max-w-[47vw]',
+          'grid-rows-[auto_1fr] gap-0 w-full h-full p-0 max-w-[90vw] max-h-[50vh] md:max-w-[700px] md:max-h-[730px] 2xl:max-w-[870px] 2xl:max-h-[900px]',
+          page !== Page.Image && 'md:max-w-[85vw] 2xl:max-w-[85vw]',
+          (isPending || isError || isSuccess) &&
+            'md:max-w-[700px] 2xl:max-w-[870px]',
         )}
       >
         <DialogHeader className="justify-center h-11 border-b border-gray-300 space-y-0">

@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 import { useEffect, useMemo, useState } from 'react'
 
@@ -63,11 +63,22 @@ export default function Sidebar() {
   const { data: session } = useSession()
 
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     if (!imageUrl && session?.user?.name)
       initializeUserImage(session?.user?.name)
   }, [imageUrl, initializeUserImage, session?.user?.name])
+
+  useEffect(() => {
+    if (pathname?.startsWith('/direct')) setIsModalOpen(true)
+    else if (
+      activeItem !== '만들기' &&
+      activeItem !== '검색' &&
+      activeItem !== '알림'
+    )
+      setIsModalOpen(false)
+  }, [activeItem, pathname])
 
   function handleClickHome() {
     setActiveItem('홈')
@@ -80,7 +91,7 @@ export default function Sidebar() {
       { name: '검색', icon: Search },
       { name: '탐색', icon: Compass, path: '/explore' },
       { name: '릴스', icon: Film, path: '/reels' },
-      { name: '메시지', icon: Send, path: '/direct/inbox' },
+      { name: '메시지', icon: Send, path: '/direct' },
       { name: '알림', icon: Heart },
       { name: '만들기', icon: PlusSquare },
       { name: '프로필', icon: Home, path: `/${session?.user?.name}` },
@@ -104,10 +115,11 @@ export default function Sidebar() {
           className={`xl:mr-4 w-6 h-6 group-hover:scale-110 transition duration-200 ease-in-out ${isActive ? 'border-2 border-black' : ''}`}
         >
           <ImageWithLoad
-            src={imageUrl || '/images/avatar-default.jpg'}
+            src={imageUrl || '/images/assets/avatar-default.jpg'}
             className="object-cover"
             alt="avatar iamge"
             fill
+            sizes="(max-width: 640px) 3rem, (max-width: 768px) 4rem, 6rem"
           />
         </Avatar>
       )
@@ -177,11 +189,16 @@ export default function Sidebar() {
   })
 
   return (
-    <div className="hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen">
+    <div
+      className={cn(
+        'hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen',
+        pathname?.startsWith('/direct') && 'xl:w-[73px] 3xl:w-[73px]',
+      )}
+    >
       <aside
         className={cn(
           'fixed hidden z-50 md:flex md:w-[73px] xl:w-[245px] 3xl:w-[336px] h-screen bg-white border-r border-gray-300 left-0 top-0 flex-col justify-between pt-2 px-3 pb-5',
-          'transition-width duration-500 ease-in-out',
+          'transition-width duration-300 ease-in-out',
           isModalOpen && 'xl:w-[73px] 3xl:w-[73px]',
         )}
       >
@@ -191,6 +208,7 @@ export default function Sidebar() {
               className={cn(
                 'absolute w-0 xl:min-w-40 pt-8 px-3 pb-4 opacity-0 xl:opacity-100 transition-opacity duration-500 ease-in-out',
                 isModalOpen && 'xl:opacity-0',
+                activeItem === '메시지' && 'hidden',
               )}
             >
               <Image

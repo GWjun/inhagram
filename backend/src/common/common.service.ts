@@ -18,6 +18,8 @@ import { CloudStorageService } from './cloud/cloud-storage.service';
 import { FILTER_MAPPER } from './const/filter-mapper.const';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { merge } from 'lodash';
+
 @Injectable()
 export class CommonService {
   constructor(
@@ -44,11 +46,8 @@ export class CommonService {
     path: string,
   ) {
     const findOptions = await this.composeFindOptions<T>(dto);
-
-    const results = await repository.find({
-      ...findOptions,
-      ...overrideFindOptions,
-    });
+    const mergedOptions = merge({}, findOptions, overrideFindOptions);
+    const results = await repository.find(mergedOptions);
 
     const lastItem =
       results.length > 0 && results.length === dto.take
@@ -62,7 +61,7 @@ export class CommonService {
     if (nextUrl) {
       for (const key of Object.keys(dto)) {
         if (dto[key]) {
-          if (key !== 'where__id__more_than' && key !== 'where__id__more_than')
+          if (key !== 'where__id__more_than' && key !== 'where__id__less_than')
             nextUrl.searchParams.append(key, dto[key]);
         }
       }

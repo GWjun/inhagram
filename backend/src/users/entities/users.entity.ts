@@ -1,18 +1,20 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { RolesEnum } from '../const/roles.const';
 import { PostsModel } from 'src/posts/entities/posts.entity';
 import { BaseModel } from 'src/common/entity/base.entity';
 import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
 import { Exclude } from 'class-transformer';
+import { ChatsModel } from '../../chats/entity/chats.entity';
+import { MessagesModel } from '../../chats/messages/entity/messages.entity';
 
 @Entity()
 export class UsersModel extends BaseModel {
   @Column({
-    length: 20,
+    length: 30,
     unique: true,
   })
   @IsString()
-  @Length(4, 20)
+  @Length(4, 30)
   nickname: string;
 
   @Column({
@@ -24,7 +26,7 @@ export class UsersModel extends BaseModel {
 
   @Column()
   @IsString()
-  @Length(4, 20)
+  @Length(4, 30)
   @Exclude({ toPlainOnly: true })
   password: string;
 
@@ -41,4 +43,10 @@ export class UsersModel extends BaseModel {
 
   @OneToMany(() => PostsModel, (post) => post.author)
   posts: PostsModel[];
+
+  @ManyToMany(() => ChatsModel, (chat) => chat.users)
+  chats: ChatsModel[];
+
+  @OneToMany(() => MessagesModel, (message) => message.author)
+  messages: MessagesModel;
 }

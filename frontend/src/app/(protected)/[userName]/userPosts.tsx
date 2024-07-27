@@ -35,7 +35,7 @@ export default function UserPost({ userName }: { userName: string }) {
 
   return (
     <>
-      <div className="grid grid-cols-3 w-full h-full gap-1 mb-12">
+      <div className="grid grid-cols-3 w-full gap-1 mb-12">
         {data?.pages[0].data.length ? (
           data.pages.map((page, index) => (
             <Fragment key={index}>
