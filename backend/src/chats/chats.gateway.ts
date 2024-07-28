@@ -18,10 +18,11 @@ import { UsersModel } from '../users/entities/users.entity';
 
 import { CreateChatDto } from './dto/create-chat.dto';
 import { CreateMessagesDto } from './messages/dto/create-messages.dto';
+import { WriteMessageDto } from './messages/dto/write-message.dto';
+import { ExitChatDto } from './dto/exit-chat.dto';
 
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { SocketCatchHttpExceptionFilter } from '../common/exception-filter/socket-catch-http.exception-filter';
-import { WriteMessageDto } from './messages/dto/write-message.dto';
 
 @UsePipes(
   new ValidationPipe({
@@ -46,11 +47,12 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  private userSocketMap = new Map<number, string>();
+  private userSocketMap = new Map<number, string[]>();
 
   handleDisconnect(socket: Socket & { user: UsersModel }): any {
     console.log(`on disconnect called : ${socket.id}`);
-    this.userSocketMap.delete(socket.user.id);
+    if (socket.user && socket.user.id && this.userSocketMap.has(socket.user.id))
+      this.userSocketMap.delete(socket.user.id);
   }
 
   async handleConnection(socket: Socket & { user: UsersModel }) {
@@ -77,7 +79,9 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       socket.user = user;
 
-      this.userSocketMap.set(user.id, socket.id);
+      if (this.userSocketMap.has(user.id))
+        this.userSocketMap.get(user.id).push(socket.id);
+      else this.userSocketMap.set(user.id, [socket.id]);
 
       socket.emit('setup_complete');
       return true;
@@ -110,7 +114,7 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } else {
       throw new WsException({
         code: 'CHAT_ALREADY_EXIST',
-        message: `Chat is already exist`,
+        message: `이미 존재하는 채팅 입니다.`,
       });
     }
   }
@@ -122,12 +126,31 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.join(chatIds.map((x) => x.toString()));
   }
 
+  @SubscribeMessage('exit_chat')
+  async exitChat(
+    @MessageBody() dto: ExitChatDto,
+    @ConnectedSocket() socket: Socket & { user: UsersModel },
+  ) {
+    await this.chatsService.exitChat(socket.user.id, dto.chatId);
+    socket.emit('exit_chat_complete');
+    socket.to(dto.chatId.toString()).emit('message_received');
+  }
+
   @SubscribeMessage('write_start')
   async writeStartMessage(
     @MessageBody() dto: WriteMessageDto,
     @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
-    socket.to(dto.chatId.toString()).emit('write_start_complete');
+    const senderSocketIds = this.userSocketMap.get(socket.user.id) || [];
+    const roomSockets = await this.server
+      .in(dto.chatId.toString())
+      .fetchSockets();
+
+    for (const roomSocket of roomSockets) {
+      if (!senderSocketIds.includes(roomSocket.id)) {
+        roomSocket.emit('write_start_complete', dto.chatId.toString());
+      }
+    }
   }
 
   @SubscribeMessage('write_stop')
@@ -135,7 +158,9 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() dto: WriteMessageDto,
     @ConnectedSocket() socket: Socket & { user: UsersModel },
   ) {
-    socket.to(dto.chatId.toString()).emit('write_stop_complete');
+    socket
+      .to(dto.chatId.toString())
+      .emit('write_stop_complete', dto.chatId.toString());
   }
 
   @SubscribeMessage('send_message')
@@ -145,11 +170,17 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const chatIds = await this.chatsService.getChatIdsByUserId(socket.user.id);
     if (chatIds.includes(dto.chatId)) {
-      const message = await this.messagesService.createMessage(
-        dto,
-        socket.user.id,
-      );
-      this.server.to(message.chat.id.toString()).emit('message_received');
+      try {
+        const message = await this.messagesService.createMessage(
+          dto,
+          socket.user.id,
+        );
+        socket.to(message.chat.id.toString()).emit('message_received');
+        socket.emit('message_transmit_success');
+      } catch (error) {
+        console.error(error);
+        socket.emit('message_transmit_fail');
+      }
     } else {
       throw new WsException({
         code: 'CHAT_NOT_FOUND',

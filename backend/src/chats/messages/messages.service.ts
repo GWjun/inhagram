@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessagesModel } from './entity/messages.entity';
 import { Repository } from 'typeorm';
@@ -14,6 +19,7 @@ export class ChatsMessagesService {
   constructor(
     @InjectRepository(MessagesModel)
     private readonly messagesRepository: Repository<MessagesModel>,
+    @Inject(forwardRef(() => ChatsService))
     private readonly chatsService: ChatsService,
     private readonly commonService: CommonService,
   ) {}
@@ -48,11 +54,16 @@ export class ChatsMessagesService {
     }
   }
 
-  async createMessage(dto: CreateMessagesDto, authorId: number) {
+  async createMessage(
+    dto: CreateMessagesDto,
+    authorId: number,
+    notice?: boolean,
+  ) {
     const message = await this.messagesRepository.save({
       chat: { id: dto.chatId },
       author: { id: authorId },
       message: dto.message,
+      notice,
     });
 
     return this.messagesRepository.findOne({

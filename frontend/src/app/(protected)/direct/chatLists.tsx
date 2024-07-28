@@ -47,11 +47,20 @@ export default function ChatLists() {
   })
 
   useEffect(() => {
-    if (socket)
-      socket.on('create_chat_complete', async () => {
+    if (socket) {
+      const handleCreateChatComplete = async () => {
         socket.emit('enter_chat')
         await refetch()
-      })
+      }
+
+      socket.on('create_chat_complete', handleCreateChatComplete)
+      socket.on('exit_chat_complete', handleCreateChatComplete)
+
+      return () => {
+        socket.off('create_chat_complete', handleCreateChatComplete)
+        socket.on('exit_chat_complete', handleCreateChatComplete)
+      }
+    }
   }, [socket, refetch])
 
   useEffect(() => {

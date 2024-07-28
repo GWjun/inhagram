@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 import { useEffect, useState } from 'react'
 
@@ -27,6 +28,7 @@ interface NewChatProps {
 
 export default function NewChat({ children }: NewChatProps) {
   const { data: session } = useSession()
+  const router = useRouter()
 
   const { createChat } = useWebSocketStore()
 
@@ -71,13 +73,14 @@ export default function NewChat({ children }: NewChatProps) {
     if (selectedUser) {
       createChat(selectedUser.nickname)
       setIsOpen(false)
+      router.push('/direct')
     }
   }
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent className="p-0">
+      <DialogContent className="p-0 w-full max-w-[85vw] sm:max-w-[510px]">
         <DialogHeader>
           <DialogTitle className="p-5 pb-2 text-center text-md font-bold">
             새로운 메시지
@@ -93,7 +96,7 @@ export default function NewChat({ children }: NewChatProps) {
             />
           </div>
         </DialogHeader>
-        <div className="min-h-[600px] overflow-y-auto">
+        <div className="min-h-[45vh] lg:min-h-[600px] overflow-y-auto">
           {isLoading ? (
             <UserSkeleton count={7} />
           ) : users?.length ? (

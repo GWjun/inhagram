@@ -9,6 +9,10 @@ export class ChatsModel extends BaseModel {
   @JoinTable()
   users: UsersModel[];
 
-  @OneToMany(() => MessagesModel, (message) => message.chat)
+  @ManyToMany(() => UsersModel, (user) => user.activeChats)
+  @JoinTable()
+  activeUsers: UsersModel[];
+
+  @OneToMany(() => MessagesModel, (message) => message.chat, { cascade: true })
   messages: MessagesModel;
 }

@@ -47,6 +47,9 @@ export class UsersModel extends BaseModel {
   @ManyToMany(() => ChatsModel, (chat) => chat.users)
   chats: ChatsModel[];
 
+  @ManyToMany(() => ChatsModel, (chat) => chat.activeUsers)
+  activeChats: ChatsModel[];
+
   @OneToMany(() => MessagesModel, (message) => message.author)
   messages: MessagesModel;
 }

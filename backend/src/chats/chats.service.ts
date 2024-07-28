@@ -5,8 +5,10 @@ import { ChatsModel } from './entity/chats.entity';
 import { UsersModel } from '../users/entities/users.entity';
 
 import { BasePaginationDto } from '../common/dto/base-pagination.dto';
+import { CreateMessagesDto } from './messages/dto/create-messages.dto';
 
 import { CommonService } from '../common/common.service';
+import { ChatsMessagesService } from './messages/messages.service';
 
 @Injectable()
 export class ChatsService {
@@ -15,6 +17,7 @@ export class ChatsService {
     private readonly chatsRepository: Repository<ChatsModel>,
     @InjectRepository(UsersModel)
     private readonly usersRepository: Repository<UsersModel>,
+    private readonly messagesService: ChatsMessagesService,
     private readonly commonService: CommonService,
   ) {}
 
@@ -42,6 +45,7 @@ export class ChatsService {
   async createChat(userIds: number[]) {
     const chat = await this.chatsRepository.save({
       users: userIds.map((id) => ({ id })),
+      activeUsers: userIds.map((id) => ({ id })),
     });
 
     return this.chatsRepository.findOne({
@@ -51,17 +55,55 @@ export class ChatsService {
     });
   }
 
+  async exitChat(userId: number, chatId: number) {
+    const chat = await this.chatsRepository.findOne({
+      where: { id: chatId },
+      relations: ['activeUsers'],
+    });
+
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!chat || !user) {
+      throw new Error('Chat or User not found');
+    }
+
+    chat.activeUsers = chat.activeUsers.filter(
+      (activeUser) => activeUser.id !== userId,
+    );
+
+    const message: CreateMessagesDto = {
+      chatId,
+      message: '상대방이 채팅방을 나갔습니다.',
+    };
+    await this.messagesService.createMessage(message, userId, true);
+
+    if (chat.activeUsers.length === 0) await this.deleteChat(chat);
+    else await this.chatsRepository.save(chat);
+  }
+
+  private async deleteChat(chat: ChatsModel) {
+    if (chat.messages && chat.messages.message.length > 0) {
+      for (const message of chat.messages.message) {
+        await this.chatsRepository.manager.remove(message);
+      }
+    }
+
+    await this.chatsRepository.remove(chat);
+  }
+
   async getChatIdsByUserId(userId: number) {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
-      relations: ['chats'],
+      relations: ['activeChats'],
     });
 
-    if (!user || !user.chats) {
+    if (!user || !user.activeChats) {
       return [];
     }
 
-    return user.chats.map((chat) => chat.id);
+    return user.activeChats.map((chat) => chat.id);
   }
 
   async getCommonChatIdByUserIds(userId1: number, userId2: number) {

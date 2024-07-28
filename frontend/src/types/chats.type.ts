@@ -12,12 +12,13 @@ export interface ChatsResponse extends PaginationType {
   data: ChatRoom[]
 }
 
-interface Message {
+export interface Message {
   id: number
   updateAt: string
   createdAt: string
   message: string
   author: BasicUser
+  notice?: boolean
 }
 
 export interface MessagesResponse extends PaginationType {

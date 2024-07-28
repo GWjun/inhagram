@@ -15,18 +15,35 @@ export default function SocketClient() {
   const { data: session } = useSession()
   const router = useRouter()
 
-  const { socket, retry, isConnected, initSocket } = useWebSocketStore()
+  const {
+    retry,
+    isConnected,
+    exception,
+    initSocket,
+    closeSocket,
+    clearException,
+  } = useWebSocketStore()
 
   useEffect(() => {
-    if (!socket && session?.accessToken) initSocket(session)
-  }, [initSocket, session, socket])
+    if (session?.accessToken) initSocket(session)
+
+    return () => closeSocket()
+  }, [initSocket, closeSocket, session])
 
   return (
-    <Alert
-      isOpen={retry >= MAX_RETRY_COUNT && !isConnected}
-      closeCallback={() => router.back()}
-      title="실패"
-      message="연결에 실패했습니다."
-    />
+    <>
+      <Alert
+        isOpen={retry >= MAX_RETRY_COUNT && !isConnected}
+        closeCallback={() => router.back()}
+        title="연결 실패"
+        message="연결에 실패했습니다."
+      />
+      <Alert
+        isOpen={!!exception}
+        closeCallback={clearException}
+        title="알림"
+        message={exception || ''}
+      />
+    </>
   )
 }
