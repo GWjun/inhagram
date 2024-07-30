@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import { useRef } from 'react'
+import { ChangeEvent, useRef } from 'react'
 
 import { useSession } from 'next-auth/react'
 
@@ -39,7 +39,7 @@ export default function PostContent() {
     })
   }
 
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const files = event.target.files
     if (files && files.length > 0) {
       const newPreviewUrls = []

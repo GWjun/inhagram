@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { ChangeEvent, useRef } from 'react'
 
 import { useSession } from 'next-auth/react'
 
@@ -19,9 +19,7 @@ export default function AvatarInput() {
     fileInputRef.current?.click()
   }
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
 
     if (file) {

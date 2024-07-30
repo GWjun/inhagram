@@ -1,7 +1,9 @@
+import { ReactNode } from 'react'
+
 import ChatLists from './chatLists'
 import SocketClient from './socketClient'
 
-export default function DirectLayout(props: { children: React.ReactNode }) {
+export default function DirectLayout(props: { children: ReactNode }) {
   return (
     <div className="flex items-center">
       <ChatLists />

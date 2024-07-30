@@ -12,7 +12,7 @@ import LoadingSpinner from '#components/animation/loadingSpinner'
 import Alert from '#components/feature/alert'
 import { useGetPostsQuery } from '#store/server/post.queries'
 
-export default function UserPost({ userName }: { userName: string }) {
+export default function UserPost({ userName }: { userName?: string }) {
   const {
     data,
     fetchNextPage,
@@ -20,7 +20,7 @@ export default function UserPost({ userName }: { userName: string }) {
     hasNextPage,
     status,
     refetch,
-  } = useGetPostsQuery(userName || 'unauthorized')
+  } = useGetPostsQuery(userName)
 
   const { ref } = useInView({
     onChange: useCallback(

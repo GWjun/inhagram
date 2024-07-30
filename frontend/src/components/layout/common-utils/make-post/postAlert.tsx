@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,8 +14,8 @@ import { resetAllStores } from '#store/client/makepost.store'
 
 interface PostAlertProps {
   alertOpen: boolean
-  setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setAlertOpen: Dispatch<SetStateAction<boolean>>
+  setDialogOpen: Dispatch<SetStateAction<boolean>>
 }
 
 export default function PostAlert({

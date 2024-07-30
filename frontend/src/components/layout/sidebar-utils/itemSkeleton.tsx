@@ -2,12 +2,14 @@
 
 import { usePathname } from 'next/navigation'
 
+import { ForwardRefExoticComponent, RefAttributes } from 'react'
+
 import { LucideProps } from 'lucide-react'
 
 interface ItemSkeletonProps {
   name: string
-  Icon: React.ForwardRefExoticComponent<
-    Omit<LucideProps, 'ref'> & React.RefAttributes<SVGSVGElement>
+  Icon: ForwardRefExoticComponent<
+    Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>
   >
 }
 

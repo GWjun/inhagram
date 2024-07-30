@@ -11,9 +11,10 @@ import Sidebar from '#components/layout/sidebar'
 import { useSidebarStore } from '#store/client/sidebar.store'
 
 export default function ActiveLayout() {
-  const setActiveItem = useSidebarStore((state) => state.setActiveItem)
   const { data: session } = useSession()
   const pathname = usePathname()
+
+  const setActiveItem = useSidebarStore((state) => state.setActiveItem)
 
   useEffect(() => {
     let activeItem = '홈'
@@ -24,7 +25,7 @@ export default function ActiveLayout() {
     else if (pathname === '/' + session?.user?.name) activeItem = '프로필'
 
     setActiveItem(activeItem)
-  }, [pathname, session, setActiveItem])
+  }, [pathname, session?.user?.name, setActiveItem])
 
   return (
     <>

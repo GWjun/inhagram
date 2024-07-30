@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, ReactNode } from 'react'
 
 import { ArrowLeft } from 'lucide-react'
 import { useSession } from 'next-auth/react'
@@ -29,7 +29,7 @@ import { usePostDataMutation } from '#store/server/post.queries'
 import { cn } from '#utils/utils'
 
 interface NewPostProps {
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 

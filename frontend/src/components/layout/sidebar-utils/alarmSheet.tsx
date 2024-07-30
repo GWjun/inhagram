@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 
 import {
   Sheet,
@@ -11,8 +11,8 @@ import {
 import { useSidebarStore } from '#store/client/sidebar.store'
 
 interface SheetProps {
-  children: React.ReactNode
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  children: ReactNode
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>
   className?: string
 }
 

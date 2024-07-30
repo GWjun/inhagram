@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 
 import LoadingSpinner from '#components/animation/loadingSpinner'
 import { Button } from '#components/ui/button'
@@ -35,7 +35,7 @@ export default function SignUp() {
     if (isSuccess) window.location.reload()
   }, [isSuccess])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     mutate({ nickname, email, password, type: 'register' })
   }

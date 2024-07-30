@@ -1,8 +1,10 @@
+import { ReactNode } from 'react'
+
 import ActiveLayout from './activeLayout'
 
 export default function ProtectedLayout(props: {
-  children: React.ReactNode
-  modal: React.ReactNode
+  children: ReactNode
+  modal: ReactNode
 }) {
   return (
     <div className="flex">

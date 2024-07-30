@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import type { Metadata, Viewport } from 'next'
 
 import { Toaster } from '#components/ui/toaster'
@@ -35,11 +37,7 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ko">
       <AuthSessionProvider>

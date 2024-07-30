@@ -11,7 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { DataSource, QueryRunner } from 'typeorm';
+import { QueryRunner } from 'typeorm';
 import { AccessTokenGuard } from 'src/auth/guard/bearer-token.guard';
 
 import { PostsService } from './posts.service';
@@ -32,7 +32,6 @@ export class PostsController {
   constructor(
     private readonly postsService: PostsService,
     private readonly postsImageService: PostsImagesService,
-    private readonly dataSource: DataSource,
   ) {}
 
   @Get()
