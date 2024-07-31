@@ -5,26 +5,21 @@ import Link from 'next/link'
 
 import { useEffect } from 'react'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from '#components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '#components/ui/card'
+import withPwaEvent from '#hooks/withPwaEvent'
 import { useGetTokenQuery } from '#store/server/auth.queries'
 
-import SignUpForm from './signUpForm'
+import LoginForm from './loginForm'
 
-export default function SignUp() {
-  const { mutate, isSuccess, isPending, error } = useGetTokenQuery()
+function LoginCard() {
+  const { mutate, isSuccess, isPending, isError } = useGetTokenQuery()
 
   useEffect(() => {
     if (isSuccess) window.location.reload()
   }, [isSuccess])
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen">
+    <div className="flex flex-col justify-center items-center">
       <Card className="w-[350px] p-4 mb-3">
         <CardHeader className="items-center">
           <Image
@@ -35,11 +30,7 @@ export default function SignUp() {
           />
         </CardHeader>
 
-        <CardDescription className="text-center font-semibold text-md mb-8">
-          친구들의 사진과 동영상을 보려면 가입하세요.
-        </CardDescription>
-
-        <SignUpForm mutate={mutate} isPending={isPending} />
+        <LoginForm mutate={mutate} isPending={isPending} />
 
         <CardContent className="flex items-center">
           <div className="flex-grow border-t border-gray-300" />
@@ -51,15 +42,9 @@ export default function SignUp() {
           <button className="text-button bg-transparent">
             <p className="text-sm font-semibold">Google로 로그인</p>
           </button>
-          {error && (
+          {isError && (
             <p className="text-sm text-destructive mt-3">
-              {error.message === 'Already exist nickname' &&
-                '이미 존재하는 닉네임입니다.'}
-              {error.message === 'email must be an email' &&
-                '올바른 이메일 형식이어야 합니다.'}
-              {!['Already exist nickname', 'email must be an email'].includes(
-                error.message,
-              ) && '현재 가입할 수 없습니다.'}
+              잘못된 비밀번호입니다. 다시 확인하세요.
             </p>
           )}
         </CardFooter>
@@ -67,12 +52,17 @@ export default function SignUp() {
 
       <Card className="w-[350px] p-4">
         <CardContent className="flex justify-center p-2">
-          <p className="text-sm">계정이 있으신가요?</p>
-          <Link href="login" className="px-2 text-button text-sm font-semibold">
-            로그인
+          <p className="text-sm">계정이 없으신가요?</p>
+          <Link
+            href="/signup"
+            className="px-2 text-button text-sm font-semibold"
+          >
+            가입하기
           </Link>
         </CardContent>
       </Card>
     </div>
   )
 }
+
+export default withPwaEvent(LoginCard)

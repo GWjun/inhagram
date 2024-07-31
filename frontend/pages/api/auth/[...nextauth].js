@@ -4,10 +4,6 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 
 import { loginUser, refreshAccessToken, registerUser } from '#utils/fetchUser'
 
-export const config = {
-  maxDuration: 60,
-}
-
 export const authOptions = {
   providers: [
     CredentialsProvider({

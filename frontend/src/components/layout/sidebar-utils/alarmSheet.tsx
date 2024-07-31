@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import {
   Sheet,
@@ -8,22 +8,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '#components/ui/sheet'
-import { useSidebarStore } from '#store/client/sidebar.store'
+import { useShrinkStore, useSidebarStore } from '#store/client/sidebar.store'
 
 interface SheetProps {
   children: ReactNode
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>
   className?: string
 }
 
-export default function AlarmSheet({
-  children,
-  setIsModalOpen,
-  ...props
-}: SheetProps) {
-  const [prevItem, setPrevItem] = useState('')
-
+export default function AlarmSheet({ children, ...props }: SheetProps) {
+  const setIsShrink = useShrinkStore((state) => state.setIsShrink)
   const { activeItem, setActiveItem } = useSidebarStore()
+  const [prevItem, setPrevItem] = useState('')
 
   function handleClick() {
     setPrevItem(activeItem)
@@ -31,7 +26,7 @@ export default function AlarmSheet({
   }
 
   function handleChange(open: boolean) {
-    setIsModalOpen(open)
+    setIsShrink(open)
     if (!open) setActiveItem(prevItem)
   }
 

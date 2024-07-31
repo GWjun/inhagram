@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { signIn } from 'next-auth/react'
 
-interface AuthCredentials {
+export interface AuthCredentials {
   nickname?: string
   email: string
   password: string
