@@ -31,7 +31,7 @@ export default function SideTopItem() {
         <Image
           onClick={handleClickHome}
           src="/images/static/text-icon.svg"
-          alt="instagram"
+          alt="instagram text logo"
           width={103}
           height={32}
         />

@@ -31,7 +31,7 @@ export default function SignUp() {
             src="/images/static/text-icon.svg"
             width={150}
             height={150}
-            alt="instagram"
+            alt="instagram text logo"
           />
         </CardHeader>
 
