@@ -5,6 +5,8 @@ import Link from 'next/link'
 
 import { useEffect } from 'react'
 
+import { useMutationState } from '@tanstack/react-query'
+
 import {
   Card,
   CardContent,
@@ -12,16 +14,20 @@ import {
   CardFooter,
   CardHeader,
 } from '#components/ui/card'
-import { useGetTokenQuery } from '#store/server/auth.queries'
+import { getTokenMutationKey } from '#store/server/auth.queries'
 
+import SignUpError from './signUpError'
 import SignUpForm from './signUpForm'
 
 export default function SignUp() {
-  const { mutate, isSuccess, isPending, error } = useGetTokenQuery()
+  const state = useMutationState({
+    filters: { mutationKey: getTokenMutationKey },
+    select: (mutation) => mutation.state,
+  })
 
   useEffect(() => {
-    if (isSuccess) window.location.reload()
-  }, [isSuccess])
+    if (state[0]?.status === 'success') window.location.reload()
+  }, [state])
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
@@ -39,7 +45,7 @@ export default function SignUp() {
           친구들의 사진과 동영상을 보려면 가입하세요.
         </CardDescription>
 
-        <SignUpForm mutate={mutate} isPending={isPending} />
+        <SignUpForm />
 
         <CardContent className="flex items-center">
           <div className="flex-grow border-t border-gray-300" />
@@ -51,17 +57,7 @@ export default function SignUp() {
           <button className="text-button bg-transparent">
             <p className="text-sm font-semibold">Google로 로그인</p>
           </button>
-          {error && (
-            <p className="text-sm text-destructive mt-3">
-              {error.message === 'Already exist nickname' &&
-                '이미 존재하는 닉네임입니다.'}
-              {error.message === 'email must be an email' &&
-                '올바른 이메일 형식이어야 합니다.'}
-              {!['Already exist nickname', 'email must be an email'].includes(
-                error.message,
-              ) && '현재 가입할 수 없습니다.'}
-            </p>
-          )}
+          <SignUpError error={state[0]?.error} />
         </CardFooter>
       </Card>
 

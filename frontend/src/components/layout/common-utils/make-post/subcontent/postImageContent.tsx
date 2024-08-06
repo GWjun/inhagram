@@ -15,7 +15,7 @@ export default function PostImageContent() {
   const previewUrls = useUrlStore((state) => state.previewUrls)
 
   return (
-    <Carousel className="md:min-w-[698px] 2xl:min-w-[868px] w-full h-full bg-gray-100 rounded-b-xl">
+    <Carousel className="md:min-w-[500px] lg:min-w-[698px] 2xl:min-w-[868px] w-full h-full bg-gray-100 rounded-b-xl">
       <CarouselContent className="h-full">
         {previewUrls.map((url, index) => (
           <CarouselItem key={index}>

@@ -5,18 +5,23 @@ import Link from 'next/link'
 
 import { useEffect } from 'react'
 
+import { useMutationState } from '@tanstack/react-query'
+
 import { Card, CardContent, CardFooter, CardHeader } from '#components/ui/card'
 import withPwaEvent from '#hooks/withPwaEvent'
-import { useGetTokenQuery } from '#store/server/auth.queries'
+import { getTokenMutationKey } from '#store/server/auth.queries'
 
 import LoginForm from './loginForm'
 
 function LoginCard() {
-  const { mutate, isSuccess, isPending, isError } = useGetTokenQuery()
+  const status = useMutationState({
+    filters: { mutationKey: getTokenMutationKey },
+    select: (mutation) => mutation.state.status,
+  })
 
   useEffect(() => {
-    if (isSuccess) window.location.reload()
-  }, [isSuccess])
+    if (status[0] === 'success') window.location.reload()
+  }, [status])
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -30,7 +35,7 @@ function LoginCard() {
           />
         </CardHeader>
 
-        <LoginForm mutate={mutate} isPending={isPending} />
+        <LoginForm />
 
         <CardContent className="flex items-center">
           <div className="flex-grow border-t border-gray-300" />
@@ -42,7 +47,7 @@ function LoginCard() {
           <button className="text-button bg-transparent">
             <p className="text-sm font-semibold">Google로 로그인</p>
           </button>
-          {isError && (
+          {status[0] === 'error' && (
             <p className="text-sm text-destructive mt-3">
               잘못된 비밀번호입니다. 다시 확인하세요.
             </p>

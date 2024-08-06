@@ -1,32 +1,31 @@
 import { Dispatch, SetStateAction } from 'react'
 
+import { useMutationState } from '@tanstack/react-query'
 import { ArrowLeft } from 'lucide-react'
-import { useSession } from 'next-auth/react'
 
+import { useFormRefContext } from '#components/provider/formProvider/formRefProvider'
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '#components/ui/dialog'
-import {
-  Page,
-  useFormStore,
-  usePageStore,
-  useUrlStore,
-} from '#store/client/makepost.store'
-import { usePostDataMutation } from '#store/server/post.queries'
+import { Page, usePageStore, useUrlStore } from '#store/client/makepost.store'
+import { addPostMutationKey } from '#store/server/post.queries'
 
 export default function PostHeader({
   setAlertOpen,
 }: {
   setAlertOpen: Dispatch<SetStateAction<boolean>>
 }) {
-  const { data: session } = useSession()
+  const { handleSubmit } = useFormRefContext()
 
   const { page } = usePageStore()
-  const { title, content } = useFormStore()
-  const { previewUrls, imageUrls } = useUrlStore()
-  const { mutate, isSuccess, reset } = usePostDataMutation(session)
+  const { previewUrls } = useUrlStore()
+
+  const status = useMutationState({
+    filters: { mutationKey: addPostMutationKey },
+    select: (mutation) => mutation.state.status,
+  })
 
   function handleNextPage() {
     if (page === Page.Form) handleSubmit()
@@ -35,21 +34,14 @@ export default function PostHeader({
 
   function handlePrevPage() {
     if (page === Page.Image) setAlertOpen(true)
-    else {
-      if (page === Page.Result) reset()
-      usePageStore.setState((state) => ({ page: state.page - 1 }))
-    }
-  }
-
-  function handleSubmit() {
-    mutate({ title, content, images: imageUrls })
+    else usePageStore.setState((state) => ({ page: state.page - 1 }))
   }
 
   function HeaderContent() {
     if (!previewUrls.length) return null
     return (
       <>
-        {!isSuccess && (
+        {status[0] !== 'success' && (
           <ArrowLeft
             className="absolute left-2 cursor-pointer"
             onClick={handlePrevPage}

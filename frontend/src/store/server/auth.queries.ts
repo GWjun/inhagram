@@ -19,8 +19,10 @@ async function fetchToken(credentials: AuthCredentials) {
   return response
 }
 
+export const getTokenMutationKey = ['getToken']
 export const useGetTokenQuery = () => {
   return useMutation({
+    mutationKey: getTokenMutationKey,
     mutationFn: fetchToken,
   })
 }

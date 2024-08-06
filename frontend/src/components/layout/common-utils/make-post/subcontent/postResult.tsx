@@ -19,12 +19,11 @@ export default function PostResult() {
         <span className="text-lg mt-3">게시물이 공유되었습니다.</span>
       </div>
     )
-  else if (status[0] === 'error')
+  else
     return (
       <div className="flex flex-col justify-center items-center">
         <XMarkAnimation />
         <span className="text-lg mt-3">게시물을 공유하는데 실패했습니다.</span>
       </div>
     )
-  else return <div>error</div>
 }

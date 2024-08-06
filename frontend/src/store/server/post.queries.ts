@@ -49,7 +49,6 @@ export function useUploadImageMutation(session: CustomSesson) {
 }
 
 // Post Data Query
-export const addPostMutationKey = ['addPost']
 async function postData(data: PostData, session: CustomSesson) {
   return authFetch(
     `/posts`,
@@ -63,6 +62,8 @@ async function postData(data: PostData, session: CustomSesson) {
     session,
   )
 }
+
+export const addPostMutationKey = ['addPost']
 export function usePostDataMutation(session: CustomSesson) {
   const queryClient = useQueryClient()
 

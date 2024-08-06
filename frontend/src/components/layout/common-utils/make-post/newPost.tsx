@@ -7,6 +7,7 @@ import { useMutationState } from '@tanstack/react-query'
 import PostAlert from '#components/layout/common-utils/make-post/postAlert'
 import PostContent from '#components/layout/common-utils/make-post/postContent'
 import PostHeader from '#components/layout/common-utils/make-post/postHeader'
+import { FormRefProvider } from '#components/provider/formProvider/formRefProvider'
 import { Dialog, DialogContent, DialogTrigger } from '#components/ui/dialog'
 import {
   Page,
@@ -73,8 +74,10 @@ export default function NewPost({ children, ...props }: NewPostProps) {
           status.length && 'md:max-w-[700px] 2xl:max-w-[870px]',
         )}
       >
-        <PostHeader setAlertOpen={setAlertOpen} />
-        <PostContent />
+        <FormRefProvider>
+          <PostHeader setAlertOpen={setAlertOpen} />
+          <PostContent />
+        </FormRefProvider>
 
         <PostAlert
           alertOpen={alertOpen}
