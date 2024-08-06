@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation'
 
-import { Dispatch, ReactNode, SetStateAction, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import SearchUserData from '#components/feature/searchUserData'
 import { Input } from '#components/ui/input'
@@ -12,22 +12,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '#components/ui/sheet'
-import { useSidebarStore } from '#store/client/sidebar.store'
+import { useShrinkStore, useSidebarStore } from '#store/client/sidebar.store'
 import { BasicUser } from '#types/user.type'
 
 interface SheetProps {
   children: ReactNode
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>
   className?: string
 }
 
-export default function SearchSheet({
-  children,
-  setIsModalOpen,
-  ...props
-}: SheetProps) {
+export default function SearchSheet({ children, ...props }: SheetProps) {
   const router = useRouter()
 
+  const setIsShrink = useShrinkStore((state) => state.setIsShrink)
   const { activeItem, setActiveItem } = useSidebarStore()
   const [isOpen, setIsOpen] = useState<boolean>()
   const [prevItem, setPrevItem] = useState('')
@@ -40,14 +36,14 @@ export default function SearchSheet({
 
   function handleChange(open: boolean) {
     setIsOpen(open)
-    setIsModalOpen(open)
+    setIsShrink(open)
     if (!open) setActiveItem(prevItem)
   }
 
   function handleUserClick(user: BasicUser) {
     router.push(`/${user.nickname}`)
     setIsOpen(false)
-    setIsModalOpen(false)
+    setIsShrink(false)
   }
 
   return (

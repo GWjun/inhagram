@@ -40,27 +40,8 @@ export const useUrlStore = create<UrlState & UrlActions>((set) => ({
     set((state) => ({ imageUrls: [...state.imageUrls, ...urls] })),
 }))
 
-// Form Store
-interface FormState {
-  title: string
-  content: string
-}
-
-interface FormActions {
-  setTitle: (title: string) => void
-  setContent: (content: string) => void
-}
-
-export const useFormStore = create<FormState & FormActions>((set) => ({
-  title: '',
-  content: '',
-  setTitle: (title) => set({ title }),
-  setContent: (content) => set({ content }),
-}))
-
 // Reset Store
 export const resetAllStores = () => {
   usePageStore.setState({ page: 0 })
   useUrlStore.setState({ previewUrls: [], imageUrls: [] })
-  useFormStore.setState({ title: '', content: '' })
 }

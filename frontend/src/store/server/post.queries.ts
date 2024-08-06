@@ -62,10 +62,13 @@ async function postData(data: PostData, session: CustomSesson) {
     session,
   )
 }
+
+export const addPostMutationKey = ['addPost']
 export function usePostDataMutation(session: CustomSesson) {
   const queryClient = useQueryClient()
 
   return useMutation({
+    mutationKey: addPostMutationKey,
     mutationFn: (data: PostData) => postData(data, session),
     gcTime: 0,
     onSuccess: async () => {

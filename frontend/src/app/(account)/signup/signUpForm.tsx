@@ -6,29 +6,35 @@ import { CardContent } from '#components/ui/card'
 import { Input } from '#components/ui/input'
 import { useGetTokenQuery } from '#store/server/auth.queries'
 
-import { emailOption, passwordOption } from '../inputOptions'
+import { emailOption, nicknameOption } from '../inputOptions'
 
-interface LoginFormData {
+interface SignUpFormData {
+  nickname: string
   email: string
   password: string
 }
 
-export default function LoginForm() {
+export default function SignUpForm() {
   const { mutate, isPending } = useGetTokenQuery()
 
   const {
     register,
     handleSubmit,
     formState: { isValid },
-  } = useForm<LoginFormData>()
+  } = useForm<SignUpFormData>()
 
-  function onSubmit(data: LoginFormData) {
-    mutate?.({ ...data, type: 'login' })
+  function onSubmit(data: SignUpFormData) {
+    mutate?.({ ...data, type: 'register' })
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <CardContent className="space-y-1.5">
+        <Input
+          className="bg-primary-foreground"
+          placeholder="닉네임"
+          {...register('nickname', nicknameOption)}
+        />
         <Input
           className="bg-primary-foreground"
           placeholder="이메일"
@@ -38,12 +44,11 @@ export default function LoginForm() {
           className="bg-primary-foreground"
           placeholder="비밀번호"
           type="password"
-          {...register('password', passwordOption)}
         />
       </CardContent>
       <CardContent>
         <Button type="submit" className="w-full" disabled={!isValid}>
-          {isPending ? <LoadingSpinner /> : '로그인'}
+          {isPending ? <LoadingSpinner /> : '가입'}
         </Button>
       </CardContent>
     </form>

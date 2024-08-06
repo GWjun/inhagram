@@ -15,22 +15,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '#components/ui/dropdown-menu'
+import { useShrinkStore } from '#store/client/sidebar.store'
 import { cn } from 'utils/utils'
 
-export default function ModalMenu({ isModalOpen }: { isModalOpen: boolean }) {
+export default function ModalMenu() {
+  const isShrink = useShrinkStore()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center p-3 mb-1 hover:bg-gray-light rounded-lg w-full group">
         <Menu
           className={cn(
             'xl:mr-4 min-w-6 min-h-6 group-hover:scale-110 transition duration-200 ease-in-out',
-            isModalOpen && 'xl:mr-0',
+            isShrink && 'xl:mr-0',
           )}
         />
         <span
           className={cn(
             'hidden xl:inline whitespace-nowrap',
-            isModalOpen && 'xl:hidden',
+            isShrink && 'xl:hidden',
           )}
         >
           더 보기

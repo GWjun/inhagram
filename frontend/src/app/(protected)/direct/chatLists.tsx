@@ -127,7 +127,11 @@ export default function ChatLists() {
         )}
 
         {status === 'pending' && (
-          <UserSkeleton count={10} textClassName="hidden lg:flex lg:flex-col" />
+          <UserSkeleton
+            count={10}
+            containerStyle="px-1 sm:px-6"
+            textStyle="hidden lg:flex lg:flex-col"
+          />
         )}
       </section>
 

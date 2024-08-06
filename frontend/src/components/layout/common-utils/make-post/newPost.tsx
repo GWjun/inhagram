@@ -1,31 +1,21 @@
 'use client'
 
-import { useState, useEffect, useCallback, ReactNode } from 'react'
+import { useState, useEffect, ReactNode } from 'react'
 
-import { ArrowLeft } from 'lucide-react'
-import { useSession } from 'next-auth/react'
+import { useMutationState } from '@tanstack/react-query'
 
-import CheckmarkAnimation from '#components/animation/checkMark'
-import LoadingSpinner from '#components/animation/loadingSpinner'
-import XMarkAnimation from '#components/animation/XMark'
 import PostAlert from '#components/layout/common-utils/make-post/postAlert'
 import PostContent from '#components/layout/common-utils/make-post/postContent'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '#components/ui/dialog'
+import PostHeader from '#components/layout/common-utils/make-post/postHeader'
+import { FormRefProvider } from '#components/provider/formProvider/formRefProvider'
+import { Dialog, DialogContent, DialogTrigger } from '#components/ui/dialog'
 import {
   Page,
   resetAllStores,
-  useFormStore,
   usePageStore,
   useUrlStore,
 } from '#store/client/makepost.store'
-import { usePostDataMutation } from '#store/server/post.queries'
+import { addPostMutationKey } from '#store/server/post.queries'
 import { cn } from '#utils/utils'
 
 interface NewPostProps {
@@ -34,14 +24,12 @@ interface NewPostProps {
 }
 
 export default function NewPost({ children, ...props }: NewPostProps) {
-  const { data: session } = useSession()
-
   const { page } = usePageStore()
-  const { previewUrls, imageUrls } = useUrlStore()
-  const { title, content } = useFormStore()
-
-  const { mutate, isSuccess, isError, isPending, reset } =
-    usePostDataMutation(session)
+  const { previewUrls } = useUrlStore()
+  const status = useMutationState({
+    filters: { mutationKey: addPostMutationKey },
+    select: (mutation) => mutation.state.status,
+  })
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [alertOpen, setAlertOpen] = useState(false)
@@ -59,54 +47,15 @@ export default function NewPost({ children, ...props }: NewPostProps) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [previewUrls.length, alertOpen])
 
-  function handleNextPage() {
-    if (page === Page.Form) handleSubmit()
-    usePageStore.setState((state) => ({ page: state.page + 1 }))
-  }
-
-  function handlePrevPage() {
-    if (page === Page.Image) setAlertOpen(true)
-    else {
-      if (page === Page.Result) reset()
-      usePageStore.setState((state) => ({ page: state.page - 1 }))
-    }
-  }
-
   function handleOutsidePage(e: CustomEvent) {
-    if (isSuccess || previewUrls.length === 0) {
+    if (status[0] === 'success' || previewUrls.length === 0) {
       setDialogOpen(false)
       resetAllStores()
-      reset()
     } else {
       e.preventDefault()
       setAlertOpen(true)
     }
   }
-
-  function handleSubmit() {
-    mutate({ title, content, images: imageUrls })
-  }
-
-  const ResultContent = useCallback(() => {
-    if (isPending) return <LoadingSpinner />
-    else if (isSuccess)
-      return (
-        <div className="flex flex-col justify-center items-center">
-          <CheckmarkAnimation />
-          <span className="text-lg mt-3">게시물이 공유되었습니다.</span>
-        </div>
-      )
-    else if (isError)
-      return (
-        <div className="flex flex-col justify-center items-center">
-          <XMarkAnimation />
-          <span className="text-lg mt-3">
-            게시물을 공유하는데 실패했습니다.
-          </span>
-        </div>
-      )
-    else return <div>error</div>
-  }, [isPending, isSuccess, isError])
 
   return (
     <Dialog open={dialogOpen}>
@@ -116,41 +65,20 @@ export default function NewPost({ children, ...props }: NewPostProps) {
       >
         {children}
       </DialogTrigger>
+
       <DialogContent
         onInteractOutside={handleOutsidePage}
         className={cn(
           'grid-rows-[auto_1fr] gap-0 w-full h-full p-0 max-w-[90vw] max-h-[50vh] md:max-w-[700px] md:max-h-[730px] 2xl:max-w-[870px] 2xl:max-h-[900px]',
           page !== Page.Image && 'md:max-w-[85vw] 2xl:max-w-[85vw]',
-          (isPending || isError || isSuccess) &&
-            'md:max-w-[700px] 2xl:max-w-[870px]',
+          status.length && 'md:max-w-[700px] 2xl:max-w-[870px]',
         )}
       >
-        <DialogHeader className="justify-center h-11 border-b border-gray-300 space-y-0">
-          <DialogTitle className="text-md text-center font-semibold">
-            {page !== Page.Result ? '새 게시물 만들기' : '공유'}
-          </DialogTitle>
-          <DialogDescription />
-          {previewUrls.length > 0 && (
-            <>
-              {!isSuccess && (
-                <ArrowLeft
-                  className="absolute left-2 cursor-pointer"
-                  onClick={handlePrevPage}
-                />
-              )}
-              {page !== Page.Result && (
-                <button
-                  className="absolute right-4 text-sm text-center font-semibold text-button"
-                  onClick={handleNextPage}
-                >
-                  {page !== Page.Form ? '다음' : '공유하기'}
-                </button>
-              )}
-            </>
-          )}
-        </DialogHeader>
+        <FormRefProvider>
+          <PostHeader setAlertOpen={setAlertOpen} />
+          <PostContent />
+        </FormRefProvider>
 
-        {page !== Page.Result ? <PostContent /> : <ResultContent />}
         <PostAlert
           alertOpen={alertOpen}
           setAlertOpen={setAlertOpen}
