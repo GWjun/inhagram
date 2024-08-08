@@ -2,9 +2,9 @@ import { ReactNode } from 'react'
 
 import type { Metadata, Viewport } from 'next'
 
+import AuthSessionProvider from '#components/provider/utilProvider/AuthSessionProvider'
+import ReactQueryProvider from '#components/provider/utilProvider/ReactQueryProvider'
 import { Toaster } from '#components/ui/toaster'
-import AuthSessionProvider from '#utils/providers/AuthSessionProvider'
-import ReactQueryProvider from '#utils/providers/ReactQueryProvider'
 
 import './globals.css'
 

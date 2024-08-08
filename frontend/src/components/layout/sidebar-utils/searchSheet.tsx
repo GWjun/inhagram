@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation'
 
 import { ReactNode, useState } from 'react'
 
-import SearchUserData from '#components/feature/searchUserData'
+import SearchUserData from '#components/feature/user/searchUserData'
 import { Input } from '#components/ui/input'
 import {
   Sheet,

@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 
 import { useSession } from 'next-auth/react'
 
-import Alert from '#components/feature/alert'
+import Alert from '#components/feature/modal/alert'
 import useWebSocketStore, {
   MAX_RETRY_COUNT,
 } from '#store/client/websocket.store'

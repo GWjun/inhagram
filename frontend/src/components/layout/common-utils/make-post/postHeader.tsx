@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { useMutationState } from '@tanstack/react-query'
 import { ArrowLeft } from 'lucide-react'
 
-import { useFormRefContext } from '#components/provider/formProvider/formRefProvider'
+import useFormRefContext from '#components/provider/formRefProvider/useFormRefContext'
 import {
   DialogDescription,
   DialogHeader,

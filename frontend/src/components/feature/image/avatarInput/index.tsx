@@ -4,7 +4,7 @@ import { ChangeEvent, useRef } from 'react'
 
 import { useSession } from 'next-auth/react'
 
-import ImageWithLoad from '#components/feature/imageWithLoad'
+import ImageWithLoad from '#components/feature/image/imageWithLoad'
 import { UserImageResponse, useUserImageStore } from '#store/client/user.store'
 import authFetch from '#utils/authFetch'
 

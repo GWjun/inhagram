@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 
 import { useSession } from 'next-auth/react'
 
-import UserSkeleton from '#components/feature/userSkeleton'
+import UserSkeleton from '#components/feature/user/userSkeleton'
+import useDebouncedFetch from '#hooks/useDebouncedFetch'
 import { BasicUser } from '#types/user.type'
 import { cn } from '#utils/utils'
 
@@ -21,40 +22,16 @@ export default function SearchUserData({
 }: SearchUserDataProps) {
   const { data: session } = useSession()
 
-  const [users, setUsers] = useState<BasicUser[]>()
+  const { data: users, isLoading } = useDebouncedFetch<BasicUser>({
+    endpoint: `/users/search`,
+    query: searchQuery,
+  })
+
   const [selectedUser, setSelectedUser] = useState<BasicUser | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/users/search?name=${encodeURIComponent(searchQuery)}`,
-        )
-        if (!response.ok) throw new Error('Failed to fetch users')
-
-        const data = (await response.json()) as BasicUser[]
-        setUsers(data)
-      } catch (error) {
-        console.error('Error fetching users:', error)
-        setUsers([])
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    if (searchQuery.trim() === '') {
-      setUsers([])
-      setIsLoading(false)
-      return
-    }
-
-    setIsLoading(true)
     setSelectedUser(null)
-    const debounceTimer = setTimeout(fetchUsers, 300)
-
-    return () => clearTimeout(debounceTimer)
-  }, [searchQuery, setSelectedUser])
+  }, [searchQuery])
 
   function handleClick(user: BasicUser) {
     setSelectedUser(user)

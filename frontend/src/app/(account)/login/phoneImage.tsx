@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import Slideshow from '#components/feature/slidshow'
+import Slideshow from '#components/feature/image/slideShow'
 
 import homePhone from '../../../../public/images/login/home-phones.png'
 import screen1 from '../../../../public/images/login/screenshot1.png'

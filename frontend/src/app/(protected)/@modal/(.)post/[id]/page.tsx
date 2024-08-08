@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import LoadingSpinner from '#components/animation/loadingSpinner'
-import Alert from '#components/feature/alert'
+import Alert from '#components/feature/modal/alert'
 import {
   Carousel,
   CarouselContent,

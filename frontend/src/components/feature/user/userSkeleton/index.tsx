@@ -1,5 +1,6 @@
 import { Skeleton } from '#components/ui/skeleton'
 import { cn } from '#utils/utils'
+import { memo } from 'react'
 
 interface UserSkeletonProps {
   count: number
@@ -7,11 +8,7 @@ interface UserSkeletonProps {
   textStyle?: string
 }
 
-export default function UserSkeleton({
-  count,
-  containerStyle,
-  textStyle,
-}: UserSkeletonProps) {
+function UserSkeleton({ count, containerStyle, textStyle }: UserSkeletonProps) {
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (
@@ -29,3 +26,5 @@ export default function UserSkeleton({
     </>
   )
 }
+
+export default memo(UserSkeleton)

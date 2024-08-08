@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react'
 
-import Alert from '#components/feature/alert'
+import Alert from '#components/feature/modal/alert'
 import PostDefaultContent from '#components/layout/common-utils/make-post/subcontent/postDefaultContent'
 import PostForm from '#components/layout/common-utils/make-post/subcontent/postForm'
 import PostImageContent from '#components/layout/common-utils/make-post/subcontent/postImageContent'

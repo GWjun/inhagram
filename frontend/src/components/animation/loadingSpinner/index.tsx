@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react'
 
-import { cn } from 'utils/utils'
+import { cn } from '#utils/utils'
 
 interface SpinnerProps {
   variant?: string

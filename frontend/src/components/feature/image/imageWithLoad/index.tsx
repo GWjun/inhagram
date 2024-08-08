@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import type { ImageProps } from 'next/dist/shared/lib/get-img-props'
 
-import Loading from '../../app/loading'
+import Loading from '../../../../app/loading'
 
 export default function ImageWithLoad({
   src,

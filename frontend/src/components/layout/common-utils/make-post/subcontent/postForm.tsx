@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 
-import { useFormRefContext } from '#components/provider/formProvider/formRefProvider'
+import useFormRefContext from '#components/provider/formRefProvider/useFormRefContext'
 import { useUrlStore } from '#store/client/makepost.store'
 import { usePostDataMutation } from '#store/server/post.queries'
 

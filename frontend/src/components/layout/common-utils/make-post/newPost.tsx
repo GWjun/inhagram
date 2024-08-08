@@ -7,7 +7,7 @@ import { useMutationState } from '@tanstack/react-query'
 import PostAlert from '#components/layout/common-utils/make-post/postAlert'
 import PostContent from '#components/layout/common-utils/make-post/postContent'
 import PostHeader from '#components/layout/common-utils/make-post/postHeader'
-import { FormRefProvider } from '#components/provider/formProvider/formRefProvider'
+import { FormRefProvider } from '#components/provider/formRefProvider'
 import { Dialog, DialogContent, DialogTrigger } from '#components/ui/dialog'
 import {
   Page,

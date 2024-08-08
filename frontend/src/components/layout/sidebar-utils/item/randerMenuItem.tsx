@@ -27,11 +27,11 @@ const NewPost = dynamic(
   },
 )
 
-export default function RenderMenuItem({
-  item,
-}: {
+interface RenderMenuItemProps {
   item: (typeof SideMenuItems)[0]
-}) {
+}
+
+export default function RenderMenuItem({ item }: RenderMenuItemProps) {
   const isShrink = useShrinkStore((state) => state.isShrink)
   const { activeItem, setActiveItem } = useSidebarStore()
   const isActive = activeItem === item.name
@@ -39,6 +39,11 @@ export default function RenderMenuItem({
   const commonClasses = cn(
     'flex items-center w-full p-3 my-2 hover:bg-gray-light rounded-lg group',
     isActive && 'font-bold',
+  )
+
+  const classNameWithBorder = cn(
+    commonClasses,
+    isShrink && isActive && 'py-[11px] border border-gray-300 max-w-12',
   )
 
   const IconComponent = (
@@ -65,28 +70,14 @@ export default function RenderMenuItem({
   switch (item.name) {
     case '검색':
       return (
-        <SearchSheet
-          className={cn(
-            commonClasses,
-            isShrink &&
-              activeItem === '검색' &&
-              'py-[11px] border border-gray-300 max-w-12',
-          )}
-        >
+        <SearchSheet className={classNameWithBorder}>
           {IconComponent}
           {NameComponent}
         </SearchSheet>
       )
     case '알림':
       return (
-        <AlarmSheet
-          className={cn(
-            commonClasses,
-            isShrink &&
-              activeItem === '알림' &&
-              'py-[11px] border border-gray-300 max-w-12',
-          )}
-        >
+        <AlarmSheet className={classNameWithBorder}>
           {IconComponent}
           {NameComponent}
         </AlarmSheet>

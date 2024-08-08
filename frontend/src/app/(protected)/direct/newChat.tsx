@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation'
 
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
-import SearchUserData from '#components/feature/searchUserData'
+import SearchUserData from '#components/feature/user/searchUserData'
 import { Button } from '#components/ui/button'
 import {
   Dialog,
@@ -30,6 +30,10 @@ export default function NewChat({ children }: NewChatProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedUser, setSelectedUser] = useState<BasicUser | null>(null)
   const [isOpen, setIsOpen] = useState<boolean | undefined>(undefined)
+
+  useEffect(() => {
+    setSelectedUser(null)
+  }, [searchQuery])
 
   function handleNewChat() {
     if (selectedUser) {

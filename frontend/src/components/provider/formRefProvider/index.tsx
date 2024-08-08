@@ -1,6 +1,6 @@
-import { ReactNode, useContext, useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 
-import { FormRefContext } from '#components/provider/formProvider/formRefContext'
+import { FormRefContext } from '#components/provider/formRefProvider/formRefContext'
 
 export function FormRefProvider({ children }: { children: ReactNode }) {
   const formRef = useRef<HTMLFormElement>(null)
@@ -18,5 +18,3 @@ export function FormRefProvider({ children }: { children: ReactNode }) {
     </FormRefContext.Provider>
   )
 }
-
-export const useFormRefContext = () => useContext(FormRefContext)

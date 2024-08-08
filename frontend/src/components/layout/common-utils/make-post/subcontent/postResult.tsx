@@ -2,7 +2,7 @@ import { useMutationState } from '@tanstack/react-query'
 
 import CheckmarkAnimation from '#components/animation/checkMark'
 import LoadingSpinner from '#components/animation/loadingSpinner'
-import XMarkAnimation from '#components/animation/XMark'
+import XMarkAnimation from '#components/animation/xMark'
 import { addPostMutationKey } from '#store/server/post.queries'
 
 export default function PostResult() {
