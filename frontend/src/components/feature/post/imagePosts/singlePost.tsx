@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Layers2 } from 'lucide-react'
+import { Layers2, Heart, MessageCircle } from 'lucide-react'
 
 import { Post } from '#types/posts.type'
 
@@ -22,6 +22,28 @@ export default function SinglePost({ post }: { post: Post }) {
             <Layers2 fill="white" className="text-gray-300" size={16} />
           </div>
         )}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+          <div className="flex items-center space-x-4 text-white">
+            <div className="flex items-center">
+              <Heart
+                fill="white"
+                className="mr-2"
+                size={20}
+                aria-label="좋아요"
+              />
+              <span>{post.likeCount}</span>
+            </div>
+            <div className="flex items-center">
+              <MessageCircle
+                fill="white"
+                className="mr-2"
+                size={20}
+                aria-label="댓글"
+              />
+              <span>{post.commentCount}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </Link>
   )

@@ -12,7 +12,7 @@ import {
 import { Page, usePageStore, useUrlStore } from '#store/client/makepost.store'
 import { addPostMutationKey } from '#store/server/post.queries'
 
-export default function PostHeader({
+export default function MakeHeader({
   setAlertOpen,
 }: {
   setAlertOpen: Dispatch<SetStateAction<boolean>>
@@ -45,6 +45,7 @@ export default function PostHeader({
           <ArrowLeft
             className="absolute left-2 cursor-pointer"
             onClick={handlePrevPage}
+            aria-label="뒤로가기"
           />
         )}
 

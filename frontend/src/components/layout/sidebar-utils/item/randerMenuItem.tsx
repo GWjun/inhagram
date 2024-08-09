@@ -52,6 +52,7 @@ export default function RenderMenuItem({ item }: RenderMenuItemProps) {
         `xl:mr-4 min-w-6 min-h-6 group-hover:scale-110 ${isActive ? 'text-black' : 'text-gray-500'} transition duration-200 ease-in-out`,
         isShrink && 'xl:mr-0',
       )}
+      aria-label={item.name}
     />
   )
 

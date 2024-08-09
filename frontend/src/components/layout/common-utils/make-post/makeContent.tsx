@@ -1,14 +1,14 @@
 import { useSession } from 'next-auth/react'
 
 import Alert from '#components/feature/modal/alert'
-import PostDefaultContent from '#components/layout/common-utils/make-post/subcontent/postDefaultContent'
-import PostForm from '#components/layout/common-utils/make-post/subcontent/postForm'
-import PostImageContent from '#components/layout/common-utils/make-post/subcontent/postImageContent'
-import PostResult from '#components/layout/common-utils/make-post/subcontent/postResult'
+import MakeDefaultContent from '#components/layout/common-utils/make-post/subcontent/makeDefaultContent'
+import MakeForm from '#components/layout/common-utils/make-post/subcontent/makeForm'
+import MakeImageContent from '#components/layout/common-utils/make-post/subcontent/makeImageContent'
+import MakeResult from '#components/layout/common-utils/make-post/subcontent/makeResult'
 import { Page, usePageStore, useUrlStore } from '#store/client/makepost.store'
 import { useUploadImageMutation } from '#store/server/post.queries'
 
-export default function PostContent() {
+export default function MakeContent() {
   const { data: session } = useSession()
 
   const page = usePageStore((state) => state.page)
@@ -16,11 +16,11 @@ export default function PostContent() {
   const { isError, reset } = useUploadImageMutation(session)
 
   function MainContent() {
-    if (!previewUrls.length) return <PostDefaultContent />
-    return <PostImageContent />
+    if (!previewUrls.length) return <MakeDefaultContent />
+    return <MakeImageContent />
   }
 
-  if (page === Page.Result) return <PostResult />
+  if (page === Page.Result) return <MakeResult />
 
   return (
     <div className="flex w-full h-full justify-center items-center">
@@ -30,7 +30,7 @@ export default function PostContent() {
 
       {page === Page.Form && (
         <section className="w-full h-full max-w-[30vw] lg:max-w-[339px] border-l border-gray-300">
-          <PostForm />
+          <MakeForm />
         </section>
       )}
 

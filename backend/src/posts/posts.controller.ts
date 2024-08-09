@@ -78,7 +78,11 @@ export class PostsController {
   }
 
   @Delete(':id')
-  deletePost(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.deletePost(id);
+  @UseGuards(AccessTokenGuard)
+  deletePost(
+    @User('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.postsService.deletePost(userId, id);
   }
 }

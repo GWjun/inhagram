@@ -7,7 +7,11 @@ import { UserImageResponse } from '#store/client/user.store'
 
 import MobileLists from './mobileLists'
 
-export default async function UserHeader({ userName }: { userName: string }) {
+export default async function ProfileHeader({
+  userName,
+}: {
+  userName: string
+}) {
   const session = await getServerSession()
   const sameUser = session?.user?.name === userName
 

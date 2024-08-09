@@ -9,7 +9,7 @@ import { Button } from '#components/ui/button'
 import { useUrlStore } from '#store/client/makepost.store'
 import { useUploadImageMutation } from '#store/server/post.queries'
 
-export default function PostDefaultContent() {
+export default function MakeDefaultContent() {
   const { data: session } = useSession()
 
   const { addPreviewUrls } = useUrlStore()
@@ -52,7 +52,6 @@ export default function PostDefaultContent() {
         height={100}
         alt="make-icon"
         priority
-        decoding="sync"
       />
       <div className="text-xl p-2">사진과 동영상을 선택해 주세요.</div>
       <input

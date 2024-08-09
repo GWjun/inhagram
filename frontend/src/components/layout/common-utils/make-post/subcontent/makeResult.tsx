@@ -5,7 +5,7 @@ import LoadingSpinner from '#components/animation/loadingSpinner'
 import XMarkAnimation from '#components/animation/xMark'
 import { addPostMutationKey } from '#store/server/post.queries'
 
-export default function PostResult() {
+export default function MakeResult() {
   const status = useMutationState({
     filters: { mutationKey: addPostMutationKey },
     select: (mutation) => mutation.state.status,

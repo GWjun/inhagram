@@ -30,6 +30,7 @@ export const RenderMenuItem = ({
       className={`group-hover:scale-110 ${
         isActive ? 'text-black' : 'text-gray-500'
       } transition duration-200 ease-in-out`}
+      aria-label={item.name}
     />
   )
 

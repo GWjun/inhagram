@@ -10,7 +10,7 @@ export default function ChatLayout() {
       <section className="flex justify-center lg:justify-between mb-6 lg:pr-6">
         <h3 className="hidden lg:flex font-bold sm:px-6">메시지</h3>
         <NewChat>
-          <SquarePen />
+          <SquarePen aria-label="새 메시지" />
         </NewChat>
       </section>
       <ChatLists />

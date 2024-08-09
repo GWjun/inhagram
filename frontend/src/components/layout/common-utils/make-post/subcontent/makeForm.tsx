@@ -10,7 +10,7 @@ export interface PostFormData {
   content: string
 }
 
-export default function PostForm() {
+export default function MakeForm() {
   const { data: session } = useSession()
   const { formRef } = useFormRefContext()
 

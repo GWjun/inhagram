@@ -9,7 +9,7 @@ interface MessageState {
   setMyWritten: (written: boolean) => void
   setOtherWritten: (written: boolean) => void
 }
-const useMessageStore = create<MessageState>((set) => ({
+const useMessageStore = create<MessageState>()((set) => ({
   messageBuffer: [],
   myWritten: false,
   otherWritten: false,

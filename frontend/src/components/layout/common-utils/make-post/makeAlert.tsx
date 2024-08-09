@@ -18,7 +18,7 @@ interface PostAlertProps {
   setDialogOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export default function PostAlert({
+export default function MakeAlert({
   alertOpen,
   setAlertOpen,
   setDialogOpen,

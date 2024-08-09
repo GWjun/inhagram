@@ -1,7 +1,7 @@
 import ImagePosts from '#components/feature/post/imagePosts'
 import NotExist from '#components/layout/notexist'
 
-import UserHeader from './userHeader'
+import ProfileHeader from './profileHeader'
 
 export default async function UserProfile({
   params: { userName },
@@ -15,7 +15,7 @@ export default async function UserProfile({
 
   return (
     <div className="flex flex-col min-h-full justify-center items-center">
-      <UserHeader userName={userName} />
+      <ProfileHeader userName={userName} />
       <div className="w-full h-full max-w-[975px] md:px-5">
         <div className="flex justify-center items-center w-full h-[53px] border-t border-t-gray-300 text-gray-600 text-xs text-center font-semibold tracking-wide" />
         <ImagePosts userName={userName} />

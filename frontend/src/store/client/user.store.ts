@@ -11,7 +11,7 @@ interface UserImageStore {
   setUserImage: (imageUrl: string) => void
 }
 
-export const useUserImageStore = create<UserImageStore>((set) => ({
+export const useUserImageStore = create<UserImageStore>()((set) => ({
   imageUrl: '',
   isLoading: false,
 

@@ -10,7 +10,7 @@ import {
 import { Page, usePageStore, useUrlStore } from '#store/client/makepost.store'
 import { cn } from '#utils/utils'
 
-export default function PostImageContent() {
+export default function MakeImageContent() {
   const page = usePageStore((state) => state.page)
   const previewUrls = useUrlStore((state) => state.previewUrls)
 
