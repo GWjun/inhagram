@@ -22,7 +22,7 @@ interface PostData {
   images: string[]
 }
 
-// Upload Query
+// Upload Image Mutation
 async function uploadImage(image: File, session: CustomSesson) {
   const formData = new FormData()
   if (image) formData.append('image', image)
@@ -48,7 +48,7 @@ export function useUploadImageMutation(session: CustomSesson) {
   })
 }
 
-// Post Data Query
+// Post Data Mutation
 async function postData(data: PostData, session: CustomSesson) {
   return authFetch(
     `/posts`,
@@ -77,7 +77,34 @@ export function usePostDataMutation(session: CustomSesson) {
   })
 }
 
-// Get Posts Query
+// Delete Data Mutation
+async function deleteData(postId: number, session: CustomSesson) {
+  return authFetch(
+    `/posts/${postId}`,
+    {
+      method: 'DELETE',
+      body: JSON.stringify({ id: postId }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+    session,
+  )
+}
+
+export function useDeleteDataMutation(session: CustomSesson) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (postId: number) => deleteData(postId, session),
+    gcTime: 0,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['posts'] })
+    },
+  })
+}
+
+// Get Datas Query
 async function getPosts(url: string) {
   const response = await fetch(url, {
     cache: 'no-cache',
@@ -100,7 +127,7 @@ export function useGetPostsQuery(nickname?: string) {
   })
 }
 
-// Get Post Query
+// Get Data Query
 async function getPost(id: string) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/posts/${id}`,
@@ -114,5 +141,6 @@ export function useGetPostQuery(id: string) {
     queryKey: ['post'],
     queryFn: () => getPost(id),
     gcTime: 0,
+    retry: 1,
   })
 }

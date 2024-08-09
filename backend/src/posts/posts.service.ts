@@ -36,6 +36,13 @@ export class PostsService {
             order: 'ASC',
           },
         },
+        select: {
+          author: {
+            id: true,
+            nickname: true,
+            image: true,
+          },
+        },
       },
       'posts',
     );
@@ -47,6 +54,13 @@ export class PostsService {
     const post = await repository.findOne({
       where: { id: postId },
       relations: ['author', 'images'],
+      select: {
+        author: {
+          id: true,
+          nickname: true,
+          image: true,
+        },
+      },
     });
 
     if (!post) {
@@ -63,7 +77,7 @@ export class PostsService {
 
   async createPost(authorId: number, postDto: CreatePostDto, qr?: QueryRunner) {
     const repository = this.getRepository(qr);
-
+    console.log(postDto);
     const post = repository.create({
       author: {
         id: authorId,
@@ -73,6 +87,8 @@ export class PostsService {
       commentCount: 0,
       images: [],
     });
+
+    console.log(post);
 
     const newPost = await repository.save(post);
 
@@ -101,9 +117,9 @@ export class PostsService {
     return newPost;
   }
 
-  async deletePost(postId: number) {
+  async deletePost(userId: number, postId: number) {
     const post = await this.postsRepository.findOne({
-      where: { id: postId },
+      where: { id: postId, author: { id: userId } },
     });
 
     if (!post) {

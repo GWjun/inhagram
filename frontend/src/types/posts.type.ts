@@ -1,5 +1,5 @@
 import PaginationType from '#types/pagination.type'
-import UserType from '#types/user.type'
+import { BasicUser } from '#types/user.type'
 
 interface Image {
   id: number
@@ -10,13 +10,27 @@ interface Image {
   path: string
 }
 
-export interface Post {
-  id: number
-  updateAt: string
+export interface PostBody {
+  title: string
+  content: string
   createdAt: string
+  updateAt: string
+}
+
+export interface PostFooter {
   likeCount: number
   commentCount: number
-  author: UserType
+}
+
+export interface Post {
+  id: number
+  title: string
+  content: string
+  createdAt: string
+  updateAt: string
+  likeCount: number
+  commentCount: number
+  author: BasicUser
   images: Image[]
 }
 

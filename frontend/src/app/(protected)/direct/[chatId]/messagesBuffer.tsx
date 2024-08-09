@@ -58,9 +58,13 @@ function MessagesBuffer({
           >
             <div className="text-xs text-gray-400">
               {transmitFailed ? (
-                <X size={12} />
+                <X size={12} aria-label="전송 실패" />
               ) : (
-                <SendHorizonal size={12} className="rotate-180" />
+                <SendHorizonal
+                  size={12}
+                  className="rotate-180"
+                  aria-label="전송 중"
+                />
               )}
             </div>
             <span className="max-w-xs py-2 px-3 mr-5 rounded-3xl text-sm mx-2 bg-button text-white">

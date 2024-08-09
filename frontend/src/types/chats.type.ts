@@ -1,7 +1,7 @@
 import PaginationType from '#types/pagination.type'
 import { BasicUser } from '#types/user.type'
 
-interface ChatRoom {
+export interface ChatRoom {
   id: number
   updateAt: string
   createdAt: string

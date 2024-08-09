@@ -1,34 +1,28 @@
 'use client'
 
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 import { useEffect, useState } from 'react'
 
-import LoadingSpinner from '#components/animation/loadingSpinner'
-import Alert from '#components/feature/alert'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '#components/ui/carousel'
+import Post from '#components/feature/post'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
 } from '#components/ui/dialog'
-import { useGetPostQuery } from '#store/server/post.queries'
+import useNavigationEvents from '#hooks/useNavigationEvents'
 
 export default function PostModal({ params }: { params: { id: string } }) {
   const router = useRouter()
+  const pathname = usePathname()
 
   const [dialogOpen, setDialogOpen] = useState(true)
-  const [isImageLoad, setIsImageLoad] = useState(false)
 
-  const { data, isError, refetch } = useGetPostQuery(params.id)
+  useNavigationEvents(() => {
+    if (!pathname || pathname.startsWith('/post')) return
+    setDialogOpen(false)
+  })
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -48,38 +42,12 @@ export default function PostModal({ params }: { params: { id: string } }) {
     <Dialog open={dialogOpen}>
       <DialogContent
         onInteractOutside={handleOutsidePage}
-        className="h-full max-w-[90vw] max-h-[60vh] md:max-w-[70vw] md:max-h-[90vh] p-0"
+        className="max-w-[90vw] h-full max-h-[80vh] md:max-w-[80vw] md:h-auto aspect-4/3 3xl:max-w-[1800px] p-0 rounded-lg"
       >
-        <Carousel className="w-full h-full">
-          <CarouselContent className="h-full">
-            {data?.images.map((image, index) => (
-              <CarouselItem key={index}>
-                <div key={index} className="relative w-full h-full">
-                  {!isImageLoad && <LoadingSpinner variant="inset" />}
-                  <Image
-                    src={image.path}
-                    alt={`Post image ${index + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 90vw, (max-width: 1024px) 70vw, 60vw"
-                    onLoad={() => setIsImageLoad(true)}
-                    className="object-contain"
-                  />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-4 md:-left-16 disabled:pointer-events-auto" />
-          <CarouselNext className="right-4 md:-right-16 disabled:pointer-events-auto" />
-        </Carousel>
+        <Post postId={params.id} />
 
         <DialogTitle className="hidden" />
         <DialogDescription className="hidden" />
-        <Alert
-          isOpen={isError}
-          closeCallback={refetch}
-          title="실패"
-          message="게시물을 불러오는데 실패했습니다."
-        />
       </DialogContent>
     </Dialog>
   )

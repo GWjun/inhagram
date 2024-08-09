@@ -29,6 +29,7 @@ export default function ModalMenu() {
             'xl:mr-4 min-w-6 min-h-6 group-hover:scale-110 transition duration-200 ease-in-out',
             isShrink && 'xl:mr-0',
           )}
+          aria-label="더 보기"
         />
         <span
           className={cn(
@@ -42,23 +43,27 @@ export default function ModalMenu() {
 
       <DropdownMenuContent className="hidden md:flex flex-col w-[266px] h-[404.5px] relative top-14 left-14 xl:left-3 xl:top-0 3xl:-left-[23px] rounded-2xl shadow-lg">
         <DropdownMenuItem className="h-[50px]">
-          <Settings size={18} className="mr-3" />
+          <Settings size={18} className="mr-3" aria-label="설정" />
           <span>설정</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="h-[50px]">
-          <SquareActivity size={18} className="mr-3" />
+          <SquareActivity size={18} className="mr-3" aria-label="내 활동" />
           <span>내 활동</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="h-[50px]">
-          <Bookmark size={18} className="mr-3" />
+          <Bookmark size={18} className="mr-3" aria-label="저장됨" />
           <span>저장됨</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="h-[50px]">
-          <Sun size={18} className="mr-3" />
+          <Sun size={18} className="mr-3" aria-label="모드 전환" />
           <span>모드 전환</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="h-[50px]">
-          <MessageSquareWarning size={18} className="mr-3" />
+          <MessageSquareWarning
+            size={18}
+            className="mr-3"
+            aria-label="문제 신고"
+          />
           <span>문제 신고</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="-mx-2 my-2 h-[6px] w-[266px]" />

@@ -34,6 +34,7 @@ export default function SideTopItem() {
           alt="instagram text logo"
           width={103}
           height={32}
+          aria-label="홈"
         />
       </div>
       <div
@@ -52,7 +53,10 @@ export default function SideTopItem() {
             }}
             onClick={handleClickHome}
           >
-            <Instagram className="mr-4 group-hover:scale-110 transition duration-300 ease-in-out" />
+            <Instagram
+              className="mr-4 group-hover:scale-110 transition duration-300 ease-in-out"
+              aria-label="홈"
+            />
           </div>
         </div>
       </div>

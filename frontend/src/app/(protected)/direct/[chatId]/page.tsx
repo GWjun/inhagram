@@ -1,20 +1,20 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
-import { useInView } from 'react-intersection-observer'
 
 import LoadingSpinner from '#components/animation/loadingSpinner'
-import Alert from '#components/feature/alert'
-import { Button } from '#components/ui/button'
-import { Input } from '#components/ui/input'
-import useWebSocketStore from '#store/client/websocket.store'
+import useInfiniteScroll from '#components/feature/common/infiniteScroll'
+import Alert from '#components/feature/modal/alert'
+import useSocketEventHandler from '#hooks/useSocketHandler'
+import useMessageStore from '#store/client/message.store'
 import { useGetMessageQuery } from '#store/server/chat.queries'
-import { cn } from '#utils/utils'
+import NextFetchRef from 'components/feature/common/infiniteScroll/nextFetchRef'
 
 import ChatHeader from './chatHeader'
+import MessageInput from './messageInput'
 import MessagesBuffer from './messagesBuffer'
 import MessagesContent from './messagesContent'
 
@@ -24,8 +24,7 @@ export default function Chat({
   params: { chatId: string }
 }) {
   const { data: session } = useSession()
-  const { socket, writeStartMessage, writeStopMessage, sendMessage } =
-    useWebSocketStore()
+
   const {
     data: messages,
     fetchNextPage,
@@ -35,91 +34,39 @@ export default function Chat({
     refetch,
   } = useGetMessageQuery(chatId, session as Session)
 
-  const [content, setContent] = useState('')
-  const [messageBuffer, setMessageBuffer] = useState<string[]>([])
-  const [myWritten, setMyWritten] = useState(false)
-  const [otherWritten, setOtherWritten] = useState(false)
+  const { setMyWritten, otherWritten, setOtherWritten } = useMessageStore()
+  const { messageBuffer, setMessageBuffer } = useMessageStore()
   const [transmitFailed, setTransmitFailed] = useState(false)
 
-  const { ref } = useInView({
-    onChange: useCallback(
-      (inView: boolean) => {
-        if (inView && hasNextPage && !isFetchingNextPage) fetchNextPage()
-      },
-      [fetchNextPage, hasNextPage, isFetchingNextPage],
-    ),
+  const { ref } = useInfiniteScroll({
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
   })
 
-  useEffect(() => {
-    if (!socket) return
-
-    const handlers = {
-      message_received: async () => {
-        await refetch()
-        setOtherWritten(false)
-      },
-      message_transmit_success: async () => {
-        await refetch()
-        setMyWritten(false)
-        setMessageBuffer([])
-      },
-      message_transmit_fail: () => setTransmitFailed(true),
-      write_start_complete: (eventChatId: string) => {
-        if (chatId === eventChatId) setOtherWritten(true)
-      },
-      write_stop_complete: (eventChatId: string) => {
-        if (chatId === eventChatId) setOtherWritten(false)
-      },
-    }
-
-    Object.entries(handlers).forEach(([event, handler]) => {
-      socket.on(event, handler)
-    })
-
-    return () => {
-      Object.entries(handlers).forEach(([event, handler]) => {
-        socket.off(event, handler)
-      })
-    }
-  }, [socket, refetch, chatId])
-
-  useEffect(() => {
-    if (myWritten && !messageBuffer && content.trim() === '') {
-      writeStopMessage(chatId)
-      setMyWritten(false)
-    }
-
-    if (!myWritten && content.trim() !== '') {
-      writeStartMessage(chatId)
-      setMyWritten(true)
-    }
-  }, [
-    chatId,
-    content,
-    messageBuffer,
-    myWritten,
-    writeStartMessage,
-    writeStopMessage,
-  ])
-
-  const handleSendMessage = useCallback(() => {
-    if (content.trim().length === 0) return
-    setMessageBuffer((prev) => [...prev, content])
-    sendMessage(chatId, content.trim())
-    setContent('')
-  }, [chatId, content, sendMessage])
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (
-        e.key === 'Enter' &&
-        content.trim().length > 0 &&
-        !e.nativeEvent.isComposing
-      )
-        handleSendMessage()
+  const handlers = {
+    message_received: async () => {
+      await refetch()
+      setOtherWritten(false)
     },
-    [content, handleSendMessage],
-  )
+    message_transmit_success: async () => {
+      await refetch()
+      setMyWritten(false)
+      setMessageBuffer([])
+    },
+    message_transmit_fail: () => setTransmitFailed(true),
+    write_start_complete: (eventChatId: string) => {
+      if (chatId === eventChatId) setOtherWritten(true)
+    },
+    write_stop_complete: (eventChatId: string) => {
+      if (chatId === eventChatId) setOtherWritten(false)
+    },
+  }
+
+  useSocketEventHandler({
+    handlers,
+    dependencies: [refetch, chatId],
+  })
 
   if (status === 'pending') return <LoadingSpinner />
 
@@ -140,33 +87,14 @@ export default function Chat({
           hasNextPage={hasNextPage}
           sessionUserName={session?.user?.name}
         />
-
-        {isFetchingNextPage ? (
-          <LoadingSpinner className="w-8 h-8 mt-5" />
-        ) : (
-          <div className="h-20" ref={ref} />
-        )}
-      </section>
-
-      <div className="flex items-center relative mx-5">
-        <Input
-          className="rounded-2xl"
-          placeholder="메시지 입력..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={handleKeyDown}
+        <NextFetchRef
+          ref={ref}
+          isLoading={isFetchingNextPage}
+          containerStyle="h-20"
         />
-        <Button
-          onClick={handleSendMessage}
-          variant="ghost"
-          className={cn(
-            'absolute right-0 text-button hover:bg-transparent hover:text-button',
-            content.length <= 0 && 'hidden',
-          )}
-        >
-          보내기
-        </Button>
-      </div>
+      </section>
+      <MessageInput chatId={chatId} />
+
       <Alert
         isOpen={status === 'error'}
         closeCallback={refetch}

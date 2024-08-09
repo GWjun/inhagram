@@ -11,11 +11,13 @@ export class PostsModel extends BaseModel {
   @ManyToOne(() => UsersModel, (user) => user.posts, { nullable: false })
   author: UsersModel;
 
+  @Column({ nullable: true })
   @IsString({
     message: 'title must be string type',
   })
   title: string;
 
+  @Column({ nullable: true })
   @IsString({
     message: 'content must be string type',
   })

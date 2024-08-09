@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { useSession } from 'next-auth/react'
 
-import ImageWithLoad from '#components/feature/imageWithLoad'
+import ImageWithLoad from '#components/feature/image/imageWithLoad'
 import { ProfileItemGenerator } from '#components/layout/SideMenuItems'
 import { Avatar } from '#components/ui/avatar'
 import { useShrinkStore, useSidebarStore } from '#store/client/sidebar.store'

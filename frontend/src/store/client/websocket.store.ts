@@ -23,7 +23,7 @@ interface WebSocketStore {
   clearException: () => void
 }
 
-const useWebSocketStore = create<WebSocketStore>((set, get) => ({
+const useWebSocketStore = create<WebSocketStore>()((set, get) => ({
   socket: null,
   retry: 0,
   isConnected: false,

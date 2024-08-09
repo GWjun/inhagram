@@ -15,7 +15,7 @@ interface PageActions {
   setPage: (page: Page) => void
 }
 
-export const usePageStore = create<PageState & PageActions>((set) => ({
+export const usePageStore = create<PageState & PageActions>()((set) => ({
   page: Page.Image,
   setPage: (page) => set({ page }),
 }))
@@ -31,7 +31,7 @@ interface UrlActions {
   addImageUrls: (...urls: string[]) => void
 }
 
-export const useUrlStore = create<UrlState & UrlActions>((set) => ({
+export const useUrlStore = create<UrlState & UrlActions>()((set) => ({
   previewUrls: [],
   imageUrls: [],
   addPreviewUrls: (...urls) =>

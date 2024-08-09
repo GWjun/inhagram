@@ -4,10 +4,10 @@ import { useState, useEffect, ReactNode } from 'react'
 
 import { useMutationState } from '@tanstack/react-query'
 
-import PostAlert from '#components/layout/common-utils/make-post/postAlert'
-import PostContent from '#components/layout/common-utils/make-post/postContent'
-import PostHeader from '#components/layout/common-utils/make-post/postHeader'
-import { FormRefProvider } from '#components/provider/formProvider/formRefProvider'
+import MakeAlert from '#components/layout/common-utils/make-post/makeAlert'
+import MakeContent from '#components/layout/common-utils/make-post/makeContent'
+import MakeHeader from '#components/layout/common-utils/make-post/makeHeader'
+import { FormRefProvider } from '#components/provider/formRefProvider'
 import { Dialog, DialogContent, DialogTrigger } from '#components/ui/dialog'
 import {
   Page,
@@ -70,16 +70,17 @@ export default function NewPost({ children, ...props }: NewPostProps) {
         onInteractOutside={handleOutsidePage}
         className={cn(
           'grid-rows-[auto_1fr] gap-0 w-full h-full p-0 max-w-[90vw] max-h-[50vh] md:max-w-[700px] md:max-h-[730px] 2xl:max-w-[870px] 2xl:max-h-[900px]',
-          page !== Page.Image && 'md:max-w-[85vw] 2xl:max-w-[85vw]',
-          status.length && 'md:max-w-[700px] 2xl:max-w-[870px]',
+          page !== Page.Image &&
+            page !== Page.Result &&
+            'md:max-w-[85vw] 2xl:max-w-[85vw]',
         )}
       >
         <FormRefProvider>
-          <PostHeader setAlertOpen={setAlertOpen} />
-          <PostContent />
+          <MakeHeader setAlertOpen={setAlertOpen} />
+          <MakeContent />
         </FormRefProvider>
 
-        <PostAlert
+        <MakeAlert
           alertOpen={alertOpen}
           setAlertOpen={setAlertOpen}
           setDialogOpen={setDialogOpen}

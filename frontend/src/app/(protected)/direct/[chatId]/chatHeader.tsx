@@ -61,7 +61,7 @@ function ChatHeader({ chatId, session }: ChatHeaderProps) {
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <EllipsisVertical size={20} />
+          <EllipsisVertical size={20} aria-label="더 보기" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="relative bottom-5 right-3 p-0">
           <DropdownMenuItem
