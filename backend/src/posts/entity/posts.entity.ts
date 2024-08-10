@@ -1,10 +1,11 @@
 import { BaseModel } from 'src/common/entity/base.entity';
-import { UsersModel } from 'src/users/entities/users.entity';
+import { UsersModel } from 'src/users/entity/users.entity';
 
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { IsString } from 'class-validator';
 import { ImageModel } from '../../common/entity/image.entity';
+import { CommentsModel } from '../comments/entity/comments.entity';
 
 @Entity()
 export class PostsModel extends BaseModel {
@@ -29,6 +30,9 @@ export class PostsModel extends BaseModel {
   @Column()
   commentCount: number;
 
-  @OneToMany((type) => ImageModel, (image) => image.post)
+  @OneToMany(() => ImageModel, (image) => image.post)
   images: ImageModel[];
+
+  @OneToMany(() => CommentsModel, (comment) => comment.post)
+  comments: CommentsModel[];
 }

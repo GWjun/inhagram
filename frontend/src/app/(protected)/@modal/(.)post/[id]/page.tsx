@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import Post from '#components/feature/post'
+import { Button } from '#components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -48,6 +49,13 @@ export default function PostModal({ params }: { params: { id: string } }) {
 
         <DialogTitle className="hidden" />
         <DialogDescription className="hidden" />
+        <Button
+          onClick={() => window.location.reload()}
+          variant="ghost"
+          className="absolute bottom-[-2.5rem] left-1/2 transform -translate-x-1/2 text-gray-300 hover:text-white hover:bg-transparent"
+        >
+          자세히 보기
+        </Button>
       </DialogContent>
     </Dialog>
   )

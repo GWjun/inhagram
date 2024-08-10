@@ -1,7 +1,7 @@
 import { BaseModel } from '../../../common/entity/base.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { ChatsModel } from '../../entity/chats.entity';
-import { UsersModel } from '../../../users/entities/users.entity';
+import { UsersModel } from '../../../users/entity/users.entity';
 import { IsBoolean, IsString } from 'class-validator';
 import { Optional } from '@nestjs/common';
 

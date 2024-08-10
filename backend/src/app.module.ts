@@ -17,8 +17,8 @@ import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { ChatsModule } from './chats/chats.module';
 
-import { PostsModel } from './posts/entities/posts.entity';
-import { UsersModel } from './users/entities/users.entity';
+import { PostsModel } from './posts/entity/posts.entity';
+import { UsersModel } from './users/entity/users.entity';
 import { ImageModel } from './common/entity/image.entity';
 import { ChatsModel } from './chats/entity/chats.entity';
 import { MessagesModel } from './chats/messages/entity/messages.entity';
@@ -26,6 +26,8 @@ import { MessagesModel } from './chats/messages/entity/messages.entity';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { LogMiddleware } from './common/middleware/log.middleware';
+import { CommentsModule } from './posts/comments/comments.module';
+import { CommentsModel } from './posts/comments/entity/comments.entity';
 
 @Module({
   imports: [
@@ -37,7 +39,14 @@ import { LogMiddleware } from './common/middleware/log.middleware';
       username: process.env['DB_USERNAME'],
       password: process.env['DB_PASSWORD'],
       database: process.env['DB_DATABASE'],
-      entities: [PostsModel, UsersModel, ImageModel, ChatsModel, MessagesModel],
+      entities: [
+        PostsModel,
+        UsersModel,
+        ImageModel,
+        ChatsModel,
+        MessagesModel,
+        CommentsModel,
+      ],
       synchronize: true,
     }),
     PostsModule,
@@ -45,6 +54,7 @@ import { LogMiddleware } from './common/middleware/log.middleware';
     AuthModule,
     CommonModule,
     ChatsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [

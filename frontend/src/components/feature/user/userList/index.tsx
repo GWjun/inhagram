@@ -10,7 +10,7 @@ export default function UserList({ user }: UserListProps) {
   return (
     <li className="flex justify-between items-center">
       <UserHeader user={user} />
-      <Button className="px-5">팔로우</Button>
+      <Button className="mx-4">팔로우</Button>
     </li>
   )
 }

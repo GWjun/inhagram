@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button } from '#components/ui/button'
 import { Input } from '#components/ui/input'
@@ -13,6 +13,7 @@ export default function MessageInput({ chatId }: { chatId: string }) {
     useMessageStore()
 
   const [content, setContent] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (myWritten && !messageBuffer && content.trim() === '') {
@@ -29,6 +30,7 @@ export default function MessageInput({ chatId }: { chatId: string }) {
     content,
     messageBuffer,
     myWritten,
+    setMyWritten,
     writeStartMessage,
     writeStopMessage,
   ])
@@ -38,7 +40,9 @@ export default function MessageInput({ chatId }: { chatId: string }) {
     setMessageBuffer([...messageBuffer, content])
     sendMessage(chatId, content.trim())
     setContent('')
-  }, [chatId, content, sendMessage])
+
+    if (inputRef.current) inputRef.current.focus()
+  }, [chatId, content, messageBuffer, sendMessage, setMessageBuffer])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -55,6 +59,7 @@ export default function MessageInput({ chatId }: { chatId: string }) {
   return (
     <div className="flex items-center relative mx-5">
       <Input
+        ref={inputRef}
         className="rounded-2xl"
         placeholder="메시지 입력..."
         value={content}

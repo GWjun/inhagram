@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Not, Repository } from 'typeorm';
 import { ChatsModel } from './entity/chats.entity';
-import { UsersModel } from '../users/entities/users.entity';
+import { UsersModel } from '../users/entity/users.entity';
 
 import { BasePaginationDto } from '../common/dto/base-pagination.dto';
 import { CreateMessagesDto } from './messages/dto/create-messages.dto';

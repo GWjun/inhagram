@@ -4,7 +4,7 @@ import { ChatsController } from './chats.controller';
 import { ChatsGateway } from './chats.gateway';
 
 import { ChatsModel } from './entity/chats.entity';
-import { UsersModel } from '../users/entities/users.entity';
+import { UsersModel } from '../users/entity/users.entity';
 import { MessagesModel } from './messages/entity/messages.entity';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
