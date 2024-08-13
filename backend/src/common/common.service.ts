@@ -9,7 +9,7 @@ import {
   Repository,
 } from 'typeorm';
 import { BaseModel } from './entity/base.entity';
-import { UsersModel } from '../users/entities/users.entity';
+import { UsersModel } from '../users/entity/users.entity';
 
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';

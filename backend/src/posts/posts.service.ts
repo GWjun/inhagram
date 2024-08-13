@@ -2,13 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { QueryRunner, Repository } from 'typeorm';
-import { PostsModel } from './entities/posts.entity';
+import { PostsModel } from './entity/posts.entity';
 
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/paginate-post.dto';
 
 import { CommonService } from '../common/common.service';
+import { DEFAULT_USER_SELECT_OPTIONS } from '../users/const/default-user-select-options.const';
 
 @Injectable()
 export class PostsService {
@@ -18,10 +19,8 @@ export class PostsService {
     private readonly commonService: CommonService,
   ) {}
 
-  async getAllPosts() {
-    return this.postsRepository.find({
-      relations: ['author'],
-    });
+  async checkPostExistById(id: number) {
+    return this.postsRepository.exists({ where: { id } });
   }
 
   async paginatePosts(dto: PaginatePostDto) {
@@ -37,11 +36,7 @@ export class PostsService {
           },
         },
         select: {
-          author: {
-            id: true,
-            nickname: true,
-            image: true,
-          },
+          author: DEFAULT_USER_SELECT_OPTIONS,
         },
       },
       'posts',
@@ -55,11 +50,7 @@ export class PostsService {
       where: { id: postId },
       relations: ['author', 'images'],
       select: {
-        author: {
-          id: true,
-          nickname: true,
-          image: true,
-        },
+        author: DEFAULT_USER_SELECT_OPTIONS,
       },
     });
 
@@ -88,11 +79,7 @@ export class PostsService {
       images: [],
     });
 
-    console.log(post);
-
-    const newPost = await repository.save(post);
-
-    return newPost;
+    return await repository.save(post);
   }
 
   async updatePost(postId: number, postDto: UpdatePostDto) {
@@ -112,9 +99,7 @@ export class PostsService {
       post.content = postDto.content;
     }
 
-    const newPost = await this.postsRepository.save(post);
-
-    return newPost;
+    return await this.postsRepository.save(post);
   }
 
   async deletePost(userId: number, postId: number) {
@@ -126,8 +111,32 @@ export class PostsService {
       throw new NotFoundException();
     }
 
-    this.postsRepository.delete(postId);
+    await this.postsRepository.delete(postId);
 
     return postId;
+  }
+
+  async incrementCommentCount(postId: number, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+
+    await repository.increment(
+      {
+        id: postId,
+      },
+      'commentCount',
+      1,
+    );
+  }
+
+  async decrementCommentCount(postId: number, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+
+    await repository.decrement(
+      {
+        id: postId,
+      },
+      'commentCount',
+      1,
+    );
   }
 }

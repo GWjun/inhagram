@@ -2,13 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Not, Repository } from 'typeorm';
 import { ChatsModel } from './entity/chats.entity';
-import { UsersModel } from '../users/entities/users.entity';
+import { UsersModel } from '../users/entity/users.entity';
 
 import { BasePaginationDto } from '../common/dto/base-pagination.dto';
 import { CreateMessagesDto } from './messages/dto/create-messages.dto';
 
 import { CommonService } from '../common/common.service';
 import { ChatsMessagesService } from './messages/messages.service';
+import { DEFAULT_USER_SELECT_OPTIONS } from '../users/const/default-user-select-options.const';
 
 @Injectable()
 export class ChatsService {
@@ -31,11 +32,7 @@ export class ChatsService {
         where: { id: In(chatIds), users: { id: Not(userId) } },
         relations: { users: true },
         select: {
-          users: {
-            id: true,
-            nickname: true,
-            image: true,
-          },
+          users: DEFAULT_USER_SELECT_OPTIONS,
         },
       },
       'chats',
@@ -129,11 +126,7 @@ export class ChatsService {
       where: { id: chatId, users: { id: Not(userId) } },
       relations: { users: true },
       select: {
-        users: {
-          id: true,
-          nickname: true,
-          image: true,
-        },
+        users: DEFAULT_USER_SELECT_OPTIONS,
       },
     });
 

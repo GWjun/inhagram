@@ -14,7 +14,7 @@ import { ChatsMessagesService } from './messages/messages.service';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from '../users/users.service';
 
-import { UsersModel } from '../users/entities/users.entity';
+import { UsersModel } from '../users/entity/users.entity';
 
 import { CreateChatDto } from './dto/create-chat.dto';
 import { CreateMessagesDto } from './messages/dto/create-messages.dto';

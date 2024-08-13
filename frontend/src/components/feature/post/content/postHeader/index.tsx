@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '#components/ui/dropdown-menu'
-import { useDeleteDataMutation } from '#store/server/post.queries'
+import { useDeletePostDataMutation } from '#store/server/post.queries'
 import { BasicUser } from '#types/user.type'
 
 interface PostHeaderProps {
@@ -26,7 +26,7 @@ export default function PostHeader({ postId, user }: PostHeaderProps) {
   const isMe = user.nickname === session?.user?.name
   const router = useRouter()
 
-  const { mutate, status, reset } = useDeleteDataMutation(session)
+  const { mutate, status, reset } = useDeletePostDataMutation(session)
 
   function handleRemove() {
     mutate(postId)
@@ -75,7 +75,6 @@ export default function PostHeader({ postId, user }: PostHeaderProps) {
         title="알림"
         message="성공적으로 게시물이 삭제되었습니다."
       />
-
       <Alert
         isOpen={status === 'error'}
         closeCallback={reset}

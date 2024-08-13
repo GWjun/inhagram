@@ -2,7 +2,7 @@ import { BadRequestException, Module } from '@nestjs/common';
 import { CommonService } from './common.service';
 import { CommonController } from './common.controller';
 
-import { UsersModel } from '../users/entities/users.entity';
+import { UsersModel } from '../users/entity/users.entity';
 
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';

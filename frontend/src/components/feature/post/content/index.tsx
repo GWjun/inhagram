@@ -14,11 +14,11 @@ export default function PostContent({ data }: { data: Omit<Post, 'images'> }) {
     likeCount,
     commentCount,
   } = data
-  const body = { title, content, createdAt, updateAt }
-  const footer = { likeCount, commentCount }
+  const body = { id, title, content, createdAt, updateAt }
+  const footer = { id, likeCount, commentCount }
 
   return (
-    <section className="relative h-[65%] md:h-full md:w-[370px] 3xl:w-[470px]">
+    <section className="relative h-full max-h-[40%] md:max-h-full md:w-[370px] 3xl:w-[470px] flex flex-col">
       <PostHeader postId={id} user={author} />
       <PostBody body={body} />
       <PostFooter footer={footer} />
