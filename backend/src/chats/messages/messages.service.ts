@@ -13,6 +13,7 @@ import { ChatsService } from '../chats.service';
 
 import { BasePaginationDto } from '../../common/dto/base-pagination.dto';
 import { CreateMessagesDto } from './dto/create-messages.dto';
+import { DEFAULT_USER_SELECT_OPTIONS } from '../../users/const/default-user-select-options.const';
 
 @Injectable()
 export class ChatsMessagesService {
@@ -40,11 +41,7 @@ export class ChatsMessagesService {
           where: { chat: { id: chatId } },
           relations: { author: true },
           select: {
-            author: {
-              id: true,
-              nickname: true,
-              image: true,
-            },
+            author: DEFAULT_USER_SELECT_OPTIONS,
           },
         },
         `chats/${chatId}/messages`,

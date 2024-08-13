@@ -62,7 +62,6 @@ async function postData(data: PostData, session: CustomSesson) {
     session,
   )
 }
-
 export const addPostMutationKey = ['addPost']
 export function usePostDataMutation(session: CustomSesson) {
   const queryClient = useQueryClient()
@@ -77,13 +76,12 @@ export function usePostDataMutation(session: CustomSesson) {
   })
 }
 
-// Delete Data Mutation
-async function deleteData(postId: number, session: CustomSesson) {
+// Delete Post Data Mutation
+async function deletePostData(postId: number, session: CustomSesson) {
   return authFetch(
     `/posts/${postId}`,
     {
       method: 'DELETE',
-      body: JSON.stringify({ id: postId }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -92,11 +90,11 @@ async function deleteData(postId: number, session: CustomSesson) {
   )
 }
 
-export function useDeleteDataMutation(session: CustomSesson) {
+export function useDeletePostDataMutation(session: CustomSesson) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (postId: number) => deleteData(postId, session),
+    mutationFn: (postId: number) => deletePostData(postId, session),
     gcTime: 0,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['posts'] })

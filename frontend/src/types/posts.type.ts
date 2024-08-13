@@ -11,6 +11,7 @@ interface Image {
 }
 
 export interface PostBody {
+  id: number
   title: string
   content: string
   createdAt: string
@@ -18,6 +19,7 @@ export interface PostBody {
 }
 
 export interface PostFooter {
+  id: number
   likeCount: number
   commentCount: number
 }

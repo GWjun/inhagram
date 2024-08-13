@@ -33,7 +33,9 @@ export class CommentsService {
           post: { id: postId },
         },
         relations: { author: true },
-        ...DEFAULT_USER_SELECT_OPTIONS,
+        select: {
+          author: DEFAULT_USER_SELECT_OPTIONS,
+        },
       },
       `posts/${postId}/comments`,
     );
@@ -43,7 +45,9 @@ export class CommentsService {
     const comment = await this.commentsRepository.findOne({
       where: { id },
       relations: { author: true },
-      ...DEFAULT_USER_SELECT_OPTIONS,
+      select: {
+        author: DEFAULT_USER_SELECT_OPTIONS,
+      },
     });
 
     if (!comment) {

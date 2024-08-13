@@ -9,6 +9,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PaginatePostDto } from './dto/paginate-post.dto';
 
 import { CommonService } from '../common/common.service';
+import { DEFAULT_USER_SELECT_OPTIONS } from '../users/const/default-user-select-options.const';
 
 @Injectable()
 export class PostsService {
@@ -35,11 +36,7 @@ export class PostsService {
           },
         },
         select: {
-          author: {
-            id: true,
-            nickname: true,
-            image: true,
-          },
+          author: DEFAULT_USER_SELECT_OPTIONS,
         },
       },
       'posts',
@@ -53,11 +50,7 @@ export class PostsService {
       where: { id: postId },
       relations: ['author', 'images'],
       select: {
-        author: {
-          id: true,
-          nickname: true,
-          image: true,
-        },
+        author: DEFAULT_USER_SELECT_OPTIONS,
       },
     });
 

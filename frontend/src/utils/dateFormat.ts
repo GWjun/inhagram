@@ -27,3 +27,19 @@ export function extractDate(dateStr: string): string {
 
   return `${year}년 ${month}월 ${day}일 ${weekday}`
 }
+
+export function formatTimeDifference(dateStr: string): string {
+  const now = new Date()
+  const pastDate = new Date(dateStr)
+  const diffInMilliseconds = now.getTime() - pastDate.getTime()
+  const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60))
+  const diffInHours = Math.floor(diffInMilliseconds / (1000 * 60 * 60))
+  const diffInDays = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24))
+  const diffInWeeks = Math.floor(diffInDays / 7)
+
+  if (diffInMinutes === 0) return '방금'
+  else if (diffInMinutes < 60) return `${diffInMinutes}분`
+  else if (diffInHours < 24) return `${diffInHours}시간`
+  else if (diffInDays < 7) return `${diffInDays}일`
+  else return `${diffInWeeks}주`
+}

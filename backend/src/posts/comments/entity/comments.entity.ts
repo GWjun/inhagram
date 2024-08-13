@@ -9,7 +9,7 @@ export class CommentsModel extends BaseModel {
   @ManyToOne(() => UsersModel, (user) => user.postComments)
   author: UsersModel;
 
-  @ManyToOne(() => PostsModel, (post) => post.comments)
+  @ManyToOne(() => PostsModel, (post) => post.comments, { onDelete: 'CASCADE' })
   post: PostsModel;
 
   @Column()

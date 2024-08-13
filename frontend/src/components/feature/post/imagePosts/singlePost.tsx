@@ -1,13 +1,35 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { ReactNode } from 'react'
+
 import { Layers2, Heart, MessageCircle } from 'lucide-react'
 
 import { Post } from '#types/posts.type'
+import redirectHard from '#utils/redirectHard'
 
 export default function SinglePost({ post }: { post: Post }) {
+  const PostWrapper = ({ children }: { children: ReactNode }) => {
+    // To avoid intercepting routing
+    if (window.innerWidth < 768)
+      return (
+        <div
+          onClick={() => redirectHard(`/post/${post.id}`)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ')
+              redirectHard(`/post/${post.id}`)
+          }}
+        >
+          {children}
+        </div>
+      )
+    else return <Link href={`/post/${post.id}`}>{children}</Link>
+  }
+
   return (
-    <Link href={`/post/${post.id}`}>
+    <PostWrapper>
       <div className="relative w-full aspect-square max-w-[307.67px] group">
         <Image
           src={post.images[0].path}
@@ -45,6 +67,6 @@ export default function SinglePost({ post }: { post: Post }) {
           </div>
         </div>
       </div>
-    </Link>
+    </PostWrapper>
   )
 }
