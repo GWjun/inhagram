@@ -1,9 +1,11 @@
 import { getServerSession } from 'next-auth'
 
 import AvatarInput from '#components/feature/image/avatarInput'
+import FollowButton from '#components/feature/user/followButton'
 import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { Button } from '#components/ui/button'
 import { UserImageResponse } from '#store/client/user.store'
+import { UserCountType } from '#types/user.type'
 
 import MobileLists from './mobileLists'
 
@@ -15,14 +17,19 @@ export default async function ProfileHeader({
   const session = await getServerSession()
   const sameUser = session?.user?.name === userName
 
-  let userImageUrl
-  if (!sameUser) {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/users/${userName}/image`,
-      { cache: 'no-cache' },
-    )
-    userImageUrl = (await response.json()) as UserImageResponse
-  }
+  const userDataResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/users/${userName}/image`,
+    { cache: 'no-cache' },
+  )
+  if (!userDataResponse.ok) return null
+  const userData = (await userDataResponse.json()) as UserImageResponse
+
+  const userCountResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/users/${userName}/count`,
+    { cache: 'no-store' },
+  )
+  if (!userCountResponse.ok) return null
+  const userCount = (await userCountResponse.json()) as UserCountType
 
   return (
     <header className="grow max-w-[975px] w-full pt-[30px]">
@@ -33,7 +40,7 @@ export default async function ProfileHeader({
               <AvatarInput />
             ) : (
               <AvatarImage
-                src={userImageUrl?.path || 'images/assets/avatar-default.jpg'}
+                src={userData.path || 'images/assets/avatar-default.jpg'}
               />
             )}
           </Avatar>
@@ -46,18 +53,24 @@ export default async function ProfileHeader({
                 프로필 설정
               </Button>
             ) : (
-              <Button className="w-full max-w-[250px] md:w-auto">팔로우</Button>
+              <FollowButton
+                followeeId={userData.id}
+                className="w-full max-w-[250px] md:w-auto"
+              />
             )}
           </div>
           <ul className="hidden md:flex gap-10 mb-[22.5px]">
             <li>
-              게시물 <span className="font-semibold">0</span>
+              게시물{' '}
+              <span className="font-semibold">{userCount.postCount}</span>
             </li>
             <li>
-              팔로워 <span className="font-semibold">0</span>
+              팔로워{' '}
+              <span className="font-semibold">{userCount.followerCount}</span>
             </li>
             <li>
-              팔로우 <span className="font-semibold">0</span>
+              팔로우{' '}
+              <span className="font-semibold">{userCount.followeeCount}</span>
             </li>
           </ul>
           <div className="hidden md:flex h-[18px]">
@@ -65,7 +78,7 @@ export default async function ProfileHeader({
           </div>
         </div>
       </div>
-      <MobileLists userName={userName} />
+      <MobileLists userName={userName} userCount={userCount} />
     </header>
   )
 }

@@ -11,3 +11,9 @@ export default interface UserType {
 export type BasicUser = Pick<UserType, 'id' | 'nickname' | 'image'>
 
 export type SimpleUser = Pick<UserType, 'nickname' | 'image'>
+
+export interface UserCountType {
+  postCount: number
+  followerCount: number
+  followeeCount: number
+}

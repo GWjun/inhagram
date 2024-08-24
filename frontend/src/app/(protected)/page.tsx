@@ -5,7 +5,7 @@ import NotExist from '#components/layout/notexist'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { authOptions } from '#pages/api/auth/[...nextauth]'
-import { SimpleUser } from '#types/user.type'
+import { BasicUser } from '#types/user.type'
 import authFetch from '#utils/authFetch'
 
 import PwaEventComponent from './pwa'
@@ -15,7 +15,7 @@ export default async function Page() {
   let users
 
   try {
-    users = await authFetch<SimpleUser[]>(
+    users = await authFetch<BasicUser[]>(
       `/users`,
       {
         cache: 'no-cache',
