@@ -18,7 +18,7 @@ export class UsersService {
   async getRandomUsers(userId: number) {
     return this.usersRepository
       .createQueryBuilder('user')
-      .select(['user.nickname', 'user.image'])
+      .select(['user.id', 'user.nickname', 'user.image'])
       .where('user.id != :userId', { userId })
       .orderBy('RANDOM()')
       .limit(5)
@@ -84,7 +84,29 @@ export class UsersService {
       );
     }
 
-    return { path: user.image };
+    return {
+      id: user.id,
+      path: user.image,
+    };
+  }
+
+  async getUserCount(nickname: string) {
+    const user = await this.usersRepository.findOne({
+      where: { nickname },
+      relations: { posts: true },
+    });
+
+    if (!user) {
+      throw new BadRequestException(
+        `User with nickname '${nickname}' not found.`,
+      );
+    }
+
+    return {
+      postCount: user.posts.length,
+      followerCount: user.followerCount,
+      followeeCount: user.followeeCount,
+    };
   }
 
   async searchUsersByName(nickname: string) {

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 export interface UserImageResponse {
+  id: number
   path: string
 }
 

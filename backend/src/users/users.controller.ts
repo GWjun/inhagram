@@ -35,12 +35,17 @@ export class UsersController {
     return await this.usersService.getImageUrlByNickname(nickname);
   }
 
+  @Get(':nickname/count')
+  async getUserCount(@Param('nickname') nickname: string) {
+    return await this.usersService.getUserCount(nickname);
+  }
+
   @Get('search')
   searchUsers(@Query('name') nickname: string) {
     return this.usersService.searchUsersByName(nickname);
   }
 
-  @Post('follow/check/:id')
+  @Get('follow/check/:id')
   @UseGuards(AccessTokenGuard)
   async getIsFollow(
     @User() user: UsersModel,
