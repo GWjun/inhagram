@@ -21,7 +21,7 @@ export class UsersService {
       .select(['user.id', 'user.nickname', 'user.image'])
       .where('user.id != :userId', { userId })
       .orderBy('RANDOM()')
-      .limit(5)
+      .limit(8)
       .getMany();
   }
 

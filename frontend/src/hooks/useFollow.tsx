@@ -1,26 +1,31 @@
 'use client'
 
-import { useState } from 'react'
-
 import { Session } from 'next-auth'
 
 import {
   useFollowMutation,
+  useIsFollowingQuery,
   useUnFollowMutation,
 } from '#store/server/user.queries'
 
+import RevalidateUserCount from '../server/revalidateUserCount'
+
 interface UseFollowProps {
-  initialIsFollowing: boolean
   followeeId: number
+  withOtherFetch?: boolean
   session: Session | null
 }
 
 export function useFollow({
-  initialIsFollowing,
   followeeId,
+  withOtherFetch,
   session,
 }: UseFollowProps) {
-  const [isFollowing, setIsFollowing] = useState(initialIsFollowing)
+  const {
+    data: isFollowing,
+    status: isFollowingStatus,
+    refetch,
+  } = useIsFollowingQuery(followeeId, session as Session)
   const { mutate: followMutate, status: followStatus } = useFollowMutation(
     session as Session,
   )
@@ -29,18 +34,28 @@ export function useFollow({
 
   const follow = () => {
     followMutate(followeeId, {
-      onSuccess: () => setIsFollowing(true),
+      onSuccess: async () => {
+        await refetch()
+        if (!withOtherFetch) await RevalidateUserCount()
+      },
     })
   }
 
   const unfollow = () => {
     unFollowMutate(followeeId, {
-      onSuccess: () => setIsFollowing(false),
+      onSuccess: async () => {
+        await refetch()
+        if (!withOtherFetch) await RevalidateUserCount()
+      },
     })
   }
 
+  const isInitialPending = isFollowingStatus === 'pending'
   const isPending = followStatus === 'pending' || unFollowStatus === 'pending'
-  const isError = followStatus === 'error' || unFollowStatus === 'error'
+  const isError =
+    isFollowingStatus === 'error' ||
+    followStatus === 'error' ||
+    unFollowStatus === 'error'
 
-  return { isFollowing, isPending, isError, follow, unfollow }
+  return { isInitialPending, isFollowing, isPending, isError, follow, unfollow }
 }

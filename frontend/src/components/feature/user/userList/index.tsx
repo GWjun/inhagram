@@ -10,7 +10,7 @@ export default function UserList({ user }: UserListProps) {
   return (
     <li className="flex justify-between items-center">
       <UserHeader user={user} />
-      <FollowButton followeeId={user.id} />
+      <FollowButton followeeId={user.id} withOtherFetch />
     </li>
   )
 }

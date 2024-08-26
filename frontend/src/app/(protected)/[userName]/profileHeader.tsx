@@ -26,7 +26,7 @@ export default async function ProfileHeader({
 
   const userCountResponse = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/users/${userName}/count`,
-    { cache: 'no-store' },
+    { cache: 'no-store', next: { tags: ['userCount'] } },
   )
   if (!userCountResponse.ok) return null
   const userCount = (await userCountResponse.json()) as UserCountType
@@ -53,10 +53,7 @@ export default async function ProfileHeader({
                 프로필 설정
               </Button>
             ) : (
-              <FollowButton
-                followeeId={userData.id}
-                className="w-full max-w-[250px] md:w-auto"
-              />
+              <FollowButton followeeId={userData.id} />
             )}
           </div>
           <ul className="hidden md:flex gap-10 mb-[22.5px]">
