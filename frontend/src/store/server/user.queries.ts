@@ -1,7 +1,20 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Session } from 'next-auth'
 
 import authFetch from '#utils/authFetch'
+
+// Get IsFollowing Query
+export function useIsFollowingQuery(followeeId: number, session: Session) {
+  let enabled = false
+  if (session) enabled = true
+
+  return useQuery({
+    queryKey: ['isfollowing', followeeId],
+    queryFn: () =>
+      authFetch<boolean>(`/users/follow/check/${followeeId}`, {}, session),
+    enabled,
+  })
+}
 
 // Post Follow Mutation
 async function followUser(followeeId: number, session: Session) {

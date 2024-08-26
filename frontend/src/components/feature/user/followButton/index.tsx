@@ -1,41 +1,60 @@
-import { getServerSession, Session } from 'next-auth'
+'use client'
 
-import FollowActionButton from '#components/feature/user/followButton/followActionButton'
+import { useSession } from 'next-auth/react'
+
+import LoadingSpinner from '#components/animation/loadingSpinner'
 import { Button } from '#components/ui/button'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { authOptions } from '#pages/api/auth/[...nextauth]'
-import authFetch from '#utils/authFetch'
+import { useFollow } from '#hooks/useFollow'
+
+import Loading from '../../../../app/loading'
 
 interface FollowButtonProps {
   followeeId: number
-  className?: string
+  withOtherFetch?: boolean
 }
 
-export default async function FollowButton({
+export default function FollowButton({
   followeeId,
-  className,
+  withOtherFetch = false,
 }: FollowButtonProps) {
-  const session = (await getServerSession(authOptions)) as Session
+  const { data: session } = useSession()
 
-  let isFollowing
-  try {
-    isFollowing = await authFetch<boolean>(
-      `/users/follow/check/${followeeId}`,
-      {
-        cache: 'no-store',
-      },
-      session,
-    )
-  } catch (error) {
+  const {
+    isFollowing,
+    follow,
+    unfollow,
+    isInitialPending,
+    isPending,
+    isError,
+  } = useFollow({
+    followeeId,
+    withOtherFetch,
+    session,
+  })
+
+  if (isInitialPending) return <Loading />
+
+  if (isPending)
     return (
-      <Button className={className} variant="gray" disabled>
+      <Button className="mx-4 w-[68.34px]" disabled>
+        <LoadingSpinner />
+      </Button>
+    )
+
+  if (isError)
+    return (
+      <Button className="mx-4" variant="gray" disabled>
         오류
       </Button>
     )
-  }
 
-  return (
-    <FollowActionButton isFollowing={isFollowing} followeeId={followeeId} />
+  return isFollowing ? (
+    <Button onClick={unfollow} variant="gray" className="mx-4">
+      팔로잉
+    </Button>
+  ) : (
+    <Button onClick={follow} className="mx-4">
+      팔로우
+    </Button>
   )
 }
