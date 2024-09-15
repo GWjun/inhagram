@@ -6,33 +6,24 @@ import LoadingSpinner from '#components/animation/loadingSpinner'
 import { Button } from '#components/ui/button'
 import { useFollow } from '#hooks/useFollow'
 
-import Loading from '../../../../app/loading'
-
 interface FollowButtonProps {
   followeeId: number
+  isFollowing?: boolean
   withOtherFetch?: boolean
 }
 
 export default function FollowButton({
   followeeId,
+  isFollowing: initFollowing,
   withOtherFetch = false,
 }: FollowButtonProps) {
   const { data: session } = useSession()
 
-  const {
-    isFollowing,
-    follow,
-    unfollow,
-    isInitialPending,
-    isPending,
-    isError,
-  } = useFollow({
+  const { isFollowing, follow, unfollow, isPending, isError } = useFollow({
     followeeId,
     withOtherFetch,
     session,
   })
-
-  if (isInitialPending) return <Loading />
 
   if (isPending)
     return (
@@ -48,13 +39,24 @@ export default function FollowButton({
       </Button>
     )
 
-  return isFollowing ? (
-    <Button onClick={unfollow} variant="gray" className="mx-4">
-      팔로잉
-    </Button>
-  ) : (
-    <Button onClick={follow} className="mx-4">
-      팔로우
-    </Button>
-  )
+  if (isFollowing !== undefined)
+    return isFollowing ? (
+      <Button onClick={unfollow} variant="gray" className="mx-4">
+        팔로잉
+      </Button>
+    ) : (
+      <Button onClick={follow} className="mx-4">
+        팔로우
+      </Button>
+    )
+  else
+    return initFollowing ? (
+      <Button onClick={unfollow} variant="gray" className="mx-4">
+        팔로잉
+      </Button>
+    ) : (
+      <Button onClick={follow} className="mx-4">
+        팔로우
+      </Button>
+    )
 }

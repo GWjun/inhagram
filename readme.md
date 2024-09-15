@@ -88,6 +88,7 @@ This project is an Instagram clone that implements the main features of Instagra
    PRIVATE_KEY=your-key
    CLIENT_EMAIL=your-email
    STORAGE_BUCKET=your-bucket-name
+   DEFAULT_AVATAR_URL=your-default-image
    ```
 
 ### Running the Project

@@ -1,8 +1,8 @@
-import Link from 'next/link'
+import Image from 'next/image'
 
 import { useSession } from 'next-auth/react'
 
-import ImageWithLoad from '#components/feature/image/imageWithLoad'
+import Link from '#components/feature/common/link'
 import { ProfileItemGenerator } from '#components/layout/SideMenuItems'
 import { Avatar } from '#components/ui/avatar'
 import { useShrinkStore, useSidebarStore } from '#store/client/sidebar.store'
@@ -34,7 +34,7 @@ export default function ProfileItem() {
           activeItem === '프로필' && 'border-2 border-black',
         )}
       >
-        <ImageWithLoad
+        <Image
           src={imageUrl || '/images/assets/avatar-default.jpg'}
           className="object-cover"
           alt="avatar image"

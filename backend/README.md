@@ -67,6 +67,7 @@
    PRIVATE_KEY=your-key
    CLIENT_EMAIL=your-email
    STORAGE_BUCKET=your-bucket-name
+   DEFAULT_AVATAR_URL=your-default-image
    ```
 
 ## Usage

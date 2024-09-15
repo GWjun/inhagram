@@ -1,6 +1,6 @@
 import Image from 'next/image'
-import Link from 'next/link'
 
+import Link from '#components/feature/common/link'
 import { ChatRoom } from '#types/chats.type'
 import { cn } from '#utils/utils'
 

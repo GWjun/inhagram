@@ -1,11 +1,15 @@
-import { getServerSession } from 'next-auth'
+import { getServerSession, Session } from 'next-auth'
 
 import AvatarInput from '#components/feature/image/avatarInput'
 import FollowButton from '#components/feature/user/followButton'
 import { Avatar, AvatarImage } from '#components/ui/avatar'
 import { Button } from '#components/ui/button'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { authOptions } from '#pages/api/auth/[...nextauth]'
 import { UserImageResponse } from '#store/client/user.store'
 import { UserCountType } from '#types/user.type'
+import authFetch from '#utils/authFetch'
 
 import MobileLists from './mobileLists'
 
@@ -14,7 +18,7 @@ export default async function ProfileHeader({
 }: {
   userName: string
 }) {
-  const session = await getServerSession()
+  const session = (await getServerSession(authOptions)) as Session
   const sameUser = session?.user?.name === userName
 
   const userDataResponse = await fetch(
@@ -30,6 +34,12 @@ export default async function ProfileHeader({
   )
   if (!userCountResponse.ok) return null
   const userCount = (await userCountResponse.json()) as UserCountType
+
+  const isFollowing = await authFetch<boolean>(
+    `/users/follow/check/${userData.id}`,
+    {},
+    session,
+  )
 
   return (
     <header className="grow max-w-[975px] w-full pt-[30px]">
@@ -53,7 +63,10 @@ export default async function ProfileHeader({
                 프로필 설정
               </Button>
             ) : (
-              <FollowButton followeeId={userData.id} />
+              <FollowButton
+                followeeId={userData.id}
+                isFollowing={isFollowing}
+              />
             )}
           </div>
           <ul className="hidden md:flex gap-10 mb-[22.5px]">

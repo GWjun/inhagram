@@ -1,8 +1,8 @@
-import Link from 'next/link'
+import Image from 'next/image'
 
 import { cva, VariantProps } from 'class-variance-authority'
 
-import ImageWithLoad from '#components/feature/image/imageWithLoad'
+import Link from '#components/feature/common/link'
 import { Avatar } from '#components/ui/avatar'
 import { BasicUser, SimpleUser } from '#types/user.type'
 import { cn } from '#utils/utils'
@@ -61,13 +61,13 @@ export default function UserHeader({ user, size }: UserHeaderProps) {
     >
       <div className="flex items-center">
         <Avatar className={cn(avatarVariants({ size }))}>
-          <ImageWithLoad
+          <Image
             src={user.image || '/images/assets/avatar-default.jpg'}
             alt="user avatar"
             width={size === 'large' ? 48 : size === 'small' ? 32 : 40}
             height={size === 'large' ? 48 : size === 'small' ? 32 : 40}
             className="object-cover rounded-full"
-            loading="eager"
+            priority
           />
         </Avatar>
         <span className={cn(nicknameVariants({ size }))}>{user.nickname}</span>

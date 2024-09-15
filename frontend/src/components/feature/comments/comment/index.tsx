@@ -1,9 +1,9 @@
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 import { Ellipsis } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
-import ImageWithLoad from '#components/feature/image/imageWithLoad'
 import Alert from '#components/feature/modal/alert'
 import { Avatar } from '#components/ui/avatar'
 import {
@@ -50,7 +50,6 @@ export default function PostComment({ postId, commentData }: PostCommentProps) {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Ellipsis
-            onClick={() => console.log('clikced')}
             size={18}
             aria-label="더 보기"
             className="opacity-0 group-hover:opacity-100 hover:cursor-pointer"
@@ -77,13 +76,13 @@ export default function PostComment({ postId, commentData }: PostCommentProps) {
   return (
     <div className="flex group w-full">
       <Avatar className="w-8 h-8" onClick={handleClick}>
-        <ImageWithLoad
+        <Image
           src={author.image || '/images/assets/avatar-default.jpg'}
           alt="user avatar"
           width={32}
           height={32}
           className="object-cover rounded-full"
-          loading="eager"
+          priority
         />
       </Avatar>
       <div className="flex flex-col ml-3 gap-1 flex-grow min-w-0">

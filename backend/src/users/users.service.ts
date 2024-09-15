@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { UsersModel } from './entity/users.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersModel)
     private readonly usersRepository: Repository<UsersModel>,
+    private readonly configService: ConfigService,
   ) {}
 
   async getAllUsers() {
@@ -46,6 +48,7 @@ export class UsersService {
       nickname: user.nickname,
       email: user.email,
       password: user.password,
+      image: this.configService.get('DEFAULT_AVATAR_URL') ?? '',
     });
 
     const newUser = await this.usersRepository.save(userObj);

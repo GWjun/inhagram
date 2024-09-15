@@ -6,7 +6,7 @@ import { CardContent } from '#components/ui/card'
 import { Input } from '#components/ui/input'
 import { useGetTokenQuery } from '#store/server/auth.queries'
 
-import { emailOption, nicknameOption } from '../inputOptions'
+import { emailOption, nicknameOption, passwordOption } from '../inputOptions'
 
 interface SignUpFormData {
   nickname: string
@@ -44,6 +44,7 @@ export default function SignUpForm() {
           className="bg-primary-foreground"
           placeholder="비밀번호"
           type="password"
+          {...register('password', passwordOption)}
         />
       </CardContent>
       <CardContent>

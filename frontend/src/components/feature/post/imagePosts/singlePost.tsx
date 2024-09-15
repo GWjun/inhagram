@@ -1,10 +1,10 @@
 import Image from 'next/image'
-import Link from 'next/link'
 
 import { ReactNode } from 'react'
 
 import { Layers2, Heart, MessageCircle } from 'lucide-react'
 
+import Link from '#components/feature/common/link'
 import { Post } from '#types/posts.type'
 import redirectHard from '#utils/redirectHard'
 

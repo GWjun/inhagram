@@ -1,8 +1,8 @@
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
 
 import { Heart, PlusSquare, Search } from 'lucide-react'
 
+import Link from '#components/feature/common/link'
 import { ItemSkeleton } from '#components/layout/sidebar-utils/itemSkeleton'
 import { SideMenuItems } from '#components/layout/SideMenuItems'
 import { useShrinkStore, useSidebarStore } from '#store/client/sidebar.store'

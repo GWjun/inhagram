@@ -4,7 +4,7 @@ export default interface UserType {
   createdAt: string
   nickname: string
   email: string
-  image: string | null
+  image: string
   role: string
 }
 

@@ -20,6 +20,7 @@ steps:
       '--build-arg', 'PRIVATE_KEY=${_PRIVATE_KEY}',
       '--build-arg', 'CLIENT_EMAIL=${_CLIENT_EMAIL}',
       '--build-arg', 'STORAGE_BUCKET=${_STORAGE_BUCKET}',
+      '--build-arg', 'DEFAULT_AVATAR_URL=${_DEFAULT_AVATAR_URL}',
       './backend'
     ]
 

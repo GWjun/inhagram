@@ -1,8 +1,8 @@
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
 
 import { PlusSquare } from 'lucide-react'
 
+import Link from '#components/feature/common/link'
 import { SideMenuItems } from '#components/layout/SideMenuItems'
 import { useSidebarStore } from '#store/client/sidebar.store'
 

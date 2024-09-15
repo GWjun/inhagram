@@ -1,12 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
 
 import { useEffect } from 'react'
 
 import { useMutationState } from '@tanstack/react-query'
 
+import Link from '#components/feature/common/link'
 import {
   Card,
   CardContent,

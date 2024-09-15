@@ -2,7 +2,7 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { RolesEnum } from '../const/roles.const';
 import { PostsModel } from 'src/posts/entity/posts.entity';
 import { BaseModel } from 'src/common/entity/base.entity';
-import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
+import { IsEmail, IsString, Length } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { ChatsModel } from '../../chats/entity/chats.entity';
 import { MessagesModel } from '../../chats/messages/entity/messages.entity';
@@ -31,10 +31,9 @@ export class UsersModel extends BaseModel {
   @Exclude({ toPlainOnly: true })
   password: string;
 
-  @Column({ nullable: true })
+  @Column()
   @IsString()
-  @IsOptional()
-  image?: string;
+  image: string;
 
   @Column({
     enum: Object.values(RolesEnum),

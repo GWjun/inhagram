@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from 'next'
 import AuthSessionProvider from '#components/provider/utilProvider/AuthSessionProvider'
 import ReactQueryProvider from '#components/provider/utilProvider/ReactQueryProvider'
 import { Toaster } from '#components/ui/toaster'
+import LoadingIcon from 'components/feature/common/loadingIcon'
 
 import './globals.css'
 
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Toaster />
             </div>
           </body>
+          <LoadingIcon />
         </ReactQueryProvider>
       </AuthSessionProvider>
     </html>

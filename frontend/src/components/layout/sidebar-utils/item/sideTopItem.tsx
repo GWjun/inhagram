@@ -35,6 +35,8 @@ export default function SideTopItem() {
           width={103}
           height={32}
           aria-label="홈"
+          className="cursor-pointer"
+          priority
         />
       </div>
       <div

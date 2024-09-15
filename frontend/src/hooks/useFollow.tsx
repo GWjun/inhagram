@@ -50,12 +50,11 @@ export function useFollow({
     })
   }
 
-  const isInitialPending = isFollowingStatus === 'pending'
   const isPending = followStatus === 'pending' || unFollowStatus === 'pending'
   const isError =
     isFollowingStatus === 'error' ||
     followStatus === 'error' ||
     unFollowStatus === 'error'
 
-  return { isInitialPending, isFollowing, isPending, isError, follow, unfollow }
+  return { isFollowing, isPending, isError, follow, unfollow }
 }

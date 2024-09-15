@@ -19,6 +19,7 @@ import { FILTER_MAPPER } from './const/filter-mapper.const';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { merge } from 'lodash';
+import * as process from 'node:process';
 
 @Injectable()
 export class CommonService {
@@ -139,7 +140,7 @@ export class CommonService {
   }
   async uploadUserImage(userId: number, path: string, filename: string) {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    if (user && user.image) {
+    if (user && user.image && user.image !== process.env.DEFAULT_AVATAR_URL) {
       const oldFilename = user.image.split('/').pop();
       if (oldFilename) await this.cloudStorageService.deleteFile(oldFilename);
     }
