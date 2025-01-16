@@ -46,15 +46,15 @@
    ```bash
    # common
    PROTOCOL=http
-   HOST=localhost:8000
+   HOST=localhost:8080
    PORT=8080
-   
+
    # auth
    JWT_SECRET=your-secret-key
    HASH_ROUNDS=your-hash-round-value
    ACCESS_EXPIRE=your-accessToken-expire-second
    REFRESH_EXPIRE=your-refreshToken-expire-second
-   
+
    # DB
    DB_HOST=localhost
    DB_PORT=5432
@@ -62,7 +62,7 @@
    DB_PASSWORD=password
    DB_DATABASE=database
 
-   # Cloud Storage
+   # Google Cloud Storage
    PROJECT_ID=your-id
    PRIVATE_KEY=your-key
    CLIENT_EMAIL=your-email

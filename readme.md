@@ -8,21 +8,34 @@
   <img src="https://nestjs.com/img/logo_text.svg" alt="NestJS Logo" width="120" height="80" >
 </p>
 
-## Demo
-
-[visit demo site](https://inhagram.vercel.app)
-
 ## Project Description
 
 This project is an Instagram clone that implements the main features of Instagram. The frontend is built using Next.js and the backend is built using NestJS. There are no commercial or advertising purposes, and it is for study purposes only.
 
+## Demo Example
+
+1. Login
+
+   <img src="example/login.png" width="500">
+
+2. Follow
+
+   <img src="example/follow.gif" width="500">
+
+3. User Post
+
+   <img src="example/user.gif" width="500">
+
+4. Make Post
+
+   <img src="example/make-post.gif" width="500">
+
+5. Direct Message
+
+   <img src="example/dm1.gif" width="500">
+   <img src="example/dm2.gif" width="500">
+
 ## Installation and Running
-
-### Prerequisites
-
-- Node.js (v14 or higher)
-- pnpm
-- docker
 
 ### Clone and Install
 
@@ -67,7 +80,7 @@ This project is an Instagram clone that implements the main features of Instagra
 
    ```bash
    PROTOCOL=http
-   HOST=localhost:8000
+   HOST=localhost:8080
    PORT=8080
 
    # auth
@@ -83,7 +96,7 @@ This project is an Instagram clone that implements the main features of Instagra
    DB_PASSWORD=password
    DB_DATABASE=database
 
-   # Cloud Storage
+   # Google Cloud Storage
    PROJECT_ID=your-id
    PRIVATE_KEY=your-key
    CLIENT_EMAIL=your-email

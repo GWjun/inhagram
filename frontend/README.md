@@ -1,6 +1,6 @@
 # Inhagram Frontend
 
-This project is a frontend clone of Instagram, built with modern web development tools and best practices.
+This project is a frontend clone of Instagram
 
 ## Table of Contents
 
@@ -41,15 +41,6 @@ Start the development server:
 ```bash
 pnpm dev
 ```
-
-## Features
-
-- **Styling**: `Tailwind CSS` is used for styling.
-- **UI Components**: Utilizes `shadcn/ui` for UI components.
-- **State Management**: State management is handled by `zustand`.
-- **Data Fetching**: `react-query` is used for data fetching and caching.
-- **ESLint Configurations**: This project uses `eslint-config-next` and `@titicaca/eslint-config-triple` for linting.
-- **Prettier Configuration**: It also includes `@titicaca/prettier-config-triple` for code formatting.
 
 ## License
 
